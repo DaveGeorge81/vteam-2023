@@ -1,6 +1,6 @@
 # Modellering av databas för Svenska Elsparkcyklar AB
 ## Konceptuell modellering
-### 1. Beskrivning av systemet i text
+### Beskrivning av systemet i text
 
 Företaget har behov av ett system som hanterar uthyrning av elsparkcyklar i svenska städer.
 
@@ -48,3 +48,44 @@ Simulera hela systemets drift för att kunna testa och verifiera funktionen.
 * Taxa/Prislista &ndash; startavgift, minutavgift, extra avgift vid "fri" parkering, lägre startavgift vid hämtning på fri parkering och lämning på anvisad parkering
 * Externa appar &ndash; ansluter via REST API, registrera konto, begränsa användning
 * Loggning av händelser i systemet
+
+### Identifierade entiteter (engelska)
+
+- City
+- Bike (scooter is more correct but a longer word)
+- Charging station
+- Parking zone
+- Allowed zone
+- Speed zone
+- Account
+- Pricing (start fee, per minute, extra, discount)
+- API account
+- Event log
+
+### Identifierade relationer (förenklat)
+
+| Entity        | City | Bike | Charg. st. | P. zone | Account | Pricing |
+| -------- | :--: | :--: | :------: | :----: | :-----: | :----: |
+| **City**      |      | has  | has          | has     | has     | has     |
+| **Bike**      | in   |      | in           | in      | used by |         |
+| **Charg. st.**| in   | has  |              | is      |         |         |
+| **P. zone**   | in   | has  | is           |         |         |         |
+| **Account**   | in   | rent |              |         |         |         |
+| **Pricing**   | in   |      |              |         |         |         |
+
+### ER-diagram med kardinalitet
+
+![ER-diagram](./databas-er.drawio.png)
+
+### Exempel på attribut
+
+- City &ndash; `id, name`
+- Bike  &ndash; `id, city_id, number, current_user (account), status (on, off, free, charging, service, ...), battery_level, speed, gps_position`
+- Charging station &ndash; `id, city_id, nof_places, bikes (currently charging), gps_position`
+- Parking zone &ndash; `id, city_id, nof_places, bikes (currently parked), gps_position`
+- Allowed zone &ndash; `id, city_id, gps_position (how to define?)`
+- Speed zone &ndash; `id, city_id, gps_position (how to define?)`
+- Account &ndash; `id, city_id, name, address, phone, balance, bank_account, history_log (of rentals)`
+- Pricing &ndash; `city_id, start_fee, minute_fee, extra_fee, discount`
+- API account &ndash; `id, city_id, company, address, phone, limit`
+- Event log &ndash; `time_stamp, event_type, text, ...`
