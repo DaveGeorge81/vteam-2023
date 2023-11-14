@@ -82,10 +82,16 @@ Simulera hela systemets drift för att kunna testa och verifiera funktionen.
 - City &ndash; `id, name`
 - Bike  &ndash; `id, city_id, number, current_user (account), status (on, off, free, charging, service, ...), battery_level, speed, gps_position`
 - Charging station &ndash; `id, city_id, nof_places, bikes (currently charging), gps_position`
-- Parking zone &ndash; `id, city_id, nof_places, bikes (currently parked), gps_position`
+- Parking zone &ndash; `id, city_id, is_charging_st, nof_places, bikes (currently parked), gps_position`
 - Allowed zone &ndash; `id, city_id, gps_position (how to define?)`
-- Speed zone &ndash; `id, city_id, gps_position (how to define?)`
+- Speed zone &ndash; `id, speed_limit, city_id, gps_position (how to define?)`
 - Account &ndash; `id, city_id, name, address, phone, balance, bank_account, history_log (of rentals)`
 - Pricing &ndash; `city_id, start_fee, minute_fee, extra_fee, discount`
 - API account &ndash; `id, city_id, company, address, phone, limit`
 - Event log &ndash; `time_stamp, event_type, text, ...`
+
+### Kommentarer
+
+- Charging station kan ses som ett specialfall av en parking zone.
+- Allowed zone kan ses som ett specialfall av en speed zone med `speed_limit = 0`.
+
