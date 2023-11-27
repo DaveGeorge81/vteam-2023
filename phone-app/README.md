@@ -24,7 +24,7 @@ You can ignore the "disable windows hyper-v" warning, we are only using the Andr
 
 If you are using WSL you need to do step 6 and 7 to get the Android emulator to work with WSL.
 
-6. Copy the bash script below and replace <user> with your Windows username.
+6. Copy the bash script below and replace "user" with your Windows username.
 
 ```
 echo -e "\n# Android\nexport ANDROID_HOME=/mnt/c/Users/<user>/AppData/Local/Android/Sdk\nexport WSLENV=ANDROID_HOME/p" >> $HOME/.bashrc && source $HOME/.bashrc
