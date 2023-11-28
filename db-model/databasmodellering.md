@@ -19,7 +19,7 @@ Eventuellt ett realtidsgränssnitt med t ex websockets, för att hantera cykelns
 #### Administrativt webbgränssnitt (Frontend 1)
 
 Möjlighet för anställda att se status på cyklar, stationer och kunder.
-
+cd
 #### Kundens webbgränssnitt (Frontend 2)
 
 Kunden kan logga in och se sitt konto, historik av utlåning och betalningar.
