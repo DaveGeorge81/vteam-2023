@@ -1,0 +1,29 @@
+version: '3'
+services:
+    phone:
+            build:
+                context: ./phone-app
+                dockerfile: ./phone-app/Dockerfile
+                args:
+                    - NODE_ENV=development
+            environment:
+                - EXPO_DEVTOOLS_LISTEN_ADDRESS=0.0.0.0
+                - REACT_NATIVE_PACKAGER_HOSTNAME=${IP}
+            volumes:
+                - ./phone-app/:/phone-app/
+            ports:
+                - '8081:8081'
+                - '8082:8082'
+                - '8083:8083'
+            tty: true
+            stdin_open: true
+            command: npx expo start --clear
+    express:
+            build:
+                context: ./
+                dockerfile: ./backtest/Dockerfile
+            volumes:
+                - ./backtest/:/backtest/
+            ports:
+                - '3000:3000'
+            command: node app.js

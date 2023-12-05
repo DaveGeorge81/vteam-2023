@@ -1,6 +1,6 @@
 import React from 'react';
 import MapView from 'react-native-maps';
-import {Marker} from 'react-native-maps';
+import {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import { StyleSheet, View, Image } from 'react-native';
 
 export default function Map() {
@@ -115,6 +115,8 @@ export default function Map() {
     return (
     <View style={styles.container}>
         <MapView style={styles.map}
+        showsUserLocation={true}
+        provider={PROVIDER_GOOGLE}
         customMapStyle={mapJson}
         initialRegion={{
         latitude: 56.6739803,
