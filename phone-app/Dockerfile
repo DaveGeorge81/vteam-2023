@@ -11,7 +11,4 @@ EXPOSE 8083
 
 RUN npm install && npm install -g expo-cli && npm i @expo/ngrok@^4.1.0
 
-RUN apt-get update && \
-    apt-get install android-tools-adb
-
-CMD [ "npx", "expo", "start", "--tunnel" ]
+CMD [ "npx", "expo", "start" ]

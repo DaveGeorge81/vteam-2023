@@ -2,7 +2,7 @@ version: '3'
 services:
     phone:
             build:
-                context: ./phone-app
+                context: ./
                 dockerfile: ./phone-app/Dockerfile
                 args:
                     - NODE_ENV=development
