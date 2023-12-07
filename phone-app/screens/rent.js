@@ -2,11 +2,11 @@ import React from 'react';
 import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
 import { globalStyles } from '../styles/global';
 
-export default function Rent() {
+export default function Rent(navigation, route) {
     return (
         <View style={globalStyles.container}>
             <Text style={globalStyles.contentText}>Enter bike id to rent</Text>
-            <TextInput style={styles.box} placeholder='bike id' />
+            <TextInput style={styles.box} placeholder='bike id'/>
             <Button title="Rent bike"/>
         </View>
     )
