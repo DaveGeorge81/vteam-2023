@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Bike rental API</title>
+        <link rel="icon" href="img/scooter64.png">
+        <link rel="stylesheet" href="css/style.css">
+    </head>
+    <body>
+        <main>
+            <img id="scooter" src="img/scooter128.png" width="128" height="128" alt="A scooter">
+            <h1>Bike rental API specification</h1>
+            <h2>List of all endpoints</h2>
+            <p>All endpoints to be prepended by /api/v1.
+
+            <h3>🏙 <a href="#cities">Cities</a></h3>
+            <ul>
+                <li><a href="#get-cities">GET /cities</a></li>
+                <li><a href="#get-cities-id">GET /cities/{id}</a></li>
+                <li><a href="#post-cities">POST /cities</a></li>
+                <li><a href="#put-cities">PUT /cities</a></li>
+                <li><a href="#delete-cities-id">DELETE /cities/{id}</a></li>
+            </ul>
+
+            <section>
+                <h2 id="cities">🏙 Cities</h2>
+                <h3 id="get-cities">GET /cities</h3>
+                <p>Get a JSON-representation of all cities.</p>
+
+                <h4>Sample request</h4>
+                <pre><code>GET /api/v1/cities</code></pre>
+
+                <h4>Response</h4>
+                <pre><code>[
+    {
+        "id": 1,
+        "name": "Karlskrona",
+        "lat": 56.193,
+        "lon": 15.628,
+        "dlat": 0.02,
+        "dlon": 0.03
+    },
+    {
+        "id": 2,
+        "name": "Stockholm",
+        "lat": 59.325,
+        "lon": 18.071,
+        "dlat": 0.08,
+        "dlon": 0.2
+    }
+]
+
+HTTP Status Code: 200 OK</code></pre>
+                <p><b>Note:</b> <code>dlat</code> and <code>dlon</code> denote city extension northwards and eastwards respectively.</p>
+
+                <h3 id="get-cities-id">GET /cities/{id}</h3>
+                <p>Get a JSON-representation of a specific city.</p>
+
+                <h4>Sample request</h4>
+                <pre><code>GET /api/v1/cities/1</code></pre>
+
+                <h4>Response</h4>
+                <pre><code>{
+    "id": 1,
+    "name": "Karlskrona",
+    "lat": 56.193,
+    "lon": 15.628,
+    "dlat": 0.02,
+    "dlon": 0.03
+}
+
+HTTP Status Code: 200 OK</code></pre>
+                <p><b>Note:</b> <code>dlat</code> and <code>dlon</code> denote city extension northwards and eastwards respectively.</p>
+
+                <h3 id="post-cities">POST /cities</h3>
+                <p>Add a new city.</p>
+
+                <h4>Sample request</h4>
+                <pre><code>POST /api/v1/cities</code></pre>
+
+                <h4>Required body keys<br>
+                <small>(currently x-www-form-urlencoded)</small></h4>
+                <pre><code>name
+lat  = latitude
+lon  = longitude
+dlat = north-south extension of city (≈radius)
+dlon = east-west extension of city (≈radius)</code></pre>
+
+                <h4>Response (success)</h4>
+                <pre><code>{
+    "count": 1,
+    "newId": 3,
+    "message": "Ok"
+}
+
+HTTP Status Code: 201 Created</code></pre>
+                <p><b>Note:</b> <code>count</code> is inserted row count and <code>newId</code> is the id of added city.</p>
+
+                <h4>Response (failure, name already exists)</h4>
+                <pre><code>{
+    "count": 0,
+    "newId": -1,
+    "message": "UNIQUE constraint failed: cities.name"
+}
+
+HTTP Status Code: 400 Bad Request</code></pre>
+
+                <h3 id="put-cities">PUT /cities</h3>
+                <p>Update a city.</p>
+
+                <h4>Sample request</h4>
+                <pre><code>PUT /api/v1/cities</code></pre>
+
+                <h4>Required body keys<br>
+                <small>(currently x-www-form-urlencoded)</small></h4>
+                <pre><code>id   = city id to update
+name = new name
+lat  = latitude
+lon  = longitude
+dlat = north-south extension of city (≈radius)
+dlon = east-west extension of city (≈radius)</code></pre>
+
+                <h4>Response (success)</h4>
+                <pre><code>{
+    "count": 1,
+    "message": "Ok"
+}
+
+HTTP Status Code: 200 OK</code></pre>
+                <p><b>Note:</b> <code>count</code> is updated row count.</p>
+
+                <h4>Response (failure, name already exists)</h4>
+                <pre><code>{
+    "count": 0,
+    "message": "UNIQUE constraint failed: cities.name"
+}
+
+HTTP Status Code: 400 Bad Request</code></pre>
+
+                <h4>Response (failure, id not found)</h4>
+                <pre><code>{
+    "count": 0,
+    "message": "id not found"
+}
+
+HTTP Status Code: 400 Bad Request</code></pre>
+
+                <h3 id="delete-cities-id">DELETE /cities/{id}</h3>
+                <p>Delete a city.</p>
+
+                <h4>Sample request</h4>
+                <pre><code>DELETE /api/v1/cities/1</code></pre>
+
+                <h4>Response (success)</h4>
+                <pre><code>{
+    "count": 1,
+    "message": "Ok"
+}
+
+HTTP Status Code: 200 OK</code></pre>
+                <p><b>Note:</b> <code>count</code> is deleted row count.</p>
+
+                <h4>Response (failure, id not found)</h4>
+                <pre><code>{
+    "count": 0,
+    "message": "id not found"
+}
+
+HTTP Status Code: 400 Bad Request</code></pre>
+
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; Vteam 2023 Group 8</p>
+        </footer>
+    </body>
+</html>
