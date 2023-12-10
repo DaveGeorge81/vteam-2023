@@ -8,18 +8,27 @@ const db = require("../models/db_model.js");
 
 const urlencodedParser = express.urlencoded({ extended: false });
 
+/**
+ * Get all cities.
+ */
 router.get('/cities', (req, res) => {
     const result = db.getAllCities();
 
     return res.status(200).json(result);
 });
 
+/**
+ * Get a specific city.
+ */
 router.get('/cities/:id', (req, res) => {
     const result = db.getCity(req.params.id);
 
     return res.status(200).json(result);
 });
 
+/**
+ * Add a new city.
+ */
 router.post('/cities', urlencodedParser, (req, res) => {
     const result = db.addCity(req.body);
 
@@ -38,6 +47,9 @@ router.post('/cities', urlencodedParser, (req, res) => {
     });
 });
 
+/**
+ * Update a city.
+ */
 router.put('/cities', urlencodedParser, (req, res) => {
     const result = db.updateCity(req.body);
 
@@ -54,8 +66,109 @@ router.put('/cities', urlencodedParser, (req, res) => {
     });
 });
 
+/**
+ * Delete a city.
+ */
 router.delete('/cities/:id', (req, res) => {
     const result = db.deleteCity(req.params.id);
+
+    if (result.changes === 0) {
+        return res.status(400).json({
+            count: 0,
+            message: result.message ? result.message : 'id not found'
+        });
+    }
+
+    return res.status(200).json({
+        count: result.changes,
+        message: 'Ok'
+    });
+});
+
+/**
+ * Get all users.
+ */
+router.get('/users', (req, res) => {
+    const result = db.getAllUsers();
+
+    return res.status(200).json(result);
+});
+
+/**
+ * Get a specific user.
+ */
+router.get('/users/:id', (req, res) => {
+    const result = db.getUser(req.params.id);
+
+    return res.status(200).json(result);
+});
+
+/**
+ * Add a new user.
+ */
+router.post('/users', urlencodedParser, (req, res) => {
+    const result = db.addUser(req.body);
+
+    if (result.changes === 0) {
+        return res.status(400).json({
+            count: 0,
+            newId: -1,
+            message: result.message
+        });
+    }
+
+    return res.status(201).json({
+        count: result.changes,
+        newId: result.lastInsertRowid,
+        message: 'Ok'
+    });
+});
+
+/**
+ * Update a user.
+ */
+router.put('/users', urlencodedParser, (req, res) => {
+    const result = db.updateUser(req.body);
+
+    if (result.changes === 0) {
+        return res.status(400).json({
+            count: 0,
+            message: result.message ? result.message : 'id not found'
+        });
+    }
+
+    return res.status(200).json({
+        count: result.changes,
+        message: 'Ok'
+    });
+});
+
+/**
+ * Withdraw from a user's balance.
+ * A deposit is a negative withdrawal.
+ * A negative balance is allowed.
+ */
+router.put('/users/withdraw', urlencodedParser, (req, res) => {
+    const result = db.withdrawUser(req.body);
+
+    if (result.changes === 0) {
+        return res.status(400).json({
+            count: 0,
+            message: result.message ? result.message : 'id not found'
+        });
+    }
+
+    return res.status(200).json({
+        count: result.changes,
+        message: 'Ok'
+    });
+});
+
+/**
+ * Delete a user.
+ */
+router.delete('/users/:id', (req, res) => {
+    const result = db.deleteUser(req.params.id);
 
     if (result.changes === 0) {
         return res.status(400).json({

@@ -13,16 +13,17 @@ const app = express();
 //app.set("json spaces", 2);
 
 function shutDown(code) {
-    console.log(`\nReceived ${code}. Closing database connection.`);
-    db.closeDB();
+    console.log(`\nReceived ${code}.`);
+    console.log("Closing HTTP server.");
 
     server.close(() => {
-        console.log("Closing HTTP server.");
+        console.log("Closing database connection.");
+        db.closeDB();
     });
 }
 
 process.on('exit', (code) => {
-    console.log(`\nExiting with code: ${code}`);
+    console.log(`Exiting with code: ${code}`);
 });
 
 process.on('SIGINT', (code) => {

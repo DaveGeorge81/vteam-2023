@@ -16,4 +16,15 @@ CREATE TABLE cities
     dlon REAL NOT NULL
 );
 
+DROP TABLE IF EXISTS users;
+
+CREATE TABLE users
+(
+    id INTEGER PRIMARY KEY,
+    name TEXT UNIQUE NOT NULL,
+    balance REAL DEFAULT 0 NOT NULL,
+    bank_account TEXT DEFAULT '',
+    recurring_withdraw REAL DEFAULT 0
+);
+
 

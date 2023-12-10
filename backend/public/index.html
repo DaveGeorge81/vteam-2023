@@ -22,6 +22,16 @@
                 <li><a href="#delete-cities-id">DELETE /cities/{id}</a></li>
             </ul>
 
+            <h3>🧍 <a href="#users">Users</a></h3>
+            <ul>
+                <li><a href="#get-users">GET /users</a></li>
+                <li><a href="#get-users-id">GET /users/{id}</a></li>
+                <li><a href="#post-users">POST /users</a></li>
+                <li><a href="#put-users">PUT /users</a></li>
+                <li><a href="#put-users-withdraw">PUT /users/withdraw</a></li>
+                <li><a href="#delete-users-id">DELETE /users/{id}</a></li>
+            </ul>
+
             <section>
                 <h2 id="cities">🏙 Cities</h2>
                 <h3 id="get-cities">GET /cities</h3>
@@ -150,6 +160,161 @@ HTTP Status Code: 400 Bad Request</code></pre>
 
                 <h4>Sample request</h4>
                 <pre><code>DELETE /api/v1/cities/1</code></pre>
+
+                <h4>Response (success)</h4>
+                <pre><code>{
+    "count": 1,
+    "message": "Ok"
+}
+
+HTTP Status Code: 200 OK</code></pre>
+                <p><b>Note:</b> <code>count</code> is deleted row count.</p>
+
+                <h4>Response (failure, id not found)</h4>
+                <pre><code>{
+    "count": 0,
+    "message": "id not found"
+}
+
+HTTP Status Code: 400 Bad Request</code></pre>
+
+            </section>
+
+            <section>
+                <h2 id="users">🧍 Users</h2>
+                <h3 id="get-users">GET /users</h3>
+                <p>Get a JSON-representation of all users.</p>
+
+                <h4>Sample request</h4>
+                <pre><code>GET /api/v1/users</code></pre>
+
+                <h4>Response</h4>
+                <pre><code>[
+    {
+        "id": 2,
+        "name": "Jane Doe"
+    },
+    {
+        "id": 1,
+        "name": "John Doe"
+    }
+]
+
+HTTP Status Code: 200 OK</code></pre>
+
+                <h3 id="get-users-id">GET /users/{id}</h3>
+                <p>Get a JSON-representation of a specific user.</p>
+
+                <h4>Sample request</h4>
+                <pre><code>GET /api/v1/users/2</code></pre>
+
+                <h4>Response</h4>
+                <pre><code>{
+    "id": 2,
+    "name": "Jane Doe",
+    "balance": 50,
+    "bank_account": "1.45.6789",
+    "recurring_withdraw": 150
+}
+
+HTTP Status Code: 200 OK</code></pre>
+
+                <h3 id="post-users">POST /users</h3>
+                <p>Add a new user.</p>
+
+                <h4>Sample request</h4>
+                <pre><code>POST /api/v1/users</code></pre>
+
+                <h4>Required body keys<br>
+                <small>(currently x-www-form-urlencoded)</small></h4>
+                <pre><code>name
+balance            = account balance
+bank_account
+recurring_withdraw = amount to withdraw from bank and add to<br>    account each month</code></pre>
+
+                <h4>Response (success)</h4>
+                <pre><code>{
+    "count": 1,
+    "newId": 1,
+    "message": "Ok"
+}
+
+HTTP Status Code: 201 Created</code></pre>
+                <p><b>Note:</b> <code>count</code> is inserted row count and <code>newId</code> is the id of added user.</p>
+
+                <h4>Response (failure, name already exists)</h4>
+                <pre><code>{
+    "count": 0,
+    "newId": -1,
+    "message": "UNIQUE constraint failed: users.name"
+}
+
+HTTP Status Code: 400 Bad Request</code></pre>
+
+                <h3 id="put-users">PUT /users</h3>
+                <p>Update a user.</p>
+
+                <h4>Sample request</h4>
+                <pre><code>PUT /api/v1/users</code></pre>
+
+                <h4>Required body keys<br>
+                <small>(currently x-www-form-urlencoded)</small></h4>
+                <pre><code>id      = user id to update
+name    = new name
+balance = account balance
+bank_account
+recurring_withdraw = amount to withdraw from bank and add to<br>    account each month</code></pre>
+
+                <h4>Response (success)</h4>
+                <pre><code>{
+    "count": 1,
+    "message": "Ok"
+}
+
+HTTP Status Code: 200 OK</code></pre>
+                <p><b>Note:</b> <code>count</code> is updated row count.</p>
+
+                <h4>Response (failure, name already exists)</h4>
+                <pre><code>{
+    "count": 0,
+    "message": "UNIQUE constraint failed: users.name"
+}
+
+HTTP Status Code: 400 Bad Request</code></pre>
+
+                <h3 id="put-users-withdraw">PUT /users/withdraw</h3>
+                <p>Withdraw (or deposit) an amount from a user's balance.</p>
+
+                <h4>Sample request</h4>
+                <pre><code>PUT /api/v1/users/withdraw</code></pre>
+
+                <h4>Required body keys<br>
+                <small>(currently x-www-form-urlencoded)</small></h4>
+                <pre><code>id     = user id to update
+amount = a positive amount to withdraw, negative to deposit</code></pre>
+
+                <h4>Response (success)</h4>
+                <pre><code>{
+    "count": 1,
+    "message": "Ok"
+}
+
+HTTP Status Code: 200 OK</code></pre>
+                <p><b>Note:</b> <code>count</code> is updated row count.</p>
+
+                <h4>Response (failure, id not found)</h4>
+                <pre><code>{
+    "count": 0,
+    "message": "id not found"
+}
+
+HTTP Status Code: 400 Bad Request</code></pre>
+
+                <h3 id="delete-users-id">DELETE /users/{id}</h3>
+                <p>Delete a user.</p>
+
+                <h4>Sample request</h4>
+                <pre><code>DELETE /api/v1/users/1</code></pre>
 
                 <h4>Response (success)</h4>
                 <pre><code>{
