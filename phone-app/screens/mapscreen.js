@@ -134,11 +134,6 @@ export default function MapScreen({ navigation, route }) {
                     title={item.title}
                     description={item.description}
                     >
-                    <Callout style={{height:75, width: 75}} onPress={() => navigation.navigate('Rent bike')}>
-                        <View>
-                            <Text>Rent me</Text>
-                        </View>
-                    </Callout>
                     <Image 
                         source={customMarker}
                         style={styles.markerImage}
@@ -175,7 +170,6 @@ export default function MapScreen({ navigation, route }) {
         <View style={styles.top}>
             <SelectList 
             // defaultOption={{ key: 1, value:'Available cities', disabled:true }}
-            setSelected={(val) => setSelected(val)} 
             data={quote.map(item => {
                 cityCount ++;
                 return {key: cityCount, value: item.name}
@@ -183,6 +177,7 @@ export default function MapScreen({ navigation, route }) {
             placeholder="Select City"
             save="value"
             search={false}
+            setSelected={(val) => setSelected(val)} 
             onSelect={() => {
                 newLocation();
             }}
