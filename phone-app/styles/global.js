@@ -7,5 +7,16 @@ export const globalStyles = StyleSheet.create({
     },
     contentText: {
         color: "#333"
-    }
+    },
+    map: {
+        height: "65%",
+        flex: 1,
+        padding: 50
+    },
+    top: {
+        height: "35%",
+        flex: 1,
+        padding: 50
+    },
+    
 })

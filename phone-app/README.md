@@ -5,39 +5,32 @@ To get started
 --------------
 
 
-1. In "phone-app" directory, make sure you have all dependencies installed.
+1. Start by creating an .env-file in the root of the whole project. In it put IP={your computers ip}.
+
+2. Copy that same .env-file to the root of this folder (phone-app).
+
+3. On your phone, install the "expo go"-app.
+
+If not using WSL2 skip to step 6.
+
+4. If you are using WSL2 you might have to forward your WSL2-ip to your computers ip to be able to access the app on your phone.
+
+Here is a Windows PowerShell script to forward WSl2 traffic on port 8081 [link to script](https://gist.github.com/kendallroth/1f4871febffa0577338214f58673cc1a#file-forward_wsl2_ports-ps1).
+
+To use the script after you've downloaded it, make a shortcut for it in windows and put in
 
 ```
-npm install
+powershell.exe -noexit -ExecutionPolicy Bypass -File <file_path>
 ```
 
-If you are not using WSL and just want to try the app on your phone skip to step 8.
+5. Run the shortcut as administrator.
 
-2. Install [Android studio] (https://developer.android.com/studio)
-You can ignore the "disable windows hyper-v" warning, we are only using the Android emulator.
-
-3. Boot up Android Studio and click on "More Actions" and select "Virtual Device Manager".
-
-4. (Optional) Create a new device, I chose a Pixel 7 with Android 11 (api 30). But you could probably use the default device.
-
-5. Boot up your device and then close Android Studio.
-
-If you are using WSL you need to do step 6 and 7 to get the Android emulator to work with WSL.
-
-6. Copy the bash script below and replace "user" with your Windows username.
+6. In project root run:
 
 ```
-echo -e "\n# Android\nexport ANDROID_HOME=/mnt/c/Users/<user>/AppData/Local/Android/Sdk\nexport WSLENV=ANDROID_HOME/p" >> $HOME/.bashrc && source $HOME/.bashrc
+docker compose up
 ```
 
-7. Paste and run the script in your Ubuntu terminal to get your Android emulator to work with WSL. 
+6. Scan the QR code with your phone.
 
-8. Start expo client.
 
-```
-npm start
-```
-
-9. (Optional) If not on WSL you can view the app directly on your phone (Android and iOS). Download Expo Go from you phones app-store. Scan the QR-code to boot the app.
-
-10. Press "a" to launch the app onto your Android Emulator. First time it will install the Expo Go app then you should be good to go.

@@ -1,86 +1,58 @@
 import React, { useState, useEffect, useRef } from 'react';
-import MapView from 'react-native-maps';
+import MapView, { Callout } from 'react-native-maps';
 import {Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import { StyleSheet, View, Image } from 'react-native';
+import { StyleSheet, View, Image, Text } from 'react-native';
 import { SelectList } from 'react-native-dropdown-select-list'
 import axios from 'axios';
 import { IP } from '@env'
-// import { Geolocation } from '@react-native-community/geolocation';
 
 
-export default function Map({ navigation, route }) {
+export default function MapScreen({ navigation, route }) {
 
     let cityCount = 0
 
     const [quote, setQuote] = useState([]);
 
-    const [mapObj, setMapObj] = useState([]);
-
     useEffect(() => {
-    // Passing configuration object to axios
-        const fetchData = async () => {
-        const data = await axios({
-            method: 'get',
-            url: `http://${IP}:3000/cities`,
-        }).then((response) => {
-            setQuote(response.data);
-            // console.log(response.data);
-        });
-        }
-        fetchData()
-        .catch(console.error)
-    }, []);
+        // Passing configuration object to axios
+            const fetchData = async () => {
+            const data = await axios({
+                method: 'get',
+                url: `http://${IP}:3000/cities`,
+            }).then((response) => {
+                setQuote(response.data);
+                // console.log(response.data);
+            });
+            }
+            fetchData()
+            .catch(console.error)
+        }, []);
 
+        const [selected, setSelected] = React.useState("");
 
-    const [selected, setSelected] = React.useState([]);
+        const data = quote.filter((item) => item.name == selected).map(({name, longitude, latitude}) => ({name, longitude, latitude}));
 
-    const data = quote.filter((item) => item.name == selected).map(({name, longitude, latitude}) => ({name, longitude, latitude}));
+        const [location, setLocation] = useState({name: "Halmstad", latitude: 56.6739803, longitude: 12.8574722}) 
 
-
-    const [initialRegion, setInitialRegion] = useState(null);
-
-    const [location, setLocation] = useState([{latitude: 56.6739803, longitude: 12.8574722}]) 
-
-
-    // function getLocation(){
-    //     Geolocation.getCurrentPosition(position => {
-    //         const region = {
-    //             latitude: position.coords.latitude,
-    //             longitude: position.coords.longitude,
-    //             latitudeDelta: 0.0043,
-    //             longitudeDelta: 0.0034
-    //         };
-    //         map.current.animateToRegion(region, 500);
-    //         });
-    //     };
-
-    const mapRef = useRef(null);
-    const [region, setRegion] = useState({
+    const [mapRegion, setMapRegion] = useState({
         latitude: 56.6739803,
         longitude: 12.8574722,
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421,
-        });
+    })
 
-        const onRegionChange=()=>{
-            mapRef?.current?.animateToRegion({
-                latitude: location.latitude,
-                longitude: location.longitude,
-                    latitudeDelta: 0.0922,
-                    longitudeDelta:0.0421,
-                });
-        }
+    const newLocation = () => {
+        setMapRegion({
+            latitude: data[0].latitude,
+            longitude: data[0].longitude,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+        })
+    }
 
-    useEffect(() => {
-            setInitialRegion({
-                latitude: 56.6739803,
-                longitude: 12.8574722,
-                latitudeDelta: 0.0922,
-                longitudeDelta: 0.0421,
-            });
-        
-        }, []);
-
+    // useEffect(() =>{
+    //     newLocation();
+    // }, []);
 
     const mapJson = [
         {
@@ -119,7 +91,6 @@ export default function Map({ navigation, route }) {
         }
     ];
 
-
     const markerList = [
         {
         title: "bike1",
@@ -127,7 +98,7 @@ export default function Map({ navigation, route }) {
             latitude: 56.6739833,
             longitude: 12.8574718,
         },
-        description: "First bike"
+        description: "rent bike"
         },
         {
         title: "bike2",
@@ -163,6 +134,11 @@ export default function Map({ navigation, route }) {
                     title={item.title}
                     description={item.description}
                     >
+                    <Callout style={{height:75, width: 75}} onPress={() => navigation.navigate('Rent bike')}>
+                        <View>
+                            <Text>Rent me</Text>
+                        </View>
+                    </Callout>
                     <Image 
                         source={customMarker}
                         style={styles.markerImage}
@@ -190,21 +166,25 @@ export default function Map({ navigation, route }) {
         })
     }
 
-    console.log(data)
+
+    console.log(selected)
+    // console.log(location[0].name)
+    console.log(mapRegion)
     return (
     <View style={{flexDirection: "column"}}>
         <View style={styles.top}>
             <SelectList 
-            defaultOption={{ key: 1, value:'Available cities', disabled:true }}
+            // defaultOption={{ key: 1, value:'Available cities', disabled:true }}
             setSelected={(val) => setSelected(val)} 
             data={quote.map(item => {
                 cityCount ++;
                 return {key: cityCount, value: item.name}
             })}
+            placeholder="Select City"
             save="value"
             search={false}
             onSelect={() => {
-                setLocation(data);
+                newLocation();
             }}
             //     navigation.navigate('Map', mapObj)}}
             />
@@ -213,21 +193,21 @@ export default function Map({ navigation, route }) {
             <MapView style={styles.map}
             // ref={mapRef}
             // onRegionChangeComplete={onRegionChange}
-            // region={region}
+            region={mapRegion}
             showsUserLocation={true}
             provider={PROVIDER_GOOGLE}
             customMapStyle={mapJson}
-            initialRegion={initialRegion}
-            // initialRegion={{
+            // initialRegion={initialRegion}
+            initialRegion={{
             // latitude: latitude,
             // longitude: longitude,
             // latitude: route.params.latitude,
             // longitude: route.params.longitude,
-            // latitude: 56.6739803,
-            // longitude: 12.8574722,
+            latitude: 56.6739803,
+            longitude: 12.8574722,
             // latitudeDelta: 0.0922,
             // longitudeDelta: 0.0421,
-            //     }}
+                }}
             >
             {showMarkers()}
             {showStations()}
@@ -243,17 +223,10 @@ const styles = StyleSheet.create({
     },
     map: {
         width: '100%',
-        height: '100%',
+        height: '96%',
     },
     markerImage: {
         width: 35,
         height: 35
     }
 });
-
-    // React.useEffect(() => {
-    //     const focusHandler = navigation.addListener('focus', () => {
-    //         alert('Refreshed');
-    //     });
-    //     return focusHandler;
-    // }, [navigation]);

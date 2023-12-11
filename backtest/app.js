@@ -21,6 +21,12 @@ app.get('/all', (req, res) => {
     res.json(fruits.fruits);
 });
 
+app.get('/cities', (req, res) => {
+    const cities = require('./data/cities.json');
+
+    res.json(cities.cities);
+});
+
 app.listen(PORT, (error) =>{ 
 	if(!error) 
 		console.log("Server is Successfully Running, and App is listening on port "+ PORT) 
