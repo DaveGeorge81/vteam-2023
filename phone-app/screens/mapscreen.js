@@ -205,8 +205,8 @@ export default function MapScreen({ navigation, route }) {
             // longitude: route.params.longitude,
             latitude: 56.6739803,
             longitude: 12.8574722,
-            // latitudeDelta: 0.0922,
-            // longitudeDelta: 0.0421,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
                 }}
             >
             {showMarkers()}
