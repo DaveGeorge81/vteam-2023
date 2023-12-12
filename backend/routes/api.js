@@ -183,6 +183,131 @@ router.delete('/users/:id', (req, res) => {
     });
 });
 
+/**
+ * Get all bikes of a city.
+ */
+router.get('/bikes/city/:city_id', (req, res) => {
+    const result = db.getBikesCity(req.params.city_id);
+
+    return res.status(200).json(result);
+});
+
+/**
+ * Get all bikes of a city and status.
+ */
+router.get('/bikes/city/:city_id/status/:status_id', (req, res) => {
+    const result = db.getBikesCityStatus(req.params.city_id, req.params.status_id);
+
+    return res.status(200).json(result);
+});
+
+/**
+ * Get a specific bike.
+ */
+router.get('/bikes/:id', (req, res) => {
+    const result = db.getBike(req.params.id);
+
+    return res.status(200).json(result);
+});
+
+/**
+ * Get a bike of a user.
+ */
+router.get('/bikes/user/:user_id', (req, res) => {
+    const result = db.getBikeUser(req.params.user_id);
+
+    return res.status(200).json(result);
+});
+
+/**
+ * Add a new bike.
+ */
+router.post('/bikes', urlencodedParser, (req, res) => {
+    const result = db.addBike(req.body);
+
+    return res.status(201).json({
+        count: result.changes,
+        newId: result.lastInsertRowid,
+        message: 'Ok'
+    });
+});
+
+/**
+ * Update all bike properties.
+ */
+router.put('/bikes', urlencodedParser, (req, res) => {
+    const result = db.updateBike(req.body);
+
+    if (result.changes === 0) {
+        return res.status(400).json({
+            count: 0,
+            message: result.message ? result.message : 'id not found'
+        });
+    }
+
+    return res.status(200).json({
+        count: result.changes,
+        message: 'Ok'
+    });
+});
+
+/**
+ * Update bike user and status.
+ */
+router.put('/bikes/user_status', urlencodedParser, (req, res) => {
+    const result = db.updateBikeUserStatus(req.body);
+
+    if (result.changes === 0) {
+        return res.status(400).json({
+            count: 0,
+            message: result.message ? result.message : 'id not found'
+        });
+    }
+
+    return res.status(200).json({
+        count: result.changes,
+        message: 'Ok'
+    });
+});
+
+/**
+ * Update bike position, speed and battery.
+ */
+router.put('/bikes/pos_speed_batt', urlencodedParser, (req, res) => {
+    const result = db.updateBikePosSpeedBatt(req.body);
+
+    if (result.changes === 0) {
+        return res.status(400).json({
+            count: 0,
+            message: result.message ? result.message : 'id not found'
+        });
+    }
+
+    return res.status(200).json({
+        count: result.changes,
+        message: 'Ok'
+    });
+});
+
+/**
+ * Delete a bike.
+ */
+router.delete('/bikes/:id', (req, res) => {
+    const result = db.deleteBike(req.params.id);
+
+    if (result.changes === 0) {
+        return res.status(400).json({
+            count: 0,
+            message: result.message ? result.message : 'id not found'
+        });
+    }
+
+    return res.status(200).json({
+        count: result.changes,
+        message: 'Ok'
+    });
+});
+
 
 
 

@@ -27,4 +27,18 @@ CREATE TABLE users
     recurring_withdraw REAL DEFAULT 0
 );
 
+DROP TABLE IF EXISTS bikes;
+
+CREATE TABLE bikes
+(
+    id INTEGER PRIMARY KEY,
+    city_id INTEGER NOT NULL,
+    user_id INTEGER DEFAULT 0 NOT NULL,
+    status_id INTEGER DEFAULT 0 NOT NULL,
+    lat REAL NOT NULL,
+    lon REAL NOT NULL,
+    speed REAL DEFAULT 0 NOT NULL,
+    battery REAL NOT NULL
+);
+
 

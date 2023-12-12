@@ -121,6 +121,104 @@ const dbModel = {
         return result = db.prepare('DELETE FROM users WHERE id = ?').run(id);
     },
 
+    getBikesCity: function (city_id) {
+        return db.prepare('SELECT * FROM bikes WHERE city_id = ?').all(city_id);
+    },
+
+    getBikesCityStatus: function (city_id, status_id) {
+        return db.prepare('SELECT * FROM bikes WHERE city_id = ? AND status_id = ?')
+            .all(city_id, status_id);
+    },
+
+    getBike: function (id) {
+        return db.prepare('SELECT * FROM bikes WHERE id = ?').get(id);
+    },
+
+    getBikeUser: function (user_id) {
+        return db.prepare('SELECT * FROM bikes WHERE user_id = ?').get(user_id);
+    },
+
+    addBike: function (body) {
+        let result;
+
+        result = db.prepare(`
+            INSERT INTO bikes (city_id, user_id, status_id, lat, lon, speed, battery)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        `).run(body.city_id, body.user_id, body.status_id, body.lat, body.lon,
+            body.speed, body.battery);
+
+        return result;
+    },
+
+    updateBike: function (body) {
+        let result;
+
+        try {
+            result = db.prepare(`
+                UPDATE bikes SET (city_id, user_id, status_id, lat, lon, speed, battery) =
+                (?, ?, ?, ?, ?, ?, ?) WHERE id = ?
+            `).run(body.city_id, body.user_id, body.status_id, body.lat, body.lon,
+                body.speed, body.battery, body.id);
+        } catch (err) {
+            result = {
+                changes: 0,
+                message: err.message
+            }
+        }
+
+        return result;
+    },
+
+    updateBikeUserStatus: function (body) {
+        let result;
+
+        try {
+            result = db.prepare(`
+                UPDATE bikes SET (user_id, status_id) =
+                (?, ?) WHERE id = ?
+            `).run(body.user_id, body.status_id, body.id);
+        } catch (err) {
+            result = {
+                changes: 0,
+                message: err.message
+            }
+        }
+
+        return result;
+    },
+
+    updateBikePosSpeedBatt: function (body) {
+        let result;
+
+        try {
+            result = db.prepare(`
+                UPDATE bikes SET (lat, lon, speed, battery) =
+                (?, ?, ?, ?) WHERE id = ?
+            `).run(body.lat, body.lon, body.speed, body.battery, body.id);
+        } catch (err) {
+            result = {
+                changes: 0,
+                message: err.message
+            }
+        }
+
+        return result;
+    },
+
+    deleteBike: function (id) {
+        return result = db.prepare('DELETE FROM bikes WHERE id = ?').run(id);
+    },
+
 };
 
 module.exports = dbModel;
+
+
+
+
+
+
+
+
+
+

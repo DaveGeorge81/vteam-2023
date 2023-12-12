@@ -32,6 +32,19 @@
                 <li><a href="#delete-users-id">DELETE /users/{id}</a></li>
             </ul>
 
+            <h3>🛴 <a href="#bikes">Bikes</a></h3>
+            <ul>
+                <li><a href="#get-bikes-city">GET /bikes/city/{city_id}</a></li>
+                <li><a href="#get-bikes-city-status">GET /bikes/city/{city_id}/status/{status_id}</a></li>
+                <li><a href="#get-bikes-id">GET /bikes/{id}</a></li>
+                <li><a href="#get-bikes-user">GET /bikes/user/{user_id}</a></li>
+                <li><a href="#post-bikes">POST /bikes</a></li>
+                <li><a href="#put-bikes">PUT /bikes</a></li>
+                <li><a href="#put-bikes-user-status">PUT /bikes/user_status</a></li>
+                <li><a href="#put-bikes-pos-speed-batt">PUT /bikes/pos_speed_batt</a></li>
+                <li><a href="#delete-bikes-id">DELETE /bikes/{id}</a></li>
+            </ul>
+
             <section>
                 <h2 id="cities">🏙 Cities</h2>
                 <h3 id="get-cities">GET /cities</h3>
@@ -315,6 +328,257 @@ HTTP Status Code: 400 Bad Request</code></pre>
 
                 <h4>Sample request</h4>
                 <pre><code>DELETE /api/v1/users/1</code></pre>
+
+                <h4>Response (success)</h4>
+                <pre><code>{
+    "count": 1,
+    "message": "Ok"
+}
+
+HTTP Status Code: 200 OK</code></pre>
+                <p><b>Note:</b> <code>count</code> is deleted row count.</p>
+
+                <h4>Response (failure, id not found)</h4>
+                <pre><code>{
+    "count": 0,
+    "message": "id not found"
+}
+
+HTTP Status Code: 400 Bad Request</code></pre>
+
+            </section>
+
+            <section>
+                <h2 id="bikes">🛴 Bikes</h2>
+                <h3 id="get-bikes-city">GET /bikes/city/{city_id}</h3>
+                <p>Get a JSON-representation of all bikes in a city.</p>
+
+                <h4>Sample request</h4>
+                <pre><code>GET /api/v1/bikes/city/1</code></pre>
+
+                <h4>Response</h4>
+                <pre><code>[
+    {
+        "id": 1,
+        "city_id": 1,
+        "user_id": 1,
+        "status_id": 1,
+        "lat": 56.2,
+        "lon": 15.63,
+        "speed": 15,
+        "battery": 80
+    },
+    {
+        "id": 2,
+        "city_id": 1,
+        "user_id": 2,
+        "status_id": 1,
+        "lat": 56.21,
+        "lon": 15.62,
+        "speed": 18,
+        "battery": 55
+    }
+]
+
+HTTP Status Code: 200 OK</code></pre>
+
+                <h3 id="get-bikes-city-status">GET /bikes/city/{city_id}/status/{status_id}</h3>
+                <p>Get a JSON-representation of all bikes with a given status_id in a city.</p>
+
+                <h4>Sample request</h4>
+                <pre><code>GET /api/v1/bikes/city/1/status/1</code></pre>
+
+                <h4>Response</h4>
+                <pre><code>[
+    {
+        "id": 1,
+        "city_id": 1,
+        "user_id": 1,
+        "status_id": 1,
+        "lat": 56.2,
+        "lon": 15.63,
+        "speed": 15,
+        "battery": 80
+    },
+    {
+        "id": 2,
+        "city_id": 1,
+        "user_id": 2,
+        "status_id": 1,
+        "lat": 56.21,
+        "lon": 15.62,
+        "speed": 18,
+        "battery": 55
+    }
+]
+
+HTTP Status Code: 200 OK</code></pre>
+
+                <h3 id="get-bikes-id">GET /bikes/{id}</h3>
+                <p>Get a JSON-representation of a specific bike.</p>
+
+                <h4>Sample request</h4>
+                <pre><code>GET /api/v1/bikes/2</code></pre>
+
+                <h4>Response</h4>
+                <pre><code>{
+    "id": 2,
+    "city_id": 1,
+    "user_id": 2,
+    "status_id": 1,
+    "lat": 56.21,
+    "lon": 15.62,
+    "speed": 18,
+    "battery": 55
+}
+
+HTTP Status Code: 200 OK</code></pre>
+
+                <h3 id="get-bikes-user">GET /bikes/user/{user_id}</h3>
+                <p>Get a JSON-representation of a bike rent by a user.</p>
+
+                <h4>Sample request</h4>
+                <pre><code>GET /api/v1/bikes/user/1</code></pre>
+
+                <h4>Response</h4>
+                <pre><code>{
+    "id": 1,
+    "city_id": 1,
+    "user_id": 1,
+    "status_id": 1,
+    "lat": 56.2,
+    "lon": 15.63,
+    "speed": 15,
+    "battery": 80
+}
+
+HTTP Status Code: 200 OK</code></pre>
+
+                <h3 id="post-bikes">POST /bikes</h3>
+                <p>Add a new bike.</p>
+
+                <h4>Sample request</h4>
+                <pre><code>POST /api/v1/bikes</code></pre>
+
+                <h4>Required body keys<br>
+                <small>(currently x-www-form-urlencoded)</small></h4>
+                <pre><code>city_id
+user_id   = (0=free, no user)
+status_id = (0=free, 1=leased, 2=off, 3=charging, ...)
+lat       = latitude
+lon       = longitude
+speed     = (km/h)
+battery   = 0-100</code></pre>
+
+                <h4>Response (success)</h4>
+                <pre><code>{
+    "count": 1,
+    "newId": 3,
+    "message": "Ok"
+}
+
+HTTP Status Code: 201 Created</code></pre>
+                <p><b>Note:</b> <code>count</code> is inserted row count and <code>newId</code> is the id of added bike.</p>
+
+                <h3 id="put-bikes">PUT /bikes</h3>
+                <p>Update all properties of a bike.</p>
+
+                <h4>Sample request</h4>
+                <pre><code>PUT /api/v1/bikes</code></pre>
+
+                <h4>Required body keys<br>
+                <small>(currently x-www-form-urlencoded)</small></h4>
+                <pre><code>id        = bike id to update
+city_id
+user_id   = (0=free, no user)
+status_id = (0=free, 1=leased, 2=off, 3=charging, ...)
+lat       = latitude
+lon       = longitude
+speed     = (km/h)
+battery   = 0-100</code></pre>
+
+                <h4>Response (success)</h4>
+                <pre><code>{
+    "count": 1,
+    "message": "Ok"
+}
+
+HTTP Status Code: 200 OK</code></pre>
+                <p><b>Note:</b> <code>count</code> is updated row count.</p>
+
+                <h4>Response (failure, id not found)</h4>
+                <pre><code>{
+    "count": 0,
+    "message": "id not found"
+}
+
+HTTP Status Code: 400 Bad Request</code></pre>
+
+                <h3 id="put-bikes-user-status">PUT /bikes/user_status</h3>
+                <p>Update a bike's user and status.</p>
+
+                <h4>Sample request</h4>
+                <pre><code>PUT /api/v1/bikes/user_status</code></pre>
+
+                <h4>Required body keys<br>
+                <small>(currently x-www-form-urlencoded)</small></h4>
+                <pre><code>id        = bike id to update
+user_id   = (0=free, no user)
+status_id = (0=free, 1=leased, 2=off, 3=charging, ...)</code></pre>
+
+                <h4>Response (success)</h4>
+                <pre><code>{
+    "count": 1,
+    "message": "Ok"
+}
+
+HTTP Status Code: 200 OK</code></pre>
+                <p><b>Note:</b> <code>count</code> is updated row count.</p>
+
+                <h4>Response (failure, id not found)</h4>
+                <pre><code>{
+    "count": 0,
+    "message": "id not found"
+}
+
+HTTP Status Code: 400 Bad Request</code></pre>
+
+                <h3 id="put-bikes-pos-speed-batt">PUT /bikes/pos_speed_batt</h3>
+                <p>Update a bike's position, speed and battery.</p>
+
+                <h4>Sample request</h4>
+                <pre><code>PUT /api/v1/bikes/pos_speed_batt</code></pre>
+
+                <h4>Required body keys<br>
+                <small>(currently x-www-form-urlencoded)</small></h4>
+                <pre><code>id        = bike id to update
+lat       = latitude
+lon       = longitude
+speed     = (km/h)
+battery   = 0-100</code></pre>
+
+                <h4>Response (success)</h4>
+                <pre><code>{
+    "count": 1,
+    "message": "Ok"
+}
+
+HTTP Status Code: 200 OK</code></pre>
+                <p><b>Note:</b> <code>count</code> is updated row count.</p>
+
+                <h4>Response (failure, id not found)</h4>
+                <pre><code>{
+    "count": 0,
+    "message": "id not found"
+}
+
+HTTP Status Code: 400 Bad Request</code></pre>
+
+                <h3 id="delete-bikes-id">DELETE /bikes/{id}</h3>
+                <p>Delete a bike.</p>
+
+                <h4>Sample request</h4>
+                <pre><code>DELETE /api/v1/bikes/1</code></pre>
 
                 <h4>Response (success)</h4>
                 <pre><code>{
