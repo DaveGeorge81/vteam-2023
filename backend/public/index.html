@@ -45,6 +45,16 @@
                 <li><a href="#delete-bikes-id">DELETE /bikes/{id}</a></li>
             </ul>
 
+            <h3>🔋 <a href="#stations">Charging stations</a></h3>
+            <ul>
+                <li><a href="#get-stations-city">GET /stations/city/{city_id}</a></li>
+                <li><a href="#get-stations-id">GET /stations/{id}</a></li>
+                <li><a href="#post-stations">POST /stations</a></li>
+                <li><a href="#put-stations">PUT /stations</a></li>
+                <li><a href="#put-stations-addfree">PUT /stations/addfree</a></li>
+                <li><a href="#delete-stations-id">DELETE /stations/{id}</a></li>
+            </ul>
+
             <section>
                 <h2 id="cities">🏙 Cities</h2>
                 <h3 id="get-cities">GET /cities</h3>
@@ -579,6 +589,172 @@ HTTP Status Code: 400 Bad Request</code></pre>
 
                 <h4>Sample request</h4>
                 <pre><code>DELETE /api/v1/bikes/1</code></pre>
+
+                <h4>Response (success)</h4>
+                <pre><code>{
+    "count": 1,
+    "message": "Ok"
+}
+
+HTTP Status Code: 200 OK</code></pre>
+                <p><b>Note:</b> <code>count</code> is deleted row count.</p>
+
+                <h4>Response (failure, id not found)</h4>
+                <pre><code>{
+    "count": 0,
+    "message": "id not found"
+}
+
+HTTP Status Code: 400 Bad Request</code></pre>
+
+            </section>
+
+            <section>
+                <h2 id="stations">🔋 Charging stations</h2>
+                <h3 id="get-stations-city">GET /stations/city/{city_id}</h3>
+                <p>Get a JSON-representation of all charging stations in a city.</p>
+
+                <h4>Sample request</h4>
+                <pre><code>GET /api/v1/stations/city/1</code></pre>
+
+                <h4>Response</h4>
+                <pre><code>[
+    {
+        "id": 1,
+        "city_id": 1,
+        "num_free": 10,
+        "num_total": 30,
+        "lat": 56.19,
+        "lon": 15.625
+    },
+    {
+        "id": 2,
+        "city_id": 1,
+        "num_free": 15,
+        "num_total": 40,
+        "lat": 56.21,
+        "lon": 15.64
+    }
+]
+
+HTTP Status Code: 200 OK</code></pre>
+
+                <h3 id="get-stations-id">GET /stations/{id}</h3>
+                <p>Get a JSON-representation of a specific charging station.</p>
+
+                <h4>Sample request</h4>
+                <pre><code>GET /api/v1/stations/2</code></pre>
+
+                <h4>Response</h4>
+                <pre><code>{
+    "id": 2,
+    "city_id": 1,
+    "num_free": 15,
+    "num_total": 40,
+    "lat": 56.21,
+    "lon": 15.64
+}
+
+HTTP Status Code: 200 OK</code></pre>
+
+                <h3 id="post-stations">POST /stations</h3>
+                <p>Add a new charging station.</p>
+
+                <h4>Sample request</h4>
+                <pre><code>POST /api/v1/stations</code></pre>
+
+                <h4>Required body keys<br>
+                <small>(currently x-www-form-urlencoded)</small></h4>
+                <pre><code>city_id
+num_free  = number of free charging positions
+num_total = total number of charging positions
+lat       = latitude
+lon       = longitude</code></pre>
+
+                <h4>Response (success)</h4>
+                <pre><code>{
+    "count": 1,
+    "newId": 3,
+    "message": "Ok"
+}
+
+HTTP Status Code: 201 Created</code></pre>
+                <p><b>Note:</b> <code>count</code> is inserted row count and <code>newId</code> is the id of added charging station.</p>
+
+                <h3 id="put-stations">PUT /stations</h3>
+                <p>Update all properties of a charging station.</p>
+
+                <h4>Sample request</h4>
+                <pre><code>PUT /api/v1/stations</code></pre>
+
+                <h4>Required body keys<br>
+                <small>(currently x-www-form-urlencoded)</small></h4>
+                <pre><code>id        = charging station id to update
+city_id
+num_free  = number of free charging positions
+num_total = total number of charging positions
+lat       = latitude
+lon       = longitude</code></pre>
+
+                <h4>Response (success)</h4>
+                <pre><code>{
+    "count": 1,
+    "message": "Ok"
+}
+
+HTTP Status Code: 200 OK</code></pre>
+                <p><b>Note:</b> <code>count</code> is updated row count.</p>
+
+                <h4>Response (failure, id not found)</h4>
+                <pre><code>{
+    "count": 0,
+    "message": "id not found"
+}
+
+HTTP Status Code: 400 Bad Request</code></pre>
+
+                <h3 id="put-stations-addfree">PUT /stations/addfree</h3>
+                <p>Update a charging station's number of free positions by adding a number to num_free.
+                After the update, num_free must be >= 0 for the update to succeed.</p>
+
+                <h4>Sample request</h4>
+                <pre><code>PUT /api/v1/stations/addfree</code></pre>
+
+                <h4>Required body keys<br>
+                <small>(currently x-www-form-urlencoded)</small></h4>
+                <pre><code>id  = charging station id to update
+num = the number to add to num_free (positive or negative)</code></pre>
+
+                <h4>Response (success)</h4>
+                <pre><code>{
+    "count": 1,
+    "message": "Ok"
+}
+
+HTTP Status Code: 200 OK</code></pre>
+                <p><b>Note:</b> <code>count</code> is updated row count.</p>
+
+                <h4>Response (failure, num_free would become negative)</h4>
+                <pre><code>{
+    "count": 0,
+    "message": "CHECK constraint failed: num_free>=0"
+}
+
+HTTP Status Code: 400 Bad Request</code></pre>
+
+                <h4>Response (failure, id not found)</h4>
+                <pre><code>{
+    "count": 0,
+    "message": "id not found"
+}
+
+HTTP Status Code: 400 Bad Request</code></pre>
+
+                <h3 id="delete-stations-id">DELETE /stations/{id}</h3>
+                <p>Delete a charging station.</p>
+
+                <h4>Sample request</h4>
+                <pre><code>DELETE /api/v1/stations/1</code></pre>
 
                 <h4>Response (success)</h4>
                 <pre><code>{

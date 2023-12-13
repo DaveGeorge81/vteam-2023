@@ -41,4 +41,28 @@ CREATE TABLE bikes
     battery REAL NOT NULL
 );
 
+DROP TABLE IF EXISTS stations;
+
+CREATE TABLE stations
+(
+    id INTEGER PRIMARY KEY,
+    city_id INTEGER NOT NULL,
+    num_free INTEGER CHECK (num_free>=0) NOT NULL,
+    num_total INTEGER NOT NULL,
+    lat REAL NOT NULL,
+    lon REAL NOT NULL
+);
+
+DROP TABLE IF EXISTS park_zones;
+
+CREATE TABLE park_zones
+(
+    id INTEGER PRIMARY KEY,
+    city_id INTEGER NOT NULL,
+    lat REAL NOT NULL,
+    lon REAL NOT NULL,
+    dlat REAL NOT NULL,
+    dlon REAL NOT NULL
+);
+
 

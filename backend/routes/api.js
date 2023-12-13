@@ -308,6 +308,95 @@ router.delete('/bikes/:id', (req, res) => {
     });
 });
 
+/**
+ * Get all charging stations of a city.
+ */
+router.get('/stations/city/:city_id', (req, res) => {
+    const result = db.getStationsCity(req.params.city_id);
+
+    return res.status(200).json(result);
+});
+
+/**
+ * Get a specific charging station.
+ */
+router.get('/stations/:id', (req, res) => {
+    const result = db.getStation(req.params.id);
+
+    return res.status(200).json(result);
+});
+
+/**
+ * Add a new charging station.
+ */
+router.post('/stations', urlencodedParser, (req, res) => {
+    const result = db.addStation(req.body);
+
+    return res.status(201).json({
+        count: result.changes,
+        newId: result.lastInsertRowid,
+        message: 'Ok'
+    });
+});
+
+/**
+ * Update a charging station.
+ */
+router.put('/stations', urlencodedParser, (req, res) => {
+    const result = db.updateStation(req.body);
+
+    if (result.changes === 0) {
+        return res.status(400).json({
+            count: 0,
+            message: result.message ? result.message : 'id not found'
+        });
+    }
+
+    return res.status(200).json({
+        count: result.changes,
+        message: 'Ok'
+    });
+});
+
+/**
+ * Add number of free positions.
+ * A positive number increases num_free.
+ * A negative number decreases num_free.
+ */
+router.put('/stations/addfree', urlencodedParser, (req, res) => {
+    const result = db.addNumFreeStation(req.body);
+
+    if (result.changes === 0) {
+        return res.status(400).json({
+            count: 0,
+            message: result.message ? result.message : 'id not found'
+        });
+    }
+
+    return res.status(200).json({
+        count: result.changes,
+        message: 'Ok'
+    });
+});
+
+/**
+ * Delete a charging station.
+ */
+router.delete('/stations/:id', (req, res) => {
+    const result = db.deleteStation(req.params.id);
+
+    if (result.changes === 0) {
+        return res.status(400).json({
+            count: 0,
+            message: result.message ? result.message : 'id not found'
+        });
+    }
+
+    return res.status(200).json({
+        count: result.changes,
+        message: 'Ok'
+    });
+});
 
 
 

@@ -9,6 +9,9 @@ const dbModel = {
         db.close();
     },
 
+    /**
+     * Cities
+     */
     getAllCities: function () {
         return db.prepare('SELECT * FROM cities').all();
     },
@@ -57,6 +60,9 @@ const dbModel = {
         return result = db.prepare('DELETE FROM cities WHERE id = ?').run(id);
     },
 
+    /**
+     * Users
+     */
     getAllUsers: function () {
         return db.prepare('SELECT id, name FROM users').all();
     },
@@ -121,6 +127,9 @@ const dbModel = {
         return result = db.prepare('DELETE FROM users WHERE id = ?').run(id);
     },
 
+    /**
+     * Bikes
+     */
     getBikesCity: function (city_id) {
         return db.prepare('SELECT * FROM bikes WHERE city_id = ?').all(city_id);
     },
@@ -208,6 +217,68 @@ const dbModel = {
     deleteBike: function (id) {
         return result = db.prepare('DELETE FROM bikes WHERE id = ?').run(id);
     },
+
+    /**
+     * Charging stations
+     */
+    getStationsCity: function (city_id) {
+        return db.prepare('SELECT * FROM stations WHERE city_id = ?').all(city_id);
+    },
+
+    getStation: function (id) {
+        return db.prepare('SELECT * FROM stations WHERE id = ?').get(id);
+    },
+
+    addStation: function (body) {
+        let result;
+
+        result = db.prepare(`
+            INSERT INTO stations (city_id, num_free, num_total, lat, lon)
+            VALUES (?, ?, ?, ?, ?)
+        `).run(body.city_id, body.num_free, body.num_total, body.lat, body.lon);
+
+        return result;
+    },
+
+    updateStation: function (body) {
+        let result;
+
+        try {
+            result = db.prepare(`
+                UPDATE stations SET (city_id, num_free, num_total, lat, lon) =
+                (?, ?, ?, ?, ?) WHERE id = ?
+            `).run(body.city_id, body.num_free, body.num_total, body.lat, body.lon, body.id);
+        } catch (err) {
+            result = {
+                changes: 0,
+                message: err.message
+            }
+        }
+
+        return result;
+    },
+
+    addNumFreeStation: function (body) {
+        let result;
+
+        try {
+            result = db.prepare(`UPDATE stations SET num_free = num_free + ? WHERE id = ?`)
+                .run(body.num, body.id);
+        } catch (err) {
+            result = {
+                changes: 0,
+                message: err.message
+            }
+        }
+
+        return result;
+    },
+
+    deleteStation: function (id) {
+        return result = db.prepare('DELETE FROM stations WHERE id = ?').run(id);
+    },
+
+
 
 };
 
