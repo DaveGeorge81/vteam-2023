@@ -3,7 +3,7 @@
  * 
  */
 
-const { MongoClient, ObjectId } = require("mongodb");
+import { MongoClient, ObjectId } from "mongodb";
 
 let mongoURI = "mongodb://localhost:27017"; // Default setting
 const databaseName = "elscooter";
@@ -305,20 +305,18 @@ async function dropScooters(cb) {
     return true;
 }
 
-module.exports = {
-    setMongoURI: setMongoURI,
-    getMongoURI: getMongoURI,
-    findScooter: findScooter,
-    pushScooter: pushScooter,
-    pushLog: pushLog,
-    updateScooterStates: updateScooterStates,
-    updateStatus: updateStatus,
-    connect: connect,
-    close: close,
-    getAllUsers: getAllUsers,
-    getAllScooters: getAllScooters,
-    getScootersInUse: getScootersInUse,
-    dropScooters: dropScooters,
-    getAllFakeUsers: getAllFakeUsers,
-    updateScooterTrip: updateScooterTrip
-}
+export const setMongoURI = setMongoURI;
+export const getMongoURI = getMongoURI;
+export const findScooter = findScooter;
+export const pushScooter = pushScooter;
+export const pushLog = pushLog;
+export const updateScooterStates = updateScooterStates;
+export const updateStatus = updateStatus;
+export const connect = connect;
+export const close = close;
+export const getAllUsers = getAllUsers;
+export const getAllScooters = getAllScooters;
+export const getScootersInUse = getScootersInUse;
+export const dropScooters = dropScooters;
+export const getAllFakeUsers = getAllFakeUsers;
+export const updateScooterTrip = updateScooterTrip;

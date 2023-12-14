@@ -8,8 +8,8 @@
  * NUMBER_OF_SCOOTERS
  */
 
-const { Scooter } = require("./scooter");
-const db = require("./modules/sparkdb");
+import { Scooter } from "./scooter";
+import { getAllScooters, setMongoURI, connect } from "./modules/sparkdb";
 
 const numberOfScooters = process.env.NUMBER_OF_SCOOTERS;
 let scooters = [];
@@ -99,7 +99,7 @@ async function newScooterCallback(id) {
   * @return void
   */
 async function watchForInsert() {
-    const dbScooters = await db.getAllScooters();
+    const dbScooters = await getAllScooters();
     const newScooters = dbScooters.filter(newScooter => {
         for (let i = 0; i < scooters.length; i++) {
             const oldScooter = scooters[i];
@@ -124,7 +124,7 @@ async function watchForInsert() {
   */
 async function dropCallback() {
     console.log("Loading up new scooters:", numberOfScooters);
-    const existingScooters = await db.getAllScooters();
+    const existingScooters = await getAllScooters();
     const oldScooters = [];
     for (let i = 0; i < existingScooters.length; i++) {
         const scooter = new Scooter(removeScooter);
@@ -140,8 +140,8 @@ async function dropCallback() {
 }
 
 async function main() {
-    db.setMongoURI(process.env.DBURI);
-    db.connect();
+    setMongoURI(process.env.DBURI);
+    connect();
     dropCallback();
     newScooterCallback(id);
 }

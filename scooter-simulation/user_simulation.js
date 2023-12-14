@@ -1,8 +1,8 @@
 /**
  * Used to simulate a system of X users towards a Sparkrentals API.
  */
-const axios = require("axios");
-const db = require("./modules/sparkdb");
+import { post } from "axios";
+import { getScootersInUse, close, setMongoURI, connect, getAllFakeUsers, getAllScooters } from "./modules/sparkdb";
 require("dotenv").config();
 
 const api = process.env.API_URL;
@@ -21,7 +21,7 @@ const admin = {
 };
 
 async function adminLogin(email, password) {
-    const response = await axios.post(`${api}${adminLoginEndpoint}`, {
+    const response = await post(`${api}${adminLoginEndpoint}`, {
         email: email,
         password: password,
         api_key: apiKey
@@ -31,7 +31,7 @@ async function adminLogin(email, password) {
 
 async function rentScooter(scooter_id, user_id, token) {
     try {
-        const response = await axios.post(`${api}${rentEndpoint}`, {
+        const response = await post(`${api}${rentEndpoint}`, {
             scooter_id: scooter_id,
             user_id: user_id,
             api_key: apiKey
@@ -50,7 +50,7 @@ async function rentScooter(scooter_id, user_id, token) {
 
 async function stopTrip(scooter_id, user_id, token) {
     try {
-        const response = await axios.post(`${api}${stopEndpoint}`, {
+        const response = await post(`${api}${stopEndpoint}`, {
             scooter_id: scooter_id,
             user_id: user_id,
             api_key: apiKey
@@ -68,7 +68,7 @@ async function stopTrip(scooter_id, user_id, token) {
 }
 
 async function rentWatch() {
-    const scooters = (await db.getScootersInUse(process.env.SIMULATION_CITY)).filter(scooter => {
+    const scooters = (await getScootersInUse(process.env.SIMULATION_CITY)).filter(scooter => {
         // Filter out scooters that arent in use by simulation accounts
         for (let i = 0; i < users.length; i++) {
             if (scooter.trip.userId === users[i]._id.toString()) {
@@ -90,17 +90,17 @@ async function rentWatch() {
         setTimeout(rentWatch, rentWatchPollRate);
     } else {
         console.log("Simulation complete, shutting down");
-        db.close();
+        close();
         process.exit(0);
     }
 }
 
 async function main() {
-    db.setMongoURI(process.env.DBURI);
-    db.connect();
+    setMongoURI(process.env.DBURI);
+    connect();
     // filter out real users
-    users = await db.getAllFakeUsers();
-    const scooters = await db.getAllScooters();
+    users = await getAllFakeUsers();
+    const scooters = await getAllScooters();
     console.log("Logging in as admin...");
     token = await adminLogin(admin.email, admin.password);
     console.log("Login successful");

@@ -17,9 +17,9 @@
  */
 
 require("dotenv").config();
-const { ObjectId } = require("mongodb");
-const db = require("./modules/sparkdb");
-const { GPSComponent } = require("./modules/gps");
+import { ObjectId } from "mongodb";
+import { findScooter, pushScooter, getMongoURI, pushLog, updateStatus, updateScooterStates, updateScooterTrip, setMongoURI, connect } from "./modules/sparkdb";
+import { GPSComponent } from "./modules/gps";
 
 const updateFrequencyMilliseconds = process.env.UPDATE_FREQUENCY_MILLISECONDS;
 const batteryDepletionRate = process.env.BATTERY_DEPLETION_RATE;
@@ -36,7 +36,7 @@ const namingPrefix = "Elscooter-Rentals#";
   * @return db-scooter | null | exit(1)
   */
 async function LoadScooter(id) {
-    const scooter = await db.findScooter(id);
+    const scooter = await findScooter(id);
     if (!scooter) {
         throw "Scooter removed";
     }
@@ -60,7 +60,7 @@ async function NewScooter(status, owner, coordinates, battery) {
         speed: gps.speed,
         coordinates: coordinates ? coordinates : gps.coordinates
     };
-    const result = await db.pushScooter(scooter);
+    const result = await pushScooter(scooter);
     if (!result) {
         console.log("Error pushing scooter to database...");
         process.exit(1);
@@ -88,7 +88,7 @@ function prepareWindowForPrint() {
 }
 
 function printScooter(scooter) {
-    console.log("Connected to database:", db.getMongoURI());
+    console.log("Connected to database:", getMongoURI());
     console.log("Update frequency:", updateFrequencyMilliseconds, "ms");
     console.log("status:", scooter.status);
     console.log("battery:", scooter.battery);
@@ -209,7 +209,7 @@ class Scooter {
                         distance: this.gpsComponent.route.traveledKilometers
                     };
                     this.gpsComponent.stopRoute();
-                    db.pushLog(this._id, newLogEntry);
+                    pushLog(this._id, newLogEntry);
                     this.currentTrip = null;
                 } else if (result.status === "Off") {
                     console.log(`${this.name}: Remote shutdown..`);
@@ -221,7 +221,7 @@ class Scooter {
             }
             if (this.battery < lowBatteryWarning) {
                 this.status = "Unavailable";
-                db.updateStatus(this._id, this.status);
+                updateStatus(this._id, this.status);
             } else if (this.battery <= 0) {
                 console.log(`${this.name}: Battery depleted`);
                 this.battery = 0;
@@ -234,9 +234,9 @@ class Scooter {
                 this.gpsComponent.coordinates = result.coordinates;
             }
             this.gpsComponent.update(updateFrequencyMilliseconds);
-            db.updateScooterStates(this._id, this.gpsComponent.coordinates, this.gpsComponent.speed, this.battery);
+            updateScooterStates(this._id, this.gpsComponent.coordinates, this.gpsComponent.speed, this.battery);
             if (this.canUpdateTrip()) {
-                db.updateScooterTrip(this._id, this.gpsComponent.route.traveledKilometers);
+                updateScooterTrip(this._id, this.gpsComponent.route.traveledKilometers);
             }
             if (print) {
                 prepareWindowForPrint();
@@ -257,11 +257,9 @@ async function main() {
 }
 
 if (require.main === module) {
-    db.setMongoURI(process.env.DBURI);
-    db.connect();
+    setMongoURI(process.env.DBURI);
+    connect();
     main();
 }
 
-module.exports = {
-    Scooter: Scooter
-}
+export const Scooter = Scooter;
