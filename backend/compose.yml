@@ -5,4 +5,3 @@ services:
             - ./db:/server/db
         ports:
             - "1337:1337"
-

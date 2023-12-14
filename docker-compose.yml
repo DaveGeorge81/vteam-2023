@@ -22,9 +22,11 @@ services:
         ports:
             - "1337:1337"
     scooter:
-        build:
-            dockerfile: ./scooter-simulation/scooter.Dockerfile
-    scooter-hive:
-        build:
-            dockerfile: ./scooter-simulation/scooter-hive.Dockerfile
-
+        image: "glopal78/scooter-simulation:latest"
+        environment:
+                - EXPO_DEVTOOLS_LISTEN_ADDRESS=0.0.0.0
+                - REACT_NATIVE_PACKAGER_HOSTNAME=${IP}
+        volumes:
+            - ./scooter-simulation/:/scooter-simulation/
+        ports:
+            - "1337:1337"

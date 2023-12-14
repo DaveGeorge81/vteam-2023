@@ -1,7 +1,0 @@
-version: "3"
-
-services:
-  scooter:
-    container_name: scooter
-  scooter-hive:
-    container_name: scooter-hive
