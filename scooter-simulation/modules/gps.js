@@ -166,4 +166,4 @@ class RouteHandler {
     }
 }
 
-export const GPSComponent = GPSComponent;
+export default GPSComponent;

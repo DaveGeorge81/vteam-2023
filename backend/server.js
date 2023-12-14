@@ -3,10 +3,10 @@
  * © Vteam 2023 Group 8.
  */
 const port = 1337;
-const express = require('express');
-const routeAPI = require('./routes/api.js');
-const db = require("./models/db_model.js");
-const process = require('node:process');
+import express from 'express';
+import routeAPI from './routes/api.js';
+import { closeDB } from "./models/db_model.js";
+import { on } from 'node:process';
 
 const app = express();
 
@@ -18,27 +18,27 @@ function shutDown(code) {
 
     server.close(() => {
         console.log("Closing database connection.");
-        db.closeDB();
+        closeDB();
     });
 }
 
-process.on('exit', (code) => {
+on('exit', (code) => {
     console.log(`Exiting with code: ${code}`);
 });
 
-process.on('SIGINT', (code) => {
+on('SIGINT', (code) => {
     shutDown(code);
 });
 
-process.on('SIGTERM', (code) => {
+on('SIGTERM', (code) => {
     shutDown(code);
 });
 
-process.on('SIGHUP', (code) => {
+on('SIGHUP', (code) => {
     shutDown(code);
 });
 
-app.use(express.static("public"))
+app.use("public")
 
 app.use("/api/v1", routeAPI);
 

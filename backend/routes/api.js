@@ -2,17 +2,17 @@
  * API routes.
  * © Vteam 2023 Group 8.
  */
-const express = require('express');
-const router = express.Router();
-const db = require("../models/db_model.js");
+import { Router, urlencoded } from 'express';
+const router = Router();
+import { getAllCities, getCity, addCity, updateCity, deleteCity, getAllUsers, getUser, addUser, updateUser, withdrawUser, deleteUser, getBikesCity, getBikesCityStatus, getBike, getBikeUser, addBike, updateBike, updateBikeUserStatus, updateBikePosSpeedBatt, deleteBike, getStationsCity, getStation, addStation, updateStation, addNumFreeStation, deleteStation, getParkZonesCity, getParkZone, addParkZone, updateParkZone, deleteParkZone } from "../models/db_model.js";
 
-const urlencodedParser = express.urlencoded({ extended: false });
+const urlencodedParser = urlencoded({ extended: false });
 
 /**
  * Get all cities.
  */
 router.get('/cities', (req, res) => {
-    const result = db.getAllCities();
+    const result = getAllCities();
 
     return res.status(200).json(result);
 });
@@ -21,7 +21,7 @@ router.get('/cities', (req, res) => {
  * Get a specific city.
  */
 router.get('/cities/:id', (req, res) => {
-    const result = db.getCity(req.params.id);
+    const result = getCity(req.params.id);
 
     return res.status(200).json(result);
 });
@@ -30,7 +30,7 @@ router.get('/cities/:id', (req, res) => {
  * Add a new city.
  */
 router.post('/cities', urlencodedParser, (req, res) => {
-    const result = db.addCity(req.body);
+    const result = addCity(req.body);
 
     if (result.changes === 0) {
         return res.status(400).json({
@@ -51,7 +51,7 @@ router.post('/cities', urlencodedParser, (req, res) => {
  * Update a city.
  */
 router.put('/cities', urlencodedParser, (req, res) => {
-    const result = db.updateCity(req.body);
+    const result = updateCity(req.body);
 
     if (result.changes === 0) {
         return res.status(400).json({
@@ -70,7 +70,7 @@ router.put('/cities', urlencodedParser, (req, res) => {
  * Delete a city.
  */
 router.delete('/cities/:id', (req, res) => {
-    const result = db.deleteCity(req.params.id);
+    const result = deleteCity(req.params.id);
 
     if (result.changes === 0) {
         return res.status(400).json({
@@ -89,7 +89,7 @@ router.delete('/cities/:id', (req, res) => {
  * Get all users.
  */
 router.get('/users', (req, res) => {
-    const result = db.getAllUsers();
+    const result = getAllUsers();
 
     return res.status(200).json(result);
 });
@@ -98,7 +98,7 @@ router.get('/users', (req, res) => {
  * Get a specific user.
  */
 router.get('/users/:id', (req, res) => {
-    const result = db.getUser(req.params.id);
+    const result = getUser(req.params.id);
 
     return res.status(200).json(result);
 });
@@ -107,7 +107,7 @@ router.get('/users/:id', (req, res) => {
  * Add a new user.
  */
 router.post('/users', urlencodedParser, (req, res) => {
-    const result = db.addUser(req.body);
+    const result = addUser(req.body);
 
     if (result.changes === 0) {
         return res.status(400).json({
@@ -128,7 +128,7 @@ router.post('/users', urlencodedParser, (req, res) => {
  * Update a user.
  */
 router.put('/users', urlencodedParser, (req, res) => {
-    const result = db.updateUser(req.body);
+    const result = updateUser(req.body);
 
     if (result.changes === 0) {
         return res.status(400).json({
@@ -149,7 +149,7 @@ router.put('/users', urlencodedParser, (req, res) => {
  * A negative balance is allowed.
  */
 router.put('/users/withdraw', urlencodedParser, (req, res) => {
-    const result = db.withdrawUser(req.body);
+    const result = withdrawUser(req.body);
 
     if (result.changes === 0) {
         return res.status(400).json({
@@ -168,7 +168,7 @@ router.put('/users/withdraw', urlencodedParser, (req, res) => {
  * Delete a user.
  */
 router.delete('/users/:id', (req, res) => {
-    const result = db.deleteUser(req.params.id);
+    const result = deleteUser(req.params.id);
 
     if (result.changes === 0) {
         return res.status(400).json({
@@ -187,7 +187,7 @@ router.delete('/users/:id', (req, res) => {
  * Get all bikes of a city.
  */
 router.get('/bikes/city/:city_id', (req, res) => {
-    const result = db.getBikesCity(req.params.city_id);
+    const result = getBikesCity(req.params.city_id);
 
     return res.status(200).json(result);
 });
@@ -196,7 +196,7 @@ router.get('/bikes/city/:city_id', (req, res) => {
  * Get all bikes of a city and status.
  */
 router.get('/bikes/city/:city_id/status/:status_id', (req, res) => {
-    const result = db.getBikesCityStatus(req.params.city_id, req.params.status_id);
+    const result = getBikesCityStatus(req.params.city_id, req.params.status_id);
 
     return res.status(200).json(result);
 });
@@ -205,7 +205,7 @@ router.get('/bikes/city/:city_id/status/:status_id', (req, res) => {
  * Get a specific bike.
  */
 router.get('/bikes/:id', (req, res) => {
-    const result = db.getBike(req.params.id);
+    const result = getBike(req.params.id);
 
     return res.status(200).json(result);
 });
@@ -214,7 +214,7 @@ router.get('/bikes/:id', (req, res) => {
  * Get a bike of a user.
  */
 router.get('/bikes/user/:user_id', (req, res) => {
-    const result = db.getBikeUser(req.params.user_id);
+    const result = getBikeUser(req.params.user_id);
 
     return res.status(200).json(result);
 });
@@ -223,7 +223,7 @@ router.get('/bikes/user/:user_id', (req, res) => {
  * Add a new bike.
  */
 router.post('/bikes', urlencodedParser, (req, res) => {
-    const result = db.addBike(req.body);
+    const result = addBike(req.body);
 
     return res.status(201).json({
         count: result.changes,
@@ -236,7 +236,7 @@ router.post('/bikes', urlencodedParser, (req, res) => {
  * Update all bike properties.
  */
 router.put('/bikes', urlencodedParser, (req, res) => {
-    const result = db.updateBike(req.body);
+    const result = updateBike(req.body);
 
     if (result.changes === 0) {
         return res.status(400).json({
@@ -255,7 +255,7 @@ router.put('/bikes', urlencodedParser, (req, res) => {
  * Update bike user and status.
  */
 router.put('/bikes/user_status', urlencodedParser, (req, res) => {
-    const result = db.updateBikeUserStatus(req.body);
+    const result = updateBikeUserStatus(req.body);
 
     if (result.changes === 0) {
         return res.status(400).json({
@@ -274,7 +274,7 @@ router.put('/bikes/user_status', urlencodedParser, (req, res) => {
  * Update bike position, speed and battery.
  */
 router.put('/bikes/pos_speed_batt', urlencodedParser, (req, res) => {
-    const result = db.updateBikePosSpeedBatt(req.body);
+    const result = updateBikePosSpeedBatt(req.body);
 
     if (result.changes === 0) {
         return res.status(400).json({
@@ -293,7 +293,7 @@ router.put('/bikes/pos_speed_batt', urlencodedParser, (req, res) => {
  * Delete a bike.
  */
 router.delete('/bikes/:id', (req, res) => {
-    const result = db.deleteBike(req.params.id);
+    const result = deleteBike(req.params.id);
 
     if (result.changes === 0) {
         return res.status(400).json({
@@ -312,7 +312,7 @@ router.delete('/bikes/:id', (req, res) => {
  * Get all charging stations of a city.
  */
 router.get('/stations/city/:city_id', (req, res) => {
-    const result = db.getStationsCity(req.params.city_id);
+    const result = getStationsCity(req.params.city_id);
 
     return res.status(200).json(result);
 });
@@ -321,7 +321,7 @@ router.get('/stations/city/:city_id', (req, res) => {
  * Get a specific charging station.
  */
 router.get('/stations/:id', (req, res) => {
-    const result = db.getStation(req.params.id);
+    const result = getStation(req.params.id);
 
     return res.status(200).json(result);
 });
@@ -330,7 +330,7 @@ router.get('/stations/:id', (req, res) => {
  * Add a new charging station.
  */
 router.post('/stations', urlencodedParser, (req, res) => {
-    const result = db.addStation(req.body);
+    const result = addStation(req.body);
 
     return res.status(201).json({
         count: result.changes,
@@ -343,7 +343,7 @@ router.post('/stations', urlencodedParser, (req, res) => {
  * Update a charging station.
  */
 router.put('/stations', urlencodedParser, (req, res) => {
-    const result = db.updateStation(req.body);
+    const result = updateStation(req.body);
 
     if (result.changes === 0) {
         return res.status(400).json({
@@ -364,7 +364,7 @@ router.put('/stations', urlencodedParser, (req, res) => {
  * A negative number decreases num_free.
  */
 router.put('/stations/addfree', urlencodedParser, (req, res) => {
-    const result = db.addNumFreeStation(req.body);
+    const result = addNumFreeStation(req.body);
 
     if (result.changes === 0) {
         return res.status(400).json({
@@ -383,7 +383,7 @@ router.put('/stations/addfree', urlencodedParser, (req, res) => {
  * Delete a charging station.
  */
 router.delete('/stations/:id', (req, res) => {
-    const result = db.deleteStation(req.params.id);
+    const result = deleteStation(req.params.id);
 
     if (result.changes === 0) {
         return res.status(400).json({
@@ -402,7 +402,7 @@ router.delete('/stations/:id', (req, res) => {
  * Get all parking zones of a city.
  */
 router.get('/park_zones/city/:city_id', (req, res) => {
-    const result = db.getParkZonesCity(req.params.city_id);
+    const result = getParkZonesCity(req.params.city_id);
 
     return res.status(200).json(result);
 });
@@ -411,7 +411,7 @@ router.get('/park_zones/city/:city_id', (req, res) => {
  * Get a specific parking zone.
  */
 router.get('/park_zones/:id', (req, res) => {
-    const result = db.getParkZone(req.params.id);
+    const result = getParkZone(req.params.id);
 
     return res.status(200).json(result);
 });
@@ -420,7 +420,7 @@ router.get('/park_zones/:id', (req, res) => {
  * Add a new parking zone.
  */
 router.post('/park_zones', urlencodedParser, (req, res) => {
-    const result = db.addParkZone(req.body);
+    const result = addParkZone(req.body);
 
     return res.status(201).json({
         count: result.changes,
@@ -433,7 +433,7 @@ router.post('/park_zones', urlencodedParser, (req, res) => {
  * Update a parking zone.
  */
 router.put('/park_zones', urlencodedParser, (req, res) => {
-    const result = db.updateParkZone(req.body);
+    const result = updateParkZone(req.body);
 
     if (result.changes === 0) {
         return res.status(400).json({
@@ -452,7 +452,7 @@ router.put('/park_zones', urlencodedParser, (req, res) => {
  * Delete a parking zone.
  */
 router.delete('/park_zones/:id', (req, res) => {
-    const result = db.deleteParkZone(req.params.id);
+    const result = deleteParkZone(req.params.id);
 
     if (result.changes === 0) {
         return res.status(400).json({
@@ -470,4 +470,4 @@ router.delete('/park_zones/:id', (req, res) => {
 
 
 
-module.exports = router;
+export default router;

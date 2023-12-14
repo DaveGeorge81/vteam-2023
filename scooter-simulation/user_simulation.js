@@ -1,9 +1,10 @@
 /**
  * Used to simulate a system of X users towards a Sparkrentals API.
  */
-import { post } from "axios";
-import { getScootersInUse, close, setMongoURI, connect, getAllFakeUsers, getAllScooters } from "./modules/sparkdb";
-require("dotenv").config();
+import post from "axios";
+import sparkdbModel from "./modules/sparkdb.js";
+import dotenv from 'dotenv';
+dotenv.config();
 
 const api = process.env.API_URL;
 const adminLoginEndpoint = "/auth/login/server/admin";
@@ -68,7 +69,7 @@ async function stopTrip(scooter_id, user_id, token) {
 }
 
 async function rentWatch() {
-    const scooters = (await getScootersInUse(process.env.SIMULATION_CITY)).filter(scooter => {
+    const scooters = (await sparkdbModel.getScootersInUse(process.env.SIMULATION_CITY)).filter(scooter => {
         // Filter out scooters that arent in use by simulation accounts
         for (let i = 0; i < users.length; i++) {
             if (scooter.trip.userId === users[i]._id.toString()) {
@@ -96,11 +97,11 @@ async function rentWatch() {
 }
 
 async function main() {
-    setMongoURI(process.env.DBURI);
-    connect();
+    sparkdbModel.setMongoURI(process.env.DBURI);
+    sparkdbModel.connect();
     // filter out real users
-    users = await getAllFakeUsers();
-    const scooters = await getAllScooters();
+    users = await sparkdbModel.getAllFakeUsers();
+    const scooters = await sparkdbModel.getAllScooters();
     console.log("Logging in as admin...");
     token = await adminLogin(admin.email, admin.password);
     console.log("Login successful");

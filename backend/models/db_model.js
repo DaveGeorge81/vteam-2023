@@ -326,7 +326,7 @@ const dbModel = {
 
 };
 
-module.exports = dbModel;
+export default dbModel;
 
 
 
