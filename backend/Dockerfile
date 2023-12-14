@@ -2,12 +2,12 @@ FROM node:20-slim
 
 WORKDIR /server
 
-COPY package*.json ./
+COPY ./backend/package*.json /server/
 
 RUN npm install
 
 # The .dockerignore file prevents copying of node_modules/ and db/
-COPY . ./
+COPY ./backend ./server
 
 EXPOSE 1337
 
