@@ -55,6 +55,15 @@
                 <li><a href="#delete-stations-id">DELETE /stations/{id}</a></li>
             </ul>
 
+            <h3>🅿️ <a href="#park-zones">Parking zones</a></h3>
+            <ul>
+                <li><a href="#get-park-zones-city">GET /park_zones/city/{city_id}</a></li>
+                <li><a href="#get-park-zones-id">GET /park_zones/{id}</a></li>
+                <li><a href="#post-park-zones">POST /park_zones</a></li>
+                <li><a href="#put-park-zones">PUT /park_zones</a></li>
+                <li><a href="#delete-park-zones-id">DELETE /park_zones/{id}</a></li>
+            </ul>
+
             <section>
                 <h2 id="cities">🏙 Cities</h2>
                 <h3 id="get-cities">GET /cities</h3>
@@ -755,6 +764,135 @@ HTTP Status Code: 400 Bad Request</code></pre>
 
                 <h4>Sample request</h4>
                 <pre><code>DELETE /api/v1/stations/1</code></pre>
+
+                <h4>Response (success)</h4>
+                <pre><code>{
+    "count": 1,
+    "message": "Ok"
+}
+
+HTTP Status Code: 200 OK</code></pre>
+                <p><b>Note:</b> <code>count</code> is deleted row count.</p>
+
+                <h4>Response (failure, id not found)</h4>
+                <pre><code>{
+    "count": 0,
+    "message": "id not found"
+}
+
+HTTP Status Code: 400 Bad Request</code></pre>
+
+            </section>
+
+            <section>
+                <h2 id="park-zones">🅿️ Parking zones</h2>
+                <h3 id="get-park-zones-city">GET /park_zones/city/{city_id}</h3>
+                <p>Get a JSON-representation of all parking zones in a city.</p>
+
+                <h4>Sample request</h4>
+                <pre><code>GET /api/v1/park_zones/city/1</code></pre>
+
+                <h4>Response</h4>
+                <pre><code>[
+    {
+        "id": 1,
+        "city_id": 1,
+        "lat": 56.21,
+        "lon": 15.64,
+        "dlat": 0.001,
+        "dlon": 0.001
+    },
+    {
+        "id": 2,
+        "city_id": 1,
+        "lat": 56.2,
+        "lon": 15.61,
+        "dlat": 0.001,
+        "dlon": 0.0015
+    }
+]
+
+HTTP Status Code: 200 OK</code></pre>
+
+                <h3 id="get-park-zones-id">GET /park_zones/{id}</h3>
+                <p>Get a JSON-representation of a specific parking zone.</p>
+
+                <h4>Sample request</h4>
+                <pre><code>GET /api/v1/park_zones/2</code></pre>
+
+                <h4>Response</h4>
+                <pre><code>{
+    "id": 2,
+    "city_id": 1,
+    "lat": 56.2,
+    "lon": 15.61,
+    "dlat": 0.001,
+    "dlon": 0.0015
+}
+
+HTTP Status Code: 200 OK</code></pre>
+
+                <h3 id="post-park-zones">POST /park_zones</h3>
+                <p>Add a new parking zone.</p>
+
+                <h4>Sample request</h4>
+                <pre><code>POST /api/v1/park_zones</code></pre>
+
+                <h4>Required body keys<br>
+                <small>(currently x-www-form-urlencoded)</small></h4>
+                <pre><code>city_id
+lat  = latitude
+lon  = longitude
+dlat = north-south extension of zone (≈radius)
+dlon = east-west extension of zone (≈radius)</code></pre>
+
+                <h4>Response (success)</h4>
+                <pre><code>{
+    "count": 1,
+    "newId": 3,
+    "message": "Ok"
+}
+
+HTTP Status Code: 201 Created</code></pre>
+                <p><b>Note:</b> <code>count</code> is inserted row count and <code>newId</code> is the id of added parking zone.</p>
+
+                <h3 id="put-park-zones">PUT /park_zones</h3>
+                <p>Update all properties of a parking zone.</p>
+
+                <h4>Sample request</h4>
+                <pre><code>PUT /api/v1/park_zones</code></pre>
+
+                <h4>Required body keys<br>
+                <small>(currently x-www-form-urlencoded)</small></h4>
+                <pre><code>id      = parking zone id to update
+city_id
+lat     = latitude
+lon     = longitude
+dlat    = north-south extension of zone (≈radius)
+dlon    = east-west extension of zone (≈radius)</code></pre>
+
+                <h4>Response (success)</h4>
+                <pre><code>{
+    "count": 1,
+    "message": "Ok"
+}
+
+HTTP Status Code: 200 OK</code></pre>
+                <p><b>Note:</b> <code>count</code> is updated row count.</p>
+
+                <h4>Response (failure, id not found)</h4>
+                <pre><code>{
+    "count": 0,
+    "message": "id not found"
+}
+
+HTTP Status Code: 400 Bad Request</code></pre>
+
+                <h3 id="delete-park-zones-id">DELETE /park_zones/{id}</h3>
+                <p>Delete a parking zone.</p>
+
+                <h4>Sample request</h4>
+                <pre><code>DELETE /api/v1/park_zones/1</code></pre>
 
                 <h4>Response (success)</h4>
                 <pre><code>{

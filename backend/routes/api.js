@@ -398,6 +398,75 @@ router.delete('/stations/:id', (req, res) => {
     });
 });
 
+/**
+ * Get all parking zones of a city.
+ */
+router.get('/park_zones/city/:city_id', (req, res) => {
+    const result = db.getParkZonesCity(req.params.city_id);
+
+    return res.status(200).json(result);
+});
+
+/**
+ * Get a specific parking zone.
+ */
+router.get('/park_zones/:id', (req, res) => {
+    const result = db.getParkZone(req.params.id);
+
+    return res.status(200).json(result);
+});
+
+/**
+ * Add a new parking zone.
+ */
+router.post('/park_zones', urlencodedParser, (req, res) => {
+    const result = db.addParkZone(req.body);
+
+    return res.status(201).json({
+        count: result.changes,
+        newId: result.lastInsertRowid,
+        message: 'Ok'
+    });
+});
+
+/**
+ * Update a parking zone.
+ */
+router.put('/park_zones', urlencodedParser, (req, res) => {
+    const result = db.updateParkZone(req.body);
+
+    if (result.changes === 0) {
+        return res.status(400).json({
+            count: 0,
+            message: result.message ? result.message : 'id not found'
+        });
+    }
+
+    return res.status(200).json({
+        count: result.changes,
+        message: 'Ok'
+    });
+});
+
+/**
+ * Delete a parking zone.
+ */
+router.delete('/park_zones/:id', (req, res) => {
+    const result = db.deleteParkZone(req.params.id);
+
+    if (result.changes === 0) {
+        return res.status(400).json({
+            count: 0,
+            message: result.message ? result.message : 'id not found'
+        });
+    }
+
+    return res.status(200).json({
+        count: result.changes,
+        message: 'Ok'
+    });
+});
+
 
 
 

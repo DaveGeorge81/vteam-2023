@@ -275,7 +275,51 @@ const dbModel = {
     },
 
     deleteStation: function (id) {
-        return result = db.prepare('DELETE FROM stations WHERE id = ?').run(id);
+        return result = db.prepare('DELETE FROM park_zones WHERE id = ?').run(id);
+    },
+
+    /**
+     * Parking zones
+     */
+    getParkZonesCity: function (city_id) {
+        return db.prepare('SELECT * FROM park_zones WHERE city_id = ?').all(city_id);
+    },
+
+    getParkZone: function (id) {
+        return db.prepare('SELECT * FROM park_zones WHERE id = ?').get(id);
+    },
+
+    addParkZone: function (body) {
+        let result;
+
+        result = db.prepare(`
+            INSERT INTO park_zones (city_id, lat, lon, dlat, dlon)
+            VALUES (?, ?, ?, ?, ?)
+        `).run(body.city_id, body.lat, body.lon, body.dlat, body.dlon);
+
+        return result;
+    },
+
+    updateParkZone: function (body) {
+        let result;
+
+        try {
+            result = db.prepare(`
+                UPDATE park_zones SET (city_id, lat, lon, dlat, dlon) =
+                (?, ?, ?, ?, ?) WHERE id = ?
+            `).run(body.city_id, body.lat, body.lon, body.dlat, body.dlon, body.id);
+        } catch (err) {
+            result = {
+                changes: 0,
+                message: err.message
+            }
+        }
+
+        return result;
+    },
+
+    deleteParkZone: function (id) {
+        return result = db.prepare('DELETE FROM park_zones WHERE id = ?').run(id);
     },
 
 
