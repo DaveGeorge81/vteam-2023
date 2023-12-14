@@ -7,22 +7,22 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const api = process.env.API_URL;
-const adminLoginEndpoint = "/auth/login/server/admin";
-const rentEndpoint = "/scooters/rent";
-const stopEndpoint = "/scooters/stop";
+// const adminLoginEndpoint = "/auth/login/server/admin";
+// const rentEndpoint = "/scooters/rent";
+// const stopEndpoint = "/scooters/stop";
 const apiKey = process.env.REACT_APP_REST_API_KEY;
 const rentWatchPollRate = 5000;
 const minBalance = 50;
 let token = null;
 let users = [];
 
-const admin = {
-    email: process.env.SIMULATION_EMAIL,
-    password: process.env.SIMULATION_PASSWORD
-};
+// const admin = {
+//     email: process.env.SIMULATION_EMAIL,
+//     password: process.env.SIMULATION_PASSWORD
+// };
 
 async function adminLogin(email, password) {
-    const response = await post(`${api}${adminLoginEndpoint}`, {
+    const response = await post(`${api}`/*${adminLoginEndpoint}*/, {
         email: email,
         password: password,
         api_key: apiKey
@@ -32,7 +32,7 @@ async function adminLogin(email, password) {
 
 async function rentScooter(scooter_id, user_id, token) {
     try {
-        const response = await post(`${api}${rentEndpoint}`, {
+        const response = await post(`${api}`/*${rentEndpoint}*/, {
             scooter_id: scooter_id,
             user_id: user_id,
             api_key: apiKey
@@ -51,7 +51,7 @@ async function rentScooter(scooter_id, user_id, token) {
 
 async function stopTrip(scooter_id, user_id, token) {
     try {
-        const response = await post(`${api}${stopEndpoint}`, {
+        const response = await post(`${api}`/*${stopEndpoint}*/, {
             scooter_id: scooter_id,
             user_id: user_id,
             api_key: apiKey
@@ -103,7 +103,7 @@ async function main() {
     users = await sparkdbModel.getAllFakeUsers();
     const scooters = await sparkdbModel.getAllScooters();
     console.log("Logging in as admin...");
-    token = await adminLogin(admin.email, admin.password);
+    // token = await adminLogin(admin.email, admin.password);
     console.log("Login successful");
     // Rent as many scooters as possible
     for (let i = 0; i < users.length && i < scooters.length; i++) {
