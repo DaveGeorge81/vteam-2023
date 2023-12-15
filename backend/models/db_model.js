@@ -139,6 +139,16 @@ const dbModel = {
             .all(city_id, status_id);
     },
 
+    getBikesCityStation: function (city_id, station_id) {
+        return db.prepare('SELECT * FROM bikes WHERE city_id = ? AND station_id = ?')
+            .all(city_id, station_id);
+    },
+
+    getBikesCityParkZone: function (city_id, park_id) {
+        return db.prepare('SELECT * FROM bikes WHERE city_id = ? AND park_id = ?')
+            .all(city_id, park_id);
+    },
+
     getBike: function (id) {
         return db.prepare('SELECT * FROM bikes WHERE id = ?').get(id);
     },
@@ -151,10 +161,10 @@ const dbModel = {
         let result;
 
         result = db.prepare(`
-            INSERT INTO bikes (city_id, user_id, status_id, lat, lon, speed, battery)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-        `).run(body.city_id, body.user_id, body.status_id, body.lat, body.lon,
-            body.speed, body.battery);
+            INSERT INTO bikes (city_id, user_id, status_id, station_id, park_id, lat, lon,
+                speed, battery) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `).run(body.city_id, body.user_id, body.status_id, body.station_id, body.park_id,
+            body.lat, body.lon, body.speed, body.battery);
 
         return result;
     },
@@ -164,10 +174,10 @@ const dbModel = {
 
         try {
             result = db.prepare(`
-                UPDATE bikes SET (city_id, user_id, status_id, lat, lon, speed, battery) =
-                (?, ?, ?, ?, ?, ?, ?) WHERE id = ?
-            `).run(body.city_id, body.user_id, body.status_id, body.lat, body.lon,
-                body.speed, body.battery, body.id);
+                UPDATE bikes SET (city_id, user_id, status_id, station_id, park_id, lat, lon,
+                    speed, battery) = (?, ?, ?, ?, ?, ?, ?, ?, ?) WHERE id = ?
+            `).run(body.city_id, body.user_id, body.status_id, body.station_id, body.park_id,
+                body.lat, body.lon, body.speed, body.battery, body.id);
         } catch (err) {
             result = {
                 changes: 0,
@@ -178,14 +188,51 @@ const dbModel = {
         return result;
     },
 
-    updateBikeUserStatus: function (body) {
+    updateBikeCheckParkZone: function (body) {
+        let result;
+
+        try {
+            const bike = db.prepare('SELECT * FROM bikes WHERE id = ?').get(body.id);
+
+            if (!bike) {
+                 throw new Error('id not found');
+            }
+
+            const park_zones = db.prepare(`SELECT * FROM park_zones WHERE city_id =
+                ${bike.city_id}`);
+            let park_id = 0;
+
+            for (const zone of park_zones.iterate()) {
+                if (bike.lat >= zone.lat - zone.dlat && bike.lat <= zone.lat + zone.dlat &&
+                    bike.lon >= zone.lon - zone.dlon && bike.lon <= zone.lon + zone.dlon) {
+                    park_id = zone.id;
+                    break;
+                }
+            }
+
+            result = db.prepare(`UPDATE bikes SET park_id = ${park_id} WHERE id = ?`)
+                .run(body.id);
+
+            result.park_id = park_id;
+        } catch (err) {
+            result = {
+                changes: 0,
+                park_id: 0,
+                message: err.message
+            }
+        }
+
+        return result;
+    },
+
+    updateBikeUserStatusStationPark: function (body) {
         let result;
 
         try {
             result = db.prepare(`
-                UPDATE bikes SET (user_id, status_id) =
-                (?, ?) WHERE id = ?
-            `).run(body.user_id, body.status_id, body.id);
+                UPDATE bikes SET (user_id, status_id, station_id, park_id) =
+                (?, ?, ?, ?) WHERE id = ?
+            `).run(body.user_id, body.status_id, body.station_id, body.park_id, body.id);
         } catch (err) {
             result = {
                 changes: 0,

@@ -202,6 +202,24 @@ router.get('/bikes/city/:city_id/status/:status_id', (req, res) => {
 });
 
 /**
+ * Get all bikes of a city and charging station.
+ */
+router.get('/bikes/city/:city_id/station/:station_id', (req, res) => {
+    const result = db.getBikesCityStation(req.params.city_id, req.params.station_id);
+
+    return res.status(200).json(result);
+});
+
+/**
+ * Get all bikes of a city and parking zone.
+ */
+router.get('/bikes/city/:city_id/park_zone/:park_id', (req, res) => {
+    const result = db.getBikesCityParkZone(req.params.city_id, req.params.park_id);
+
+    return res.status(200).json(result);
+});
+
+/**
  * Get a specific bike.
  */
 router.get('/bikes/:id', (req, res) => {
@@ -252,10 +270,31 @@ router.put('/bikes', urlencodedParser, (req, res) => {
 });
 
 /**
- * Update bike user and status.
+ * Check if bike is in a parking zone and update park_id.
  */
-router.put('/bikes/user_status', urlencodedParser, (req, res) => {
-    const result = db.updateBikeUserStatus(req.body);
+router.put('/bikes/check_park_zone', urlencodedParser, (req, res) => {
+    const result = db.updateBikeCheckParkZone(req.body);
+
+    if (result.changes === 0) {
+        return res.status(400).json({
+            count: 0,
+            park_id: 0,
+            message: result.message ? result.message : 'id not found'
+        });
+    }
+
+    return res.status(200).json({
+        count: result.changes,
+        park_id: result.park_id,
+        message: 'Ok'
+    });
+});
+
+/**
+ * Update bike user, status, charging station and parking zone.
+ */
+router.put('/bikes/user_status_station_park', urlencodedParser, (req, res) => {
+    const result = db.updateBikeUserStatusStationPark(req.body);
 
     if (result.changes === 0) {
         return res.status(400).json({

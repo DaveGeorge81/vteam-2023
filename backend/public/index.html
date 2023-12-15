@@ -36,11 +36,14 @@
             <ul>
                 <li><a href="#get-bikes-city">GET /bikes/city/{city_id}</a></li>
                 <li><a href="#get-bikes-city-status">GET /bikes/city/{city_id}/status/{status_id}</a></li>
+                <li><a href="#get-bikes-city-station">GET /bikes/city/{city_id}/station/{station_id}</a></li>
+                <li><a href="#get-bikes-city-park-zone">GET /bikes/city/{city_id}/park_zone/{park_id}</a></li>
                 <li><a href="#get-bikes-id">GET /bikes/{id}</a></li>
                 <li><a href="#get-bikes-user">GET /bikes/user/{user_id}</a></li>
                 <li><a href="#post-bikes">POST /bikes</a></li>
                 <li><a href="#put-bikes">PUT /bikes</a></li>
-                <li><a href="#put-bikes-user-status">PUT /bikes/user_status</a></li>
+                <li><a href="#put-bikes-check-park-zone">PUT /bikes/check_park_zone</a></li>
+                <li><a href="#put-bikes-user-status-station-park">PUT /bikes/user_status_station_park</a></li>
                 <li><a href="#put-bikes-pos-speed-batt">PUT /bikes/pos_speed_batt</a></li>
                 <li><a href="#delete-bikes-id">DELETE /bikes/{id}</a></li>
             </ul>
@@ -382,6 +385,8 @@ HTTP Status Code: 400 Bad Request</code></pre>
         "city_id": 1,
         "user_id": 1,
         "status_id": 1,
+        "station_id": 0,
+        "park_id": 1,
         "lat": 56.2,
         "lon": 15.63,
         "speed": 15,
@@ -392,10 +397,24 @@ HTTP Status Code: 400 Bad Request</code></pre>
         "city_id": 1,
         "user_id": 2,
         "status_id": 1,
+        "station_id": 0,
+        "park_id": 0,
         "lat": 56.21,
         "lon": 15.62,
         "speed": 18,
         "battery": 55
+    },
+    {
+        "id": 3,
+        "city_id": 1,
+        "user_id": 0,
+        "status_id": 3,
+        "station_id": 2,
+        "park_id": 1,
+        "lat": 56.21,
+        "lon": 15.64,
+        "speed": 0,
+        "battery": 65
     }
 ]
 
@@ -414,6 +433,8 @@ HTTP Status Code: 200 OK</code></pre>
         "city_id": 1,
         "user_id": 1,
         "status_id": 1,
+        "station_id": 0,
+        "park_id": 1,
         "lat": 56.2,
         "lon": 15.63,
         "speed": 15,
@@ -424,10 +445,72 @@ HTTP Status Code: 200 OK</code></pre>
         "city_id": 1,
         "user_id": 2,
         "status_id": 1,
+        "station_id": 0,
+        "park_id": 0,
         "lat": 56.21,
         "lon": 15.62,
         "speed": 18,
         "battery": 55
+    }
+]
+
+HTTP Status Code: 200 OK</code></pre>
+
+                <h3 id="get-bikes-city-station">GET /bikes/city/{city_id}/station/{station_id}</h3>
+                <p>Get a JSON-representation of all bikes at a given charging station in a city.</p>
+
+                <h4>Sample request</h4>
+                <pre><code>GET /api/v1/bikes/city/1/station/2</code></pre>
+
+                <h4>Response</h4>
+                <pre><code>[
+    {
+        "id": 3,
+        "city_id": 1,
+        "user_id": 0,
+        "status_id": 3,
+        "station_id": 2,
+        "park_id": 1,
+        "lat": 56.21,
+        "lon": 15.64,
+        "speed": 0,
+        "battery": 65
+    }
+]
+
+HTTP Status Code: 200 OK</code></pre>
+
+                <h3 id="get-bikes-city-park-zone">GET /bikes/city/{city_id}/park_zone/{park_id}</h3>
+                <p>Get a JSON-representation of all bikes in a given parking zone in a city.</p>
+
+                <h4>Sample request</h4>
+                <pre><code>GET /api/v1/bikes/city/1/park_zone/1</code></pre>
+
+                <h4>Response</h4>
+                <pre><code>[
+    {
+        "id": 1,
+        "city_id": 1,
+        "user_id": 1,
+        "status_id": 1,
+        "station_id": 0,
+        "park_id": 1,
+        "lat": 56.2,
+        "lon": 15.63,
+        "speed": 15,
+        "battery": 80
+    },
+    {
+        "id": 3,
+        "city_id": 1,
+        "user_id": 0,
+        "status_id": 3,
+        "station_id": 2,
+        "park_id": 1,
+        "lat": 56.21,
+        "lon": 15.64,
+        "speed": 0,
+        "battery": 65
     }
 ]
 
@@ -445,6 +528,8 @@ HTTP Status Code: 200 OK</code></pre>
     "city_id": 1,
     "user_id": 2,
     "status_id": 1,
+    "station_id": 0,
+    "park_id": 0,
     "lat": 56.21,
     "lon": 15.62,
     "speed": 18,
@@ -465,6 +550,8 @@ HTTP Status Code: 200 OK</code></pre>
     "city_id": 1,
     "user_id": 1,
     "status_id": 1,
+    "station_id": 0,
+    "park_id": 1,
     "lat": 56.2,
     "lon": 15.63,
     "speed": 15,
@@ -482,12 +569,14 @@ HTTP Status Code: 200 OK</code></pre>
                 <h4>Required body keys<br>
                 <small>(currently x-www-form-urlencoded)</small></h4>
                 <pre><code>city_id
-user_id   = (0=free, no user)
-status_id = (0=free, 1=leased, 2=off, 3=charging, ...)
-lat       = latitude
-lon       = longitude
-speed     = (km/h)
-battery   = 0-100</code></pre>
+user_id    = (0=free, no user)
+status_id  = (0=free, 1=leased, 2=off, 3=charging, ...)
+station_id = charging station id, 0=not charging
+park_id    = parking zone id, 0=not parked in a zone
+lat        = latitude
+lon        = longitude
+speed      = (km/h)
+battery    = 0-100</code></pre>
 
                 <h4>Response (success)</h4>
                 <pre><code>{
@@ -507,14 +596,16 @@ HTTP Status Code: 201 Created</code></pre>
 
                 <h4>Required body keys<br>
                 <small>(currently x-www-form-urlencoded)</small></h4>
-                <pre><code>id        = bike id to update
+                <pre><code>id         = bike id to update
 city_id
-user_id   = (0=free, no user)
-status_id = (0=free, 1=leased, 2=off, 3=charging, ...)
-lat       = latitude
-lon       = longitude
-speed     = (km/h)
-battery   = 0-100</code></pre>
+user_id    = (0=free, no user)
+status_id  = (0=free, 1=leased, 2=off, 3=charging, ...)
+station_id = charging station id, 0=not charging
+park_id    = parking zone id, 0=not parked in a zone
+lat        = latitude
+lon        = longitude
+speed      = (km/h)
+battery    = 0-100</code></pre>
 
                 <h4>Response (success)</h4>
                 <pre><code>{
@@ -533,17 +624,48 @@ HTTP Status Code: 200 OK</code></pre>
 
 HTTP Status Code: 400 Bad Request</code></pre>
 
-                <h3 id="put-bikes-user-status">PUT /bikes/user_status</h3>
-                <p>Update a bike's user and status.</p>
+                <h3 id="put-bikes-check-park-zone">PUT /bikes/check_park_zone</h3>
+                <p>Check if a bike is in a parking zone and update bike's park_id property.</p>
 
                 <h4>Sample request</h4>
-                <pre><code>PUT /api/v1/bikes/user_status</code></pre>
+                <pre><code>PUT /api/v1/bikes/check_park_zone</code></pre>
 
                 <h4>Required body keys<br>
                 <small>(currently x-www-form-urlencoded)</small></h4>
-                <pre><code>id        = bike id to update
-user_id   = (0=free, no user)
-status_id = (0=free, 1=leased, 2=off, 3=charging, ...)</code></pre>
+                <pre><code>id = bike id to check</code></pre>
+
+                <h4>Response (success)</h4>
+                <pre><code>{
+    "count": 1,
+    "park_id": 1,
+    "message": "Ok"
+}
+
+HTTP Status Code: 200 OK</code></pre>
+                <p><b>Note:</b> <code>count</code> is updated row count and <code>park_id</code> is the updated value.</p>
+
+                <h4>Response (failure, id not found)</h4>
+                <pre><code>{
+    "count": 0,
+    "park_id": 0,
+    "message": "id not found"
+}
+
+HTTP Status Code: 400 Bad Request</code></pre>
+
+                <h3 id="put-bikes-user-status-station-park">PUT /bikes/user_status_station_park</h3>
+                <p>Update a bike's user, status, charging station and parking zone.</p>
+
+                <h4>Sample request</h4>
+                <pre><code>PUT /api/v1/bikes/user_status_station_park</code></pre>
+
+                <h4>Required body keys<br>
+                <small>(currently x-www-form-urlencoded)</small></h4>
+                <pre><code>id         = bike id to update
+user_id    = (0=free, no user)
+status_id  = (0=free, 1=leased, 2=off, 3=charging, ...)
+station_id = charging station id, 0=not charging
+park_id    = parking zone id, 0=not parked in a zone</code></pre>
 
                 <h4>Response (success)</h4>
                 <pre><code>{

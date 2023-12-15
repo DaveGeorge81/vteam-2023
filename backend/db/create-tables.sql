@@ -35,6 +35,8 @@ CREATE TABLE bikes
     city_id INTEGER NOT NULL,
     user_id INTEGER DEFAULT 0 NOT NULL,
     status_id INTEGER DEFAULT 0 NOT NULL,
+    station_id INTEGER DEFAULT 0 NOT NULL,
+    park_id INTEGER DEFAULT 0 NOT NULL,
     lat REAL NOT NULL,
     lon REAL NOT NULL,
     speed REAL DEFAULT 0 NOT NULL,
