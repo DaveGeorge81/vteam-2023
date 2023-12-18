@@ -291,6 +291,44 @@ router.put('/bikes/check_park_zone', urlencodedParser, (req, res) => {
 });
 
 /**
+ * Start charging a bike.
+ */
+router.put('/bikes/start_charge', urlencodedParser, (req, res) => {
+    const result = db.updateBikeStartCharge(req.body);
+
+    if (result.changes === 0) {
+        return res.status(400).json({
+            count: 0,
+            message: result.message ? result.message : 'bike_id not found'
+        });
+    }
+
+    return res.status(200).json({
+        count: result.changes,
+        message: 'Ok'
+    });
+});
+
+/**
+ * Stop charging a bike.
+ */
+router.put('/bikes/stop_charge', urlencodedParser, (req, res) => {
+    const result = db.updateBikeStopCharge(req.body);
+
+    if (result.changes === 0) {
+        return res.status(400).json({
+            count: 0,
+            message: result.message ? result.message : 'bike_id not found'
+        });
+    }
+
+    return res.status(200).json({
+        count: result.changes,
+        message: 'Ok'
+    });
+});
+
+/**
  * Update bike user, status, charging station and parking zone.
  */
 router.put('/bikes/user_status_station_park', urlencodedParser, (req, res) => {
@@ -401,7 +439,7 @@ router.put('/stations', urlencodedParser, (req, res) => {
  * Add number of free positions.
  * A positive number increases num_free.
  * A negative number decreases num_free.
- */
+ *
 router.put('/stations/addfree', urlencodedParser, (req, res) => {
     const result = db.addNumFreeStation(req.body);
 
@@ -506,6 +544,162 @@ router.delete('/park_zones/:id', (req, res) => {
     });
 });
 
+/**
+ * Get pricing of a city.
+ */
+router.get('/pricing/city/:city_id', (req, res) => {
+    const result = db.getPricingCity(req.params.city_id);
+
+    return res.status(200).json(result);
+});
+
+/**
+ * Add a new pricing.
+ */
+router.post('/pricing', urlencodedParser, (req, res) => {
+    const result = db.addPricing(req.body);
+
+    if (result.changes === 0) {
+        return res.status(400).json({
+            count: 0,
+            newId: -1,
+            message: result.message
+        });
+    }
+
+    return res.status(201).json({
+        count: result.changes,
+        newId: result.lastInsertRowid,
+        message: 'Ok'
+    });
+});
+
+/**
+ * Update pricing.
+ */
+router.put('/pricing', urlencodedParser, (req, res) => {
+    const result = db.updatePricing(req.body);
+
+    if (result.changes === 0) {
+        return res.status(400).json({
+            count: 0,
+            message: result.message ? result.message : 'id not found'
+        });
+    }
+
+    return res.status(200).json({
+        count: result.changes,
+        message: 'Ok'
+    });
+});
+
+/**
+ * Delete a pricing.
+ */
+router.delete('/pricing/:city_id', (req, res) => {
+    const result = db.deletePricing(req.params.city_id);
+
+    if (result.changes === 0) {
+        return res.status(400).json({
+            count: 0,
+            message: result.message ? result.message : 'id not found'
+        });
+    }
+
+    return res.status(200).json({
+        count: result.changes,
+        message: 'Ok'
+    });
+});
+
+/**
+ * Get all rides of a user.
+ */
+router.get('/rides/user/:user_id', (req, res) => {
+    const result = db.getRidesUser(req.params.user_id);
+
+    return res.status(200).json(result);
+});
+
+/**
+ * Get all rides of a bike.
+ */
+router.get('/rides/bike/:bike_id', (req, res) => {
+    const result = db.getRidesBike(req.params.bike_id);
+
+    return res.status(200).json(result);
+});
+
+/**
+ * Get a specific ride.
+ */
+router.get('/rides/:id', (req, res) => {
+    const result = db.getRide(req.params.id);
+
+    return res.status(200).json(result);
+});
+
+/**
+ * Start a new ride.
+ */
+router.post('/rides', urlencodedParser, (req, res) => {
+    const result = db.startRide(req.body);
+
+    if (result.changes === 0) {
+        return res.status(400).json({
+            count: 0,
+            newId: -1,
+            message: result.message
+        });
+    }
+
+    return res.status(201).json({
+        count: result.changes,
+        newId: result.lastInsertRowid,
+        message: 'Ok'
+    });
+});
+
+/**
+ * Finish a ride.
+ * Calculate price and withdraw user's balance.
+ */
+router.put('/rides', urlencodedParser, (req, res) => {
+    const result = db.finishRide(req.body);
+
+    if (result.changes === 0) {
+        return res.status(400).json({
+            count: 0,
+            price: 0,
+            message: result.message ? result.message : 'id not found'
+        });
+    }
+
+    return res.status(200).json({
+        count: result.changes,
+        price: result.price,
+        message: 'Ok'
+    });
+});
+
+/**
+ * Delete a ride.
+ */
+router.delete('/rides/:id', (req, res) => {
+    const result = db.deleteRide(req.params.id);
+
+    if (result.changes === 0) {
+        return res.status(400).json({
+            count: 0,
+            message: result.message ? result.message : 'id not found'
+        });
+    }
+
+    return res.status(200).json({
+        count: result.changes,
+        message: 'Ok'
+    });
+});
 
 
 

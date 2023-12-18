@@ -11,7 +11,8 @@ COPY . ./
 
 EXPOSE 1337
 
-#ENV LANG C.utf8
+ENV LANG C.utf8
+ENV TZ Europe/Stockholm
 
 ENTRYPOINT ["node", "server.js"]
 

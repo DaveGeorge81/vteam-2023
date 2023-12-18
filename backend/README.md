@@ -15,3 +15,11 @@
 
 ## Notes
 * the db/ directory is mounted, so that database changes are preserved between container restarts.
+* A few API endpoints perform special actions and may involve several database updates, notably:
+  * `PUT /users/withdraw`
+  * `PUT /bikes/check_park_zone`
+  * `PUT /bikes/start_charge`
+  * `PUT /bikes/stop_charge`
+  * `POST /rides` (start a ride)
+  * `PUT /rides` (finish a ride)
+

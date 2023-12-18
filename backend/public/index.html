@@ -43,6 +43,8 @@
                 <li><a href="#post-bikes">POST /bikes</a></li>
                 <li><a href="#put-bikes">PUT /bikes</a></li>
                 <li><a href="#put-bikes-check-park-zone">PUT /bikes/check_park_zone</a></li>
+                <li><a href="#put-bikes-start-charge">PUT /bikes/start_charge</a></li>
+                <li><a href="#put-bikes-stop-charge">PUT /bikes/stop_charge</a></li>
                 <li><a href="#put-bikes-user-status-station-park">PUT /bikes/user_status_station_park</a></li>
                 <li><a href="#put-bikes-pos-speed-batt">PUT /bikes/pos_speed_batt</a></li>
                 <li><a href="#delete-bikes-id">DELETE /bikes/{id}</a></li>
@@ -54,7 +56,7 @@
                 <li><a href="#get-stations-id">GET /stations/{id}</a></li>
                 <li><a href="#post-stations">POST /stations</a></li>
                 <li><a href="#put-stations">PUT /stations</a></li>
-                <li><a href="#put-stations-addfree">PUT /stations/addfree</a></li>
+                <!-- <li><a href="#put-stations-addfree">PUT /stations/addfree</a></li> -->
                 <li><a href="#delete-stations-id">DELETE /stations/{id}</a></li>
             </ul>
 
@@ -65,6 +67,24 @@
                 <li><a href="#post-park-zones">POST /park_zones</a></li>
                 <li><a href="#put-park-zones">PUT /park_zones</a></li>
                 <li><a href="#delete-park-zones-id">DELETE /park_zones/{id}</a></li>
+            </ul>
+
+            <h3>💰 <a href="#pricing">Pricing</a></h3>
+            <ul>
+                <li><a href="#get-pricing-city">GET /pricing/city/{city_id}</a></li>
+                <li><a href="#post-pricing">POST /pricing</a></li>
+                <li><a href="#put-pricing">PUT /pricing</a></li>
+                <li><a href="#delete-pricing-city">DELETE /pricing/{city_id}</a></li>
+            </ul>
+
+            <h3>🚴 <a href="#rides">Rides</a></h3>
+            <ul>
+                <li><a href="#get-rides-user">GET /rides/user/{user_id}</a></li>
+                <li><a href="#get-rides-bike">GET /rides/bike/{bike_id}</a></li>
+                <li><a href="#get-rides-id">GET /rides/{id}</a></li>
+                <li><a href="#post-rides">POST /rides</a> <small>(start a ride)</small></li>
+                <li><a href="#put-rides">PUT /rides</a> <small>(finish a ride)</small></li>
+                <li><a href="#delete-rides-id">DELETE /rides/{id}</a></li>
             </ul>
 
             <section>
@@ -249,7 +269,8 @@ HTTP Status Code: 200 OK</code></pre>
     "name": "Jane Doe",
     "balance": 50,
     "bank_account": "1.45.6789",
-    "recurring_withdraw": 150
+    "recurring_withdraw": 150,
+    "ride_id": 1
 }
 
 HTTP Status Code: 200 OK</code></pre>
@@ -653,6 +674,61 @@ HTTP Status Code: 200 OK</code></pre>
 
 HTTP Status Code: 400 Bad Request</code></pre>
 
+                <h3 id="put-bikes-start-charge">PUT /bikes/start_charge</h3>
+                <p>Put a bike to charging at a charging station.</p>
+
+                <h4>Sample request</h4>
+                <pre><code>PUT /api/v1/bikes/start_charge</code></pre>
+
+                <h4>Required body keys<br>
+                <small>(currently x-www-form-urlencoded)</small></h4>
+                <pre><code>bike_id
+station_id</code></pre>
+
+                <h4>Response (success)</h4>
+                <pre><code>{
+    "count": 1,
+    "message": "Ok"
+}
+
+HTTP Status Code: 200 OK</code></pre>
+                <p><b>Note:</b> <code>count</code> is updated row count.</p>
+
+                <h4>Sample response (failure, bike is already charging)</h4>
+                <pre><code>{
+    "count": 0,
+    "message": "Bike is already charging"
+}
+
+HTTP Status Code: 400 Bad Request</code></pre>
+
+                <h3 id="put-bikes-stop-charge">PUT /bikes/stop_charge</h3>
+                <p>Stop charging a bike.</p>
+
+                <h4>Sample request</h4>
+                <pre><code>PUT /api/v1/bikes/stop_charge</code></pre>
+
+                <h4>Required body keys<br>
+                <small>(currently x-www-form-urlencoded)</small></h4>
+                <pre><code>bike_id</code></pre>
+
+                <h4>Response (success)</h4>
+                <pre><code>{
+    "count": 1,
+    "message": "Ok"
+}
+
+HTTP Status Code: 200 OK</code></pre>
+                <p><b>Note:</b> <code>count</code> is updated row count.</p>
+
+                <h4>Sample response (failure, bike is not charging)</h4>
+                <pre><code>{
+    "count": 0,
+    "message": "Bike is not charging"
+}
+
+HTTP Status Code: 400 Bad Request</code></pre>
+
                 <h3 id="put-bikes-user-status-station-park">PUT /bikes/user_status_station_park</h3>
                 <p>Update a bike's user, status, charging station and parking zone.</p>
 
@@ -843,7 +919,7 @@ HTTP Status Code: 200 OK</code></pre>
 }
 
 HTTP Status Code: 400 Bad Request</code></pre>
-
+<!--
                 <h3 id="put-stations-addfree">PUT /stations/addfree</h3>
                 <p>Update a charging station's number of free positions by adding a number to num_free.
                 After the update, num_free must be >= 0 for the update to succeed.</p>
@@ -880,7 +956,7 @@ HTTP Status Code: 400 Bad Request</code></pre>
 }
 
 HTTP Status Code: 400 Bad Request</code></pre>
-
+-->
                 <h3 id="delete-stations-id">DELETE /stations/{id}</h3>
                 <p>Delete a charging station.</p>
 
@@ -1015,6 +1091,281 @@ HTTP Status Code: 400 Bad Request</code></pre>
 
                 <h4>Sample request</h4>
                 <pre><code>DELETE /api/v1/park_zones/1</code></pre>
+
+                <h4>Response (success)</h4>
+                <pre><code>{
+    "count": 1,
+    "message": "Ok"
+}
+
+HTTP Status Code: 200 OK</code></pre>
+                <p><b>Note:</b> <code>count</code> is deleted row count.</p>
+
+                <h4>Response (failure, id not found)</h4>
+                <pre><code>{
+    "count": 0,
+    "message": "id not found"
+}
+
+HTTP Status Code: 400 Bad Request</code></pre>
+
+            </section>
+
+            <section>
+                <h2 id="pricing">💰 Pricing</h2>
+                <h3 id="get-pricing-city">GET /pricing/city/{city_id}</h3>
+                <p>Get a JSON-representation of rental pricing in a city.</p>
+
+                <h4>Sample request</h4>
+                <pre><code>GET /api/v1/pricing/city/1</code></pre>
+
+                <h4>Response</h4>
+                <pre><code>{
+    "city_id": 1,
+    "start_fee": 10,
+    "minute_fee": 3,
+    "extra_fee": 10,
+    "discount": 10
+}
+
+HTTP Status Code: 200 OK</code></pre>
+
+                <h3 id="post-pricing">POST /pricing</h3>
+                <p>Add new rental fees for a city.</p>
+
+                <h4>Sample request</h4>
+                <pre><code>POST /api/v1/pricing</code></pre>
+
+                <h4>Required body keys<br>
+                <small>(currently x-www-form-urlencoded)</small></h4>
+                <pre><code>city_id
+start_fee  = fixed price for every ride
+minute_fee = price per minute
+extra_fee  = parking outside parking zone
+discount   = taking bike from outside zone to parking zone</code></pre>
+
+                <h4>Response (success)</h4>
+                <pre><code>{
+    "count": 1,
+    "newId": 3,
+    "message": "Ok"
+}
+
+HTTP Status Code: 201 Created</code></pre>
+                <p><b>Note:</b> <code>count</code> is inserted row count and <code>newId</code> is the city_id of added pricing.</p>
+
+                <h4>Response (failure, city_id already exists)</h4>
+                <pre><code>{
+    "count": 0,
+    "newId": -1,
+    "message": "UNIQUE constraint failed: pricing.city_id"
+}
+
+HTTP Status Code: 400 Bad Request</code></pre>
+
+                <h3 id="put-pricing">PUT /pricing</h3>
+                <p>Update rental fees for a city.</p>
+
+                <h4>Sample request</h4>
+                <pre><code>PUT /api/v1/pricing</code></pre>
+
+                <h4>Required body keys<br>
+                <small>(currently x-www-form-urlencoded)</small></h4>
+                <pre><code>city_id
+start_fee  = fixed price for every ride
+minute_fee = price per minute
+extra_fee  = parking outside parking zone
+discount   = taking bike from outside zone to parking zone</code></pre>
+
+                <h4>Response (success)</h4>
+                <pre><code>{
+    "count": 1,
+    "message": "Ok"
+}
+
+HTTP Status Code: 200 OK</code></pre>
+                <p><b>Note:</b> <code>count</code> is updated row count.</p>
+
+                <h4>Response (failure, id not found)</h4>
+                <pre><code>{
+    "count": 0,
+    "message": "id not found"
+}
+
+HTTP Status Code: 400 Bad Request</code></pre>
+
+                <h3 id="delete-pricing-city">DELETE /pricing/{city_id}</h3>
+                <p>Delete a pricing for a city.</p>
+
+                <h4>Sample request</h4>
+                <pre><code>DELETE /api/v1/pricing/1</code></pre>
+
+                <h4>Response (success)</h4>
+                <pre><code>{
+    "count": 1,
+    "message": "Ok"
+}
+
+HTTP Status Code: 200 OK</code></pre>
+                <p><b>Note:</b> <code>count</code> is deleted row count.</p>
+
+                <h4>Response (failure, id not found)</h4>
+                <pre><code>{
+    "count": 0,
+    "message": "id not found"
+}
+
+HTTP Status Code: 400 Bad Request</code></pre>
+
+            </section>
+
+            <section>
+                <h2 id="rides">🚴 Rides</h2>
+                <h3 id="get-rides-user">GET /rides/user/{user_id}</h3>
+                <p>Get a JSON-representation of all rides by a user.</p>
+
+                <h4>Sample request</h4>
+                <pre><code>GET /api/v1/rides/user/1</code></pre>
+
+                <h4>Response</h4>
+                <pre><code>[
+    {
+        "id": 1,
+        "start_time": "2023-12-17 19:36:24",
+        "duration": "1.45",
+        "start_lat": 56.21,
+        "start_lon": 15.64,
+        "stop_lat": 56.22,
+        "stop_lon": 15.66,
+        "user_id": 1,
+        "bike_id": 3,
+        "price": 21.35
+    }
+]
+
+HTTP Status Code: 200 OK</code></pre>
+
+                <h3 id="get-rides-bike">GET /rides/bike/{bike_id}</h3>
+                <p>Get a JSON-representation of all rides of a bike.</p>
+
+                <h4>Sample request</h4>
+                <pre><code>GET /api/v1/rides/bike/2</code></pre>
+
+                <h4>Response</h4>
+                <pre><code>[
+    {
+        "id": 2,
+        "start_time": "2023-12-18 10:37:37",
+        "duration": "1.10",
+        "start_lat": 56.21,
+        "start_lon": 15.62,
+        "stop_lat": 56.20,
+        "stop_lon": 15.61,
+        "user_id": 2,
+        "bike_id": 2,
+        "price": 23.3
+    }
+]
+
+HTTP Status Code: 200 OK</code></pre>
+
+                <h3 id="get-rides-id">GET /rides/{id}</h3>
+                <p>Get a JSON-representation of a specific ride.</p>
+
+                <h4>Sample request</h4>
+                <pre><code>GET /api/v1/rides/2</code></pre>
+
+                <h4>Response</h4>
+                <pre><code>{
+    "id": 2,
+    "start_time": "2023-12-18 10:37:37",
+    "duration": "1.10",
+    "start_lat": 56.21,
+    "start_lon": 15.62,
+    "stop_lat": 56.20,
+    "stop_lon": 15.61,
+    "user_id": 2,
+    "bike_id": 2,
+    "price": 23.3
+}
+
+HTTP Status Code: 200 OK</code></pre>
+
+                <h3 id="post-rides">POST /rides</h3>
+                <p>Start a new ride with a given user and bike.</p>
+                <ul>
+                    <li>The bikes current position is stored in the rides table, together with start time,
+                        user_id and bike_id.</li>
+                    <li>The ride_id is stored in the users table.</li>
+                    <li>The user_id and status are set in the bikes table, where also the park_id is reset.</li>
+                </ul>
+
+                <h4>Sample request</h4>
+                <pre><code>POST /api/v1/rides</code></pre>
+
+                <h4>Required body keys<br>
+                <small>(currently x-www-form-urlencoded)</small></h4>
+                <pre><code>user_id
+bike_id</code></pre>
+
+                <h4>Response (success)</h4>
+                <pre><code>{
+    "count": 1,
+    "newId": 3,
+    "message": "Ok"
+}
+
+HTTP Status Code: 201 Created</code></pre>
+                <p><b>Note:</b> <code>count</code> is inserted row count and <code>newId</code> is the id of added ride.</p>
+
+                <h4>Sample response (failure, bike_id not found)</h4>
+                <pre><code>{
+    "count": 0,
+    "newId": -1,
+    "message": "bike_id not found"
+}
+
+HTTP Status Code: 400 Bad Request</code></pre>
+
+                <h3 id="put-rides">PUT /rides</h3>
+                <p>Finish a ride by a user.</p>
+                <ul>
+                    <li>Calculates the duration and price of the ride, and updates the rides table.</li>
+                    <li>Withdraws the price from the balance in the users table.</li>
+                    <li>Marks the bike as free in the bikes table, and updates park_id (if the bike was left in a parking zone).</li>
+                </ul>
+
+                <h4>Sample request</h4>
+                <pre><code>PUT /api/v1/rides</code></pre>
+
+                <h4>Required body keys<br>
+                <small>(currently x-www-form-urlencoded)</small></h4>
+                <pre><code>user_id</code></pre>
+
+                <h4>Response (success)</h4>
+                <pre><code>{
+    "count": 1,
+    "price": 18.30,
+    "message": "Ok"
+}
+
+HTTP Status Code: 200 OK</code></pre>
+                <p><b>Note:</b> <code>count</code> is updated row count.</p>
+
+                <h4>Sample response (failure, user_id not found)</h4>
+                <pre><code>{
+    "count": 0,
+    "price": 0,
+    "message": "user_id not found"
+}
+
+HTTP Status Code: 400 Bad Request</code></pre>
+
+                <h3 id="delete-rides-id">DELETE /rides/{id}</h3>
+                <p>Delete a ride.</p>
+
+                <h4>Sample request</h4>
+                <pre><code>DELETE /api/v1/rides/1</code></pre>
 
                 <h4>Response (success)</h4>
                 <pre><code>{
