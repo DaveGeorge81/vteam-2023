@@ -13,12 +13,16 @@ export default function MapScreen({ navigation, route }) {
 
     const [quote, setQuote] = useState([]);
 
+    const [markerList, setMarkerList] = useState([]);
+
+    const [stationList, setStationList] = useState([]);
+
     useEffect(() => {
         // Passing configuration object to axios
             const fetchData = async () => {
             const data = await axios({
                 method: 'get',
-                url: `http://${IP}:3000/cities`,
+                url: `http://${IP}:1337/api/v1/cities`,
             }).then((response) => {
                 setQuote(response.data);
                 // console.log(response.data);
@@ -28,9 +32,16 @@ export default function MapScreen({ navigation, route }) {
             .catch(console.error)
         }, []);
 
+        // console.log(quote)
         const [selected, setSelected] = React.useState("");
 
-        const data = quote.filter((item) => item.name == selected).map(({name, longitude, latitude}) => ({name, longitude, latitude}));
+        // if (selected === "") {
+        //     const data = {
+        //         id: 1,
+        //     }
+        // }
+        const data = quote.filter((item) => item.name == selected).map(({id, name, lon, lat, dlon, dlat}) => ({id, name, lon, lat, dlon, dlat}));
+
 
         const [location, setLocation] = useState({name: "Halmstad", latitude: 56.6739803, longitude: 12.8574722}) 
 
@@ -43,16 +54,47 @@ export default function MapScreen({ navigation, route }) {
 
     const newLocation = () => {
         setMapRegion({
-            latitude: data[0].latitude,
-            longitude: data[0].longitude,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
+            latitude: data[0].lat,
+            longitude: data[0].lon,
+            latitudeDelta: data[0].dlat,
+            longitudeDelta: data[0].dlon,
         })
+        let endpointBikes = `http://${IP}:1337/api/v1/bikes/city/${data[0].id}`
+
+        let endpointStations = `http://${IP}:1337/api/v1/stations/city/${data[0].id}`
+
+        const fetchBikes = async () => {
+            const data = await axios({
+                method: 'get',
+                url: endpointBikes,
+            }).then((response) => {
+                setMarkerList(response.data);
+                // console.log(response.data);
+            });
+        }
+        fetchBikes()
+        .catch(console.error)
+
+        const fetchStations = async () => {
+            const data = await axios({
+                method: 'get',
+                url: endpointStations,
+            }).then((response) => {
+                setStationList(response.data);
+                // console.log(response.data);
+            });
+        }
+        fetchStations()
+        .catch(console.error)
+
     }
 
     // useEffect(() =>{
     //     newLocation();
     // }, []);
+
+
+
 
     const mapJson = [
         {
@@ -91,35 +133,35 @@ export default function MapScreen({ navigation, route }) {
         }
     ];
 
-    const markerList = [
-        {
-        title: "bike1",
-        location: {
-            latitude: 56.6739833,
-            longitude: 12.8574718,
-        },
-        description: "rent bike"
-        },
-        {
-        title: "bike2",
-        location: {
-            latitude: 56.6720011,
-            longitude: 12.8574720,
-        },
-        description: "Second bike"
-        },
-    ];
+    // const markerList = [
+    //     {
+    //     title: "bike1",
+    //     location: {
+    //         latitude: 56.6739833,
+    //         longitude: 12.8574718,
+    //     },
+    //     description: "rent bike"
+    //     },
+    //     {
+    //     title: "bike2",
+    //     location: {
+    //         latitude: 56.6720011,
+    //         longitude: 12.8574720,
+    //     },
+    //     description: "Second bike"
+    //     },
+    // ];
 
-    const chargeList = [
-        {
-        title: "charge1",
-        location: {
-            latitude: 56.6736718,
-            longitude: 12.8561238,
-        },
-        description: "Charging station"
-        },
-    ];
+    // const chargeList = [
+    //     {
+    //     title: "charge1",
+    //     location: {
+    //         latitude: 56.6736718,
+    //         longitude: 12.8561238,
+    //     },
+    //     description: "Charging station"
+    //     },
+    // ];
 
     const customMarker = require('../assets/scooter.png');
 
@@ -127,12 +169,14 @@ export default function MapScreen({ navigation, route }) {
 
     const showMarkers = () => {
         return markerList.map((item, index) => {
+            let id = item.id.toString()
+            let battery = `Batteri: ${item.battery}%`
             return (
                 <Marker
                     key={index}
-                    coordinate={item.location}
-                    title={item.title}
-                    description={item.description}
+                    coordinate={{latitude: item.lat, longitude: item.lon}}
+                    title={id}
+                    description={battery}
                     >
                     <Image 
                         source={customMarker}
@@ -144,13 +188,14 @@ export default function MapScreen({ navigation, route }) {
     }
 
     const showStations = () => {
-        return chargeList.map((item, index) => {
+        return stationList.map((item, index) => {
+            let id = item.id.toString()
             return (
                 <Marker
                     key={index}
-                    coordinate={item.location}
-                    title={item.title}
-                    description={item.description}
+                    coordinate={{latitude: item.lat, longitude: item.lon}}
+                    title={id}
+                    description="."
                     >
                     <Image 
                         source={chargeMarker}
@@ -160,11 +205,11 @@ export default function MapScreen({ navigation, route }) {
             )
         })
     }
-
-
-    console.log(selected)
+    console.log(markerList)
+    // console.log(data[0].id)
+    // console.log(selected)
     // console.log(location[0].name)
-    console.log(mapRegion)
+    // console.log(mapRegion)
     return (
     <View style={{flexDirection: "column"}}>
         <View style={styles.top}>

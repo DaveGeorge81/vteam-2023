@@ -14,12 +14,21 @@ services:
             tty: true
             stdin_open: true
             command: npx expo start --clear
-    express:
-            build:
-                context: ./
-                dockerfile: ./backtest/Dockerfile
-            volumes:
-                - ./backtest/:/backtest/
-            ports:
-                - '3000:3000'
-            command: node app.js
+    # express:
+    #         build:
+    #             context: ./
+    #             dockerfile: ./backtest/Dockerfile
+    #         volumes:
+    #             - ./backtest/:/backtest/
+    #         ports:
+    #             - '3000:3000'
+    #         command: node app.js
+    server:
+        build:
+            context: ./
+            dockerfile: ./backend/Dockerfile
+        # volumes:
+        #     - .backend/db:/server/db
+        ports:
+            - "1337:1337"
+        command: node server.js

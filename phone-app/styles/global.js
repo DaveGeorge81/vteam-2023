@@ -18,5 +18,9 @@ export const globalStyles = StyleSheet.create({
         flex: 1,
         padding: 50
     },
+    scanner: {
+        height: "50%",
+        padding: 50
+    }
     
 })
