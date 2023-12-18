@@ -27,8 +27,8 @@ services:
         build:
             context: ./
             dockerfile: ./backend/Dockerfile
-        # volumes:
-        #     - .backend/db:/server/db
+        volumes:
+            - ./backend/db:/server/db
         ports:
             - "1337:1337"
         command: node server.js
