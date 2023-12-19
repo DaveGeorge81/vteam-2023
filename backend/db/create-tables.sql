@@ -99,4 +99,3 @@ CREATE TABLE rides
 
 CREATE INDEX ind_rides_user ON rides(user_id);
 CREATE INDEX ind_rides_bike ON rides(bike_id);
-
