@@ -5,13 +5,13 @@ import { globalStyles } from '../styles/global';
 export default function Home( { navigation }) {
 
     const pressHandler = () => {
-        navigation.navigate("Info")
+        navigation.navigate("Account Info")
 
     }
     return (
         <View style={globalStyles.container}>
             <Text style={globalStyles.contentText}>Home page</Text>
-            <Button title="Go to Info page" onPress={pressHandler}/>
+            <Button title="Go to Account info page" onPress={pressHandler}/>
         </View>
     )
 } 

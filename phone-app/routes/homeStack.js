@@ -1,6 +1,9 @@
 import { createStackNavigator } from '@react-navigation/stack'
+import {NavigationContainer} from '@react-navigation/native';
+import { createAppContainer } from '@react-navigation/native'
 import Home from "../screens/home"
-import About from "../screens/about"
+import MyDrawer from './drawer';
+import Login from '../screens/login';
 
 // const screens = {
 //     Home: {
@@ -15,9 +18,11 @@ const HomeStack = createStackNavigator();
 
 export default function MyStack() {
     return (
-    <HomeStack.Navigator screenOptions={{ headerStyle: { backgroundColor: 'papayawhip' } }}>
-        <HomeStack.Screen name="Home" component={Home} options={{ headerStyle: { backgroundColor: '#ccc' } }} />
-        <HomeStack.Screen name="About" component={About} />
-    </HomeStack.Navigator>
+    <NavigationContainer>
+        <HomeStack.Navigator screenOptions={{ headerStyle: { backgroundColor: 'papayawhip' } }}>
+            <HomeStack.Screen name="Login" component={Login} options={{ headerStyle: { backgroundColor: '#ccc' } }} />
+            <HomeStack.Screen name="Drawer" component={MyDrawer} headerLeft={null} gestureEnabled={false} options={{ headerShown: false }}/>
+        </HomeStack.Navigator>
+    </NavigationContainer>
     );
 }

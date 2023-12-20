@@ -22,6 +22,7 @@ CREATE TABLE users
 (
     id INTEGER PRIMARY KEY,
     name TEXT UNIQUE NOT NULL,
+    ride_id INTEGER DEFAULT 0 NOT NULL,
     balance REAL DEFAULT 0 NOT NULL,
     bank_account TEXT DEFAULT '',
     recurring_withdraw REAL DEFAULT 0
@@ -67,4 +68,35 @@ CREATE TABLE park_zones
     dlon REAL NOT NULL
 );
 
+DROP TABLE IF EXISTS pricing;
+
+CREATE TABLE pricing
+(
+    city_id INTEGER PRIMARY KEY,
+    start_fee REAL NOT NULL,
+    minute_fee REAL NOT NULL,
+    extra_fee REAL NOT NULL,
+    discount REAL NOT NULL
+);
+
+DROP INDEX IF EXISTS ind_rides_user;
+DROP INDEX IF EXISTS ind_rides_bike;
+DROP TABLE IF EXISTS rides;
+
+CREATE TABLE rides
+(
+    id INTEGER PRIMARY KEY,
+    start_time TEXT NOT NULL,
+    duration TEXT,
+    start_lat REAL NOT NULL,
+    start_lon REAL NOT NULL,
+    stop_lat REAL,
+    stop_lon REAL,
+    user_id INTEGER NOT NULL,
+    bike_id INTEGER NOT NULL,
+    price REAL
+);
+
+CREATE INDEX ind_rides_user ON rides(user_id);
+CREATE INDEX ind_rides_bike ON rides(bike_id);
 
