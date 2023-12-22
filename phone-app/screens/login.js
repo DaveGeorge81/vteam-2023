@@ -1,6 +1,7 @@
+/* eslint-disable react/prop-types */
 import { StatusBar } from "expo-status-bar";
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, Image, TextInput, Button, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from "react-native";
+import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from "react-native";
 import axios from 'axios';
 import { IP } from '@env'
 // import { useNavigation } from '@react-navigation/native';
@@ -10,21 +11,20 @@ import SessionStorage from 'react-native-session-storage';
 export default function Login( { navigation } ) {
 
     const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
+    // const [password, setPassword] = useState("");
     const [users, setUsers] = useState([]);
-    // const [userId, setUserId] = useState(0);
 
 
     useEffect(() => {
         // Passing configuration object to axios
             const fetchUsers = async () => {
-            const data = await axios({
-                method: 'get',
-                url: `http://${IP}:1337/api/v1/users`,
-            }).then((response) => {
-                setUsers(response.data);
-                // console.log(response.data);
-            });
+                await axios({
+                    method: 'get',
+                    url: `http://${IP}:1337/api/v1/users`,
+                }).then((response) => {
+                    setUsers(response.data);
+                    // console.log(response.data);
+                });
             }
             fetchUsers()
             .catch(console.error)
@@ -37,14 +37,11 @@ export default function Login( { navigation } ) {
         alert('Logged in')
         SessionStorage.setItem('@loggedIn', true);
         SessionStorage.setItem('@id', data[0].id);
-        // const navigation = useNavigation()
-        // navigation.dispatch(StackActions.replace('App'))
         navigation.navigate("Map")
         }
         else
             alert('Username or Password is incorrect! Try again!')
-
-    };
+        };
 
     return (
         <TouchableWithoutFeedback onPress={() =>
@@ -66,12 +63,9 @@ export default function Login( { navigation } ) {
             placeholder="Password"
             placeholderTextColor="#003f5c"
             secureTextEntry={true}
-            onChangeText={(password) => setPassword(password)}
+            // onChangeText={(password) => setPassword(password)}
             />
         </View>
-        <TouchableOpacity>
-            <Text style={styles.forgot_button}>Forgot Password?</Text>
-        </TouchableOpacity>
         <TouchableOpacity style={styles.loginBtn} onPress={handleButtonPress}>
             <Text style={styles.loginText}>LOGIN</Text>
         </TouchableOpacity>
@@ -106,10 +100,10 @@ export default function Login( { navigation } ) {
         padding: 10,
         marginLeft: 20,
     },
-    forgot_button: {
-        height: 30,
-        marginBottom: 30,
-    },
+    // forgot_button: {
+    //     height: 30,
+    //     marginBottom: 30,
+    // },
     loginBtn: {
         width: "80%",
         borderRadius: 25,

@@ -1,6 +1,5 @@
-import { StatusBar } from 'expo-status-bar';
 import { NavigationContainer } from '@react-navigation/native';
-import React, { useState, useEffect } from "react";
+import React from "react";
 // import Home from "./screens/home"
 // import Navigator from './routes/homeStack';
 import Navigator from "./routes/drawer"

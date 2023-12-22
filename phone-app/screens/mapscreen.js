@@ -1,21 +1,21 @@
-import React, { useState, useEffect, useRef } from 'react';
-import MapView, { Callout } from 'react-native-maps';
+import React, { useState, useEffect} from 'react';
+import MapView from 'react-native-maps';
 import {Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import { StyleSheet, View, Image, Text } from 'react-native';
+import { StyleSheet, View, Image} from 'react-native';
 import { SelectList } from 'react-native-dropdown-select-list'
 import axios from 'axios';
 import { IP } from '@env'
-import { useIsFocused } from '@react-navigation/native';
+// import { useIsFocused } from '@react-navigation/native';
 
-export default function MapScreen({ navigation, route }) {
+export default function MapScreen() {
 
     // let cityCount = 0
 
-    const isFocused = useIsFocused();
+    // const isFocused = useIsFocused();
 
     // const [data, setData] = useState([{id: 0, name: "Halmstad", lon: 12.8574722, lat: 56.6739803, dlon: 0.0421, dlat: 0.0922}])
 
-    const [cities, setCities] = useState([{id: 0, name: "Halmstad", lon: 12.8574722, lat: 56.6739803, dlon: 0.0421, dlat: 0.0922}]);
+    const [cities, setCities] = useState([]);
 
     const [bikeList, setBikeList] = useState([]);
 
@@ -26,13 +26,13 @@ export default function MapScreen({ navigation, route }) {
     useEffect(() => {
         // Passing configuration object to axios
             const fetchData = async () => {
-            const data = await axios({
-                method: 'get',
-                url: `http://${IP}:1337/api/v1/cities`,
-            }).then((response) => {
-                setCities(response.data);
-                // console.log(response.data);
-            });
+                await axios({
+                    method: 'get',
+                    url: `http://${IP}:1337/api/v1/cities`,
+                }).then((response) => {
+                    setCities(response.data);
+                    // console.log(response.data);
+                });
             }
             fetchData()
             .catch(console.error)
@@ -42,7 +42,7 @@ export default function MapScreen({ navigation, route }) {
         //     newLocation()
         //     }, [isFocused]);
 
-        const [selected, setSelected] = React.useState("Karlskrona");
+        const [selected, setSelected] = useState("Karlskrona");
 
         const data = cities.filter((item) => item.name == selected).map(({id, name, lon, lat, dlon, dlat}) => ({id, name, lon, lat, dlon, dlat}));
 
@@ -79,7 +79,7 @@ export default function MapScreen({ navigation, route }) {
         const endpointParking = `http://${IP}:1337/api/v1/park_zones/city/${data[0].id}`
 
         const fetchBikes = async () => {
-            const data = await axios({
+            await axios({
                 method: 'get',
                 url: endpointBikes,
             }).then((response) => {
@@ -91,7 +91,7 @@ export default function MapScreen({ navigation, route }) {
         .catch(console.error)
 
         const fetchStations = async () => {
-            const data = await axios({
+            await axios({
                 method: 'get',
                 url: endpointStations,
             }).then((response) => {
@@ -103,7 +103,7 @@ export default function MapScreen({ navigation, route }) {
         .catch(console.error)
 
         const fetchParking = async () => {
-            const data = await axios({
+            await axios({
                 method: 'get',
                 url: endpointParking,
             }).then((response) => {
@@ -161,7 +161,7 @@ export default function MapScreen({ navigation, route }) {
     const parkingMarker = require('../assets/parking.png');
 
     const showBikes = () => {
-        return availableBikes.map((item, index) => {
+        return availableBikes.map((item) => {
             let id = item.id.toString()
             let battery = `Batteri: ${item.battery}%`
             return (
@@ -181,7 +181,7 @@ export default function MapScreen({ navigation, route }) {
     }
 
     const showStations = () => {
-        return stationList.map((item, index) => {
+        return stationList.map((item) => {
             let id = item.id.toString()
             return (
                 <Marker
@@ -200,7 +200,7 @@ export default function MapScreen({ navigation, route }) {
     }
 
     const showParking = () => {
-        return parkingList.map((item, index) => {
+        return parkingList.map((item) => {
             let id = item.id.toString()
             return (
                 <Marker
@@ -217,15 +217,15 @@ export default function MapScreen({ navigation, route }) {
             )
         })
     }
-    console.log(bikeList)
+    // console.log(bikeList)
     // console.log(availableBikes)
-    console.log(data)
+    // console.log(data)
     // console.log(selected)
     // console.log(location[0].name)
     // console.log(mapRegion)
     return (
-    <View style={{flexDirection: "column"}}>
-        <View style={styles.top}>
+    <View style={styles.mapPage}>
+        <View>
             <SelectList 
             data={cities.map(item => {
                 return {key: item.id, value: item.name}
@@ -262,9 +262,6 @@ export default function MapScreen({ navigation, route }) {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    },
     map: {
         width: '100%',
         height: '96%',
@@ -272,5 +269,8 @@ const styles = StyleSheet.create({
     markerImage: {
         width: 35,
         height: 35
+    },
+    mapPage: {
+        flexDirection: "column"
     }
 });
