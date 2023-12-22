@@ -13,25 +13,24 @@ export default function History() {
 
     const isFocused = useIsFocused();
     const userID = SessionStorage.getItem('@id');
+
     useEffect(() => {
-    // Passing configuration object to axios
+    // Collect user data from API
         const fetchUser = async () => {
             await axios({
                 method: 'get',
                 url: `http://${IP}:1337/api/v1/users/${userID}`,
             }).then((response) => {
                 setUserData(response.data);
-                // console.log(response.data);
             });
         }
-
+        // Collect all rides for selected user from API
         const fetchRides = async () => {
             await axios({
                 method: 'get',
                 url: `http://${IP}:1337/api/v1/rides/user/${userID}`,
             }).then((response) => {
                 setRides(response.data);
-                // console.log(response.data);
             });
             }
         fetchUser()
@@ -60,39 +59,4 @@ export default function History() {
                 ) }/>
         </View>
     )
-} 
-
-// const styles = StyleSheet.create({
-//     container: {
-//         flex: 1,
-//     },
-//     content: {
-//         padding: 24
-//     }
-// });
-
-{/* <SelectList 
-// defaultOption={{ key: 1, value:'Available cities', disabled:true }}
-setSelected={(val) => setSelected(val)} 
-data={quote.map(item => {
-    cityCount ++;
-    return {key: cityCount, value: item.name}
-})}
-save="value"
-search={false}
-onSelect={() => {
-    setMapObj(data); 
-    navigation.navigate(('Map', mapObj))
-}}
-//     navigation.navigate('Map', mapObj)}}
-/> */}
-
-{/* <FlatList
-data={quote}
-renderItem={({ item }) => (
-    <TouchableOpacity onPress={() => navigation.navigate('Map', item)}>
-        <Text>{ item.name }</Text>
-        <Text>{ item.latitude }</Text>
-    </TouchableOpacity>
-)}
-/> */}
+}

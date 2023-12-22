@@ -16,14 +16,13 @@ export default function Fees() {
     const [showFees, setShowFees] = useState(false);
 
     useEffect(() => {
-        // Passing configuration object to axios
+        // Collecting city data from API
             const fetchData = async () => {
                 await axios({
                     method: 'get',
                     url: `http://${IP}:1337/api/v1/cities`,
                 }).then((response) => {
                     setCities(response.data);
-                    // console.log(response.data);
                 });
             }
             fetchData()
@@ -32,7 +31,7 @@ export default function Fees() {
 
         const selectedCity = cities.filter((item) => item.name == selected).map(({id, name, lon, lat, dlon, dlat}) => ({id, name, lon, lat, dlon, dlat}));
 
-
+        // Collecting fees for selected city from API
         const fetchFees = async () => {
             await axios({
                 method: 'get',
@@ -40,7 +39,6 @@ export default function Fees() {
             }).then((response) => {
                 setFees(response.data);
                 setShowFees(true);
-                // console.log(response.data);
             });
             }
 
@@ -72,14 +70,4 @@ export default function Fees() {
             </View>}
         </View>
     )
-} 
-
-// const styles = StyleSheet.create({
-//     container: {
-//         flex: 1,
-//         padding: 24
-//     },
-//     content: {
-//         padding: 24
-//     }
-// });
+}

@@ -4,7 +4,6 @@ import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from "react-native";
 import axios from 'axios';
 import { IP } from '@env'
-// import { useNavigation } from '@react-navigation/native';
 import SessionStorage from 'react-native-session-storage';
 
 
@@ -16,24 +15,23 @@ export default function Login( { navigation } ) {
 
 
     useEffect(() => {
-        // Passing configuration object to axios
+        // Collect all users from API
             const fetchUsers = async () => {
                 await axios({
                     method: 'get',
                     url: `http://${IP}:1337/api/v1/users`,
                 }).then((response) => {
                     setUsers(response.data);
-                    // console.log(response.data);
                 });
             }
             fetchUsers()
             .catch(console.error)
         }, []);
 
+    // Check if user ID exists and store in session. Then move to Map-screen
     const handleButtonPress = () => {
         const data = users.filter((item) => item.name == username).map(({id, name}) => ({id, name}));
         if (data[0] != undefined) {
-        // setUserId(data[0].id)
         alert('Logged in')
         SessionStorage.setItem('@loggedIn', true);
         SessionStorage.setItem('@id', data[0].id);

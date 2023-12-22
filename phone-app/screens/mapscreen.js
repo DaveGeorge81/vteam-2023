@@ -9,12 +9,6 @@ import { IP } from '@env'
 
 export default function MapScreen() {
 
-    // let cityCount = 0
-
-    // const isFocused = useIsFocused();
-
-    // const [data, setData] = useState([{id: 0, name: "Halmstad", lon: 12.8574722, lat: 56.6739803, dlon: 0.0421, dlat: 0.0922}])
-
     const [cities, setCities] = useState([]);
 
     const [bikeList, setBikeList] = useState([]);
@@ -24,7 +18,7 @@ export default function MapScreen() {
     const [parkingList, setParkingList] = useState([]);
 
     useEffect(() => {
-        // Passing configuration object to axios
+        // Collect all cities from API
             const fetchData = async () => {
                 await axios({
                     method: 'get',
@@ -38,9 +32,6 @@ export default function MapScreen() {
             .catch(console.error)
         }, []);
 
-        // useEffect(() => {
-        //     newLocation()
-        //     }, [isFocused]);
 
         const [selected, setSelected] = useState("Karlskrona");
 
@@ -48,8 +39,6 @@ export default function MapScreen() {
 
         const availableBikes = bikeList.filter((item) => item.status_id == 0).map(({id, status_id, lon, lat, battery}) => ({id, status_id, lon, lat, battery}));
 
-
-        // const [location, setLocation] = useState({name: "Halmstad", latitude: 56.6739803, longitude: 12.8574722}) 
 
     const [mapRegion, setMapRegion] = useState({
         latitude: 56.193,
@@ -65,6 +54,7 @@ export default function MapScreen() {
     return () => clearInterval(intervalId);
     },);
 
+    // update location on map and collect bikes, p-zones and charging stations
     const newLocation = () => {
         setMapRegion({
             latitude: data[0].lat,
@@ -84,7 +74,6 @@ export default function MapScreen() {
                 url: endpointBikes,
             }).then((response) => {
                 setBikeList(response.data);
-                // console.log(response.data);
             });
         }
         fetchBikes()
@@ -96,7 +85,6 @@ export default function MapScreen() {
                 url: endpointStations,
             }).then((response) => {
                 setStationList(response.data);
-                // console.log(response.data);
             });
         }
         fetchStations()
@@ -108,7 +96,6 @@ export default function MapScreen() {
                 url: endpointParking,
             }).then((response) => {
                 setParkingList(response.data);
-                // console.log(response.data);
             });
         }
         fetchParking()
@@ -160,6 +147,7 @@ export default function MapScreen() {
 
     const parkingMarker = require('../assets/parking.png');
 
+    // Construct markers for all available bikes.
     const showBikes = () => {
         return availableBikes.map((item) => {
             let id = item.id.toString()
@@ -180,6 +168,7 @@ export default function MapScreen() {
         })
     }
 
+        // Construct markers for all charging stations.
     const showStations = () => {
         return stationList.map((item) => {
             let id = item.id.toString()
@@ -199,6 +188,7 @@ export default function MapScreen() {
         })
     }
 
+    // Construct markers for all P-zones.
     const showParking = () => {
         return parkingList.map((item) => {
             let id = item.id.toString()
@@ -217,12 +207,6 @@ export default function MapScreen() {
             )
         })
     }
-    // console.log(bikeList)
-    // console.log(availableBikes)
-    // console.log(data)
-    // console.log(selected)
-    // console.log(location[0].name)
-    // console.log(mapRegion)
     return (
     <View style={styles.mapPage}>
         <View>

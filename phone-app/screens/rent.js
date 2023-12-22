@@ -16,10 +16,10 @@ export default function Rent( {navigation} ) {
     const [bikeId, setBikeId] = useState("");
     const [openQR, setOpenQR] = useState(false);
     const [rides, setRides] = useState([]);
-    // const [isLoading, setIsLoading] = useState(false);
     const userID = SessionStorage.getItem('@id');
     const isFocused = useIsFocused();
 
+    // Get permission from user to access camera.
     useEffect(() => {
     const getBarCodeScannerPermissions = async () => {
         const { status } = await BarCodeScanner.requestPermissionsAsync();
@@ -28,23 +28,23 @@ export default function Rent( {navigation} ) {
 
     getBarCodeScannerPermissions();
 
+        // Collect all rides for user from API.
     const fetchRides = async () => {
         await axios({
             method: 'get',
             url: `http://${IP}:1337/api/v1/rides/user/${userID}`,
         }).then((response) => {
             setRides(response.data);
-            // console.log(response.data);
         });
         }
     fetchRides()
     .catch(console.error)
     }, [isFocused]);
 
+    // Store data from QR-code
     const handleBarCodeScanned = ({ data }) => {
     Vibration.vibrate(100);
     setScanned(true);
-    // alert(`Scooter with id: ${data} has been scanned! Tap on "Rent scooter" to rent.`);
     setBikeId(data)
     setOpenQR(false)
     };
@@ -58,11 +58,8 @@ export default function Rent( {navigation} ) {
 
     const data = rides.filter((item) => item.duration == null).map(({duration}) => ({duration}));
 
+    // Send a rent bike request to API
     const rentBike = () => {
-        // console.log('Input Value:', bikeId);
-        // Implement any desired actions with the input value here
-        // setIsLoading(true);
-
         let body = {
             user_id: userID,
             bike_id: bikeId}
@@ -89,10 +86,8 @@ export default function Rent( {navigation} ) {
 
     };
 
+    //Send a return bike request to API
     const returnBike = () => {
-        // console.log('Input Value:', bikeId);
-        // Implement any desired actions with the input value here
-        // setIsLoading(true);
 
         let body = {user_id: userID}
 

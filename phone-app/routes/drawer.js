@@ -8,6 +8,7 @@ import Login from '../screens/login';
 
 const Drawer = createDrawerNavigator();
 
+// Drawer menu with items
 function MyDrawer() {
     return (
         <Drawer.Navigator>
@@ -16,7 +17,6 @@ function MyDrawer() {
         <Drawer.Screen name="Current fees" component={Fees} />
         <Drawer.Screen name="Rent bike" component={Rent} />
         <Drawer.Screen name="Account Info" component={History} />
-        {/* <Drawer.Screen name="Map" component={Map} /> */}
         </Drawer.Navigator>
     );
 }
