@@ -2,6 +2,8 @@
  * API routes.
  * © Vteam 2023 Group 8.
  */
+"use strict";
+
 const express = require('express');
 const router = express.Router();
 const db = require("../models/db_model.js");
@@ -181,6 +183,15 @@ router.delete('/users/:id', (req, res) => {
         count: result.changes,
         message: 'Ok'
     });
+});
+
+/**
+ * Get all bike positions and status of a city.
+ */
+router.get('/bikes_pos/city/:city_id', (req, res) => {
+    const result = db.getBikesPosCity(req.params.city_id);
+
+    return res.status(200).json(result);
 });
 
 /**
@@ -700,7 +711,6 @@ router.delete('/rides/:id', (req, res) => {
         message: 'Ok'
     });
 });
-
 
 
 module.exports = router;

@@ -2,6 +2,8 @@
  * The bike rental backend server app.
  * © Vteam 2023 Group 8.
  */
+"use strict";
+
 const port = 1337;
 const express = require('express');
 const routeAPI = require('./routes/api.js');
@@ -38,7 +40,7 @@ process.on('SIGHUP', (code) => {
     shutDown(code);
 });
 
-app.use(express.static("public"))
+app.use(express.static("public"));
 
 app.use("/api/v1", routeAPI);
 

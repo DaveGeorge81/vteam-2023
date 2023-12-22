@@ -65,7 +65,8 @@ CREATE TABLE park_zones
     lat REAL NOT NULL,
     lon REAL NOT NULL,
     dlat REAL NOT NULL,
-    dlon REAL NOT NULL
+    dlon REAL NOT NULL,
+    num_bikes INTEGER DEFAULT 0 NOT NULL
 );
 
 DROP TABLE IF EXISTS pricing;

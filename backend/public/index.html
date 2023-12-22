@@ -34,6 +34,7 @@
 
             <h3>🛴 <a href="#bikes">Bikes</a></h3>
             <ul>
+                <li><a href="#get-bikes-pos-city">GET /bikes_pos/city/{city_id}</a></li>
                 <li><a href="#get-bikes-city">GET /bikes/city/{city_id}</a></li>
                 <li><a href="#get-bikes-city-status">GET /bikes/city/{city_id}/status/{status_id}</a></li>
                 <li><a href="#get-bikes-city-station">GET /bikes/city/{city_id}/station/{station_id}</a></li>
@@ -393,6 +394,36 @@ HTTP Status Code: 400 Bad Request</code></pre>
 
             <section>
                 <h2 id="bikes">🛴 Bikes</h2>
+                <h3 id="get-bikes-pos-city">GET /bikes_pos/city/{city_id}</h3>
+                <p>Get a JSON-representation of all bike positions and status in a city.</p>
+
+                <h4>Sample request</h4>
+                <pre><code>GET /api/v1/bikes_pos/city/1</code></pre>
+
+                <h4>Response</h4>
+                <pre><code>[
+    {
+        "id": 1,
+        "status_id": 1,
+        "lat": 56.2,
+        "lon": 15.63,
+    },
+    {
+        "id": 2,
+        "status_id": 1,
+        "lat": 56.21,
+        "lon": 15.62,
+    },
+    {
+        "id": 3,
+        "status_id": 3,
+        "lat": 56.21,
+        "lon": 15.64,
+    }
+]
+
+HTTP Status Code: 200 OK</code></pre>
+
                 <h3 id="get-bikes-city">GET /bikes/city/{city_id}</h3>
                 <p>Get a JSON-representation of all bikes in a city.</p>
 
@@ -646,7 +677,8 @@ HTTP Status Code: 200 OK</code></pre>
 HTTP Status Code: 400 Bad Request</code></pre>
 
                 <h3 id="put-bikes-check-park-zone">PUT /bikes/check_park_zone</h3>
-                <p>Check if a bike is in a parking zone and update bike's park_id property.</p>
+                <p>Check if a bike is in a parking zone and update bike's park_id property.
+                    Also updates num_bikes in park_zones table.</p>
 
                 <h4>Sample request</h4>
                 <pre><code>PUT /api/v1/bikes/check_park_zone</code></pre>
@@ -998,7 +1030,8 @@ HTTP Status Code: 400 Bad Request</code></pre>
         "lat": 56.21,
         "lon": 15.64,
         "dlat": 0.001,
-        "dlon": 0.001
+        "dlon": 0.001,
+        "num_bikes": 1
     },
     {
         "id": 2,
@@ -1006,7 +1039,8 @@ HTTP Status Code: 400 Bad Request</code></pre>
         "lat": 56.2,
         "lon": 15.61,
         "dlat": 0.001,
-        "dlon": 0.0015
+        "dlon": 0.0015,
+        "num_bikes": 0
     }
 ]
 
@@ -1025,7 +1059,8 @@ HTTP Status Code: 200 OK</code></pre>
     "lat": 56.2,
     "lon": 15.61,
     "dlat": 0.001,
-    "dlon": 0.0015
+    "dlon": 0.0015,
+    "num_bikes": 0
 }
 
 HTTP Status Code: 200 OK</code></pre>
@@ -1062,12 +1097,13 @@ HTTP Status Code: 201 Created</code></pre>
 
                 <h4>Required body keys<br>
                 <small>(currently x-www-form-urlencoded)</small></h4>
-                <pre><code>id      = parking zone id to update
-city_id
-lat     = latitude
-lon     = longitude
-dlat    = north-south extension of zone (≈radius)
-dlon    = east-west extension of zone (≈radius)</code></pre>
+                <pre><code>id        = parking zone id to update
+city_id   = city id
+lat       = latitude
+lon       = longitude
+dlat      = north-south extension of zone (≈radius)
+dlon      = east-west extension of zone (≈radius)
+num_bikes = number of bikes in zone</code></pre>
 
                 <h4>Response (success)</h4>
                 <pre><code>{
