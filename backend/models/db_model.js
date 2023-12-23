@@ -551,7 +551,8 @@ const dbModel = {
         let result;
 
         try {
-            const bike = db.prepare('SELECT status_id, lat, lon FROM bikes WHERE id = ?')
+            // Get bike
+            const bike = db.prepare('SELECT status_id, park_id, lat, lon FROM bikes WHERE id = ?')
                 .get(body.bike_id);
 
             if (!bike) {
@@ -562,21 +563,33 @@ const dbModel = {
                 throw new Error('Bike is not available for lease');
             }
 
+            // Create a new ride
             result = db.prepare(`
-                INSERT INTO rides (start_time, start_lat, start_lon, user_id, bike_id)
-                VALUES (datetime('now', 'localtime'), ?, ?, ?, ?)
-            `).run(bike.lat, bike.lon, body.user_id, body.bike_id);
+                INSERT INTO rides (start_time, start_lat, start_lon, start_park_id,
+                    user_id, bike_id)
+                VALUES (datetime('now', 'localtime'), ?, ?, ?, ?, ?)
+            `).run(bike.lat, bike.lon, bike.park_id, body.user_id, body.bike_id);
 
+            // Update user
             const userResult = db.prepare(`UPDATE users SET ride_id =
                 ${result.lastInsertRowid} WHERE id = ?`).run(body.user_id);
 
             if (userResult.changes === 0) {
-                // TODO Delete inserted ride.
+                // Delete inserted ride
+                db.prepare(`DELETE FROM rides WHERE id = ${result.lastInsertRowid}`).run();
+
                 throw new Error('user_id not found');
             }
 
+            // Update bike
             db.prepare(`UPDATE bikes SET (user_id, status_id, park_id) =
                 (?, 1, 0) WHERE id = ?`).run(body.user_id, body.bike_id);
+
+            // Remove bike from park_zone
+            if (bike.park_id) {
+                db.prepare(`UPDATE park_zones SET num_bikes = num_bikes - 1 WHERE id = ?`)
+                    .run(bike.park_id);
+            }
 
         } catch (err) {
             result = {
@@ -599,8 +612,9 @@ const dbModel = {
                 throw new Error('user_id not found');
             }
 
-            const ride = db.prepare(`SELECT start_time, start_lat, start_lon, bike_id
-                FROM rides WHERE id = ?`).get(user.ride_id);
+            // Get ride
+            const ride = db.prepare(`SELECT start_time, start_lat, start_lon, start_park_id,
+                bike_id FROM rides WHERE id = ?`).get(user.ride_id);
 
             if (!ride) {
                 throw new Error('No matching ride found for supplied user_id');
@@ -623,11 +637,11 @@ const dbModel = {
 
             let price = pricing.start_fee + pricing.minute_fee * duration.sec / 60;
 
-            const parkIdStart = posInParkingZone(bike.city_id, ride.start_lat, ride.start_lon);
+            // const parkIdStart = posInParkingZone(bike.city_id, ride.start_lat, ride.start_lon);
             const parkIdStop  = posInParkingZone(bike.city_id, bike.lat, bike.lon);
 
             // Reduced price if start outside p-zone and finish in p-zone
-            if (!parkIdStart && parkIdStop) {
+            if (!ride.start_park_id && parkIdStop) {
                 price -= pricing.discount;
             }
 
@@ -649,6 +663,12 @@ const dbModel = {
 
             db.prepare(`UPDATE bikes SET (user_id, status_id, park_id) =
                 (0, 0, ?) WHERE id = ?`).run(parkIdStop, ride.bike_id);
+
+            // Add bike to park_zone
+            if (parkIdStop) {
+                db.prepare(`UPDATE park_zones SET num_bikes = num_bikes + 1 WHERE id = ?`)
+                    .run(parkIdStop);
+            }
 
             result.price = price;
         } catch (err) {

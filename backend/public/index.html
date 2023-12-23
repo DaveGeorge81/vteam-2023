@@ -679,6 +679,8 @@ HTTP Status Code: 400 Bad Request</code></pre>
                 <h3 id="put-bikes-check-park-zone">PUT /bikes/check_park_zone</h3>
                 <p>Check if a bike is in a parking zone and update bike's park_id property.
                     Also updates num_bikes in park_zones table.</p>
+                <p><b>Note:</b> This endpoint should only be used if the bike is moved in another way than a normal ride by a user.
+                    For example when a new bike is added to a city, or moved by an admin.</p>
 
                 <h4>Sample request</h4>
                 <pre><code>PUT /api/v1/bikes/check_park_zone</code></pre>
@@ -1271,6 +1273,7 @@ HTTP Status Code: 400 Bad Request</code></pre>
         "duration": "1.45",
         "start_lat": 56.21,
         "start_lon": 15.64,
+        "start_park_id": 1,
         "stop_lat": 56.22,
         "stop_lon": 15.66,
         "user_id": 1,
@@ -1295,6 +1298,7 @@ HTTP Status Code: 200 OK</code></pre>
         "duration": "1.10",
         "start_lat": 56.21,
         "start_lon": 15.62,
+        "start_park_id": 0,
         "stop_lat": 56.20,
         "stop_lon": 15.61,
         "user_id": 2,
@@ -1318,6 +1322,7 @@ HTTP Status Code: 200 OK</code></pre>
     "duration": "1.10",
     "start_lat": 56.21,
     "start_lon": 15.62,
+    "start_park_id": 0,
     "stop_lat": 56.20,
     "stop_lon": 15.61,
     "user_id": 2,
@@ -1331,9 +1336,10 @@ HTTP Status Code: 200 OK</code></pre>
                 <p>Start a new ride with a given user and bike.</p>
                 <ul>
                     <li>The bikes current position is stored in the rides table, together with start time,
-                        user_id and bike_id.</li>
+                        start_park_id, user_id and bike_id.</li>
                     <li>The ride_id is stored in the users table.</li>
                     <li>The user_id and status are set in the bikes table, where also the park_id is reset.</li>
+                    <li>If the bike was in a parking zone, the number of bikes in the zone is decremented.</li>
                 </ul>
 
                 <h4>Sample request</h4>
@@ -1368,7 +1374,8 @@ HTTP Status Code: 400 Bad Request</code></pre>
                 <ul>
                     <li>Calculates the duration and price of the ride, and updates the rides table.</li>
                     <li>Withdraws the price from the balance in the users table.</li>
-                    <li>Marks the bike as free in the bikes table, and updates park_id (if the bike was left in a parking zone).</li>
+                    <li>Marks the bike as free in the bikes table, and updates park_id.</li>
+                    <li>If the bike was left in a parking zone, the number of bikes in the zone is incremented.</li>
                 </ul>
 
                 <h4>Sample request</h4>

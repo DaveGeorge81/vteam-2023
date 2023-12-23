@@ -91,6 +91,7 @@ CREATE TABLE rides
     duration TEXT,
     start_lat REAL NOT NULL,
     start_lon REAL NOT NULL,
+    start_park_id INTEGER NOT NULL,
     stop_lat REAL,
     stop_lon REAL,
     user_id INTEGER NOT NULL,
