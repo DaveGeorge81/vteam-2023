@@ -286,7 +286,6 @@ const dbModel = {
 
             result = db.prepare(`UPDATE bikes SET (status_id, station_id) = (3, ?) WHERE id = ?`)
                 .run(body.station_id, body.bike_id);
-
         } catch (err) {
             result = {
                 changes: 0,
@@ -321,7 +320,6 @@ const dbModel = {
 
             result = db.prepare(`UPDATE bikes SET (status_id, station_id) = (0, 0) WHERE id = ?`)
                 .run(body.bike_id);
-
         } catch (err) {
             result = {
                 changes: 0,
@@ -590,7 +588,6 @@ const dbModel = {
                 db.prepare(`UPDATE park_zones SET num_bikes = num_bikes - 1 WHERE id = ?`)
                     .run(bike.park_id);
             }
-
         } catch (err) {
             result = {
                 changes: 0,
