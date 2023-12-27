@@ -18,8 +18,14 @@
 import dotenv from 'dotenv';
 dotenv.config();
 import { ObjectId } from "mongodb";
-import sparkdbModel from "./modules/sparkdb.js";
-import GPSComponent from "./modules/gps.js";
+// // Import sqlite3
+// const sqlite3 = require('sqlite3').verbose();
+
+// // Connect to db
+// let db = new sqlite3.Database('./db/database')
+import sparkdbModel from "./models/sparkdb.js";
+import GPSComponent from "./models/gps.js";
+import dbModel from "./models/db_model.js";
 
 const updateFrequencyMilliseconds = process.env.UPDATE_FREQUENCY_MILLISECONDS;
 const batteryDepletionRate = process.env.BATTERY_DEPLETION_RATE;

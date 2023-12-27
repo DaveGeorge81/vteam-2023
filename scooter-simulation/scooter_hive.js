@@ -2,14 +2,11 @@
  * A node application to start a X amount of scooters.
  * Used to simulate a system of X scooters.
  * scooter.js will load .env file
- * This will later be removed, since docker will handle loading environment variables
- * Environment variables:
- * DBURI
- * NUMBER_OF_SCOOTERS
  */
 
 import Scooter from "./scooter.js";
-import sparkdbModel from "./modules/sparkdb.js";
+import sparkdbModel from "./models/sparkdb.js";
+import dbModel from "./models/db_model.js";
 
 const numberOfScooters = process.env.NUMBER_OF_SCOOTERS;
 let scooters = [];
@@ -99,7 +96,7 @@ async function newScooterCallback(id) {
   * @return void
   */
 async function watchForInsert() {
-    const dbScooters = await getAllScooters();
+    const dbScooters = dbModel.getBikesCity();
     const newScooters = dbScooters.filter(newScooter => {
         for (let i = 0; i < scooters.length; i++) {
             const oldScooter = scooters[i];
@@ -124,7 +121,7 @@ async function watchForInsert() {
   */
 async function dropCallback() {
     console.log("Loading up new scooters:", numberOfScooters);
-    const existingScooters = await sparkdbModel.getAllScooters();
+    const existingScooters = dbModel.getBikesCity();
     const oldScooters = [];
     for (let i = 0; i < existingScooters.length; i++) {
         const scooter = new Scooter(removeScooter);
@@ -140,8 +137,8 @@ async function dropCallback() {
 }
 
 async function main() {
-    sparkdbModel.setMongoURI(process.env.DBURI);
-    sparkdbModel.connect();
+    // sparkdbModel.setMongoURI(process.env.DBURI);
+    // sparkdbModel.connect();
     dropCallback();
     newScooterCallback(id);
 }
