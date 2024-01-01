@@ -2,26 +2,27 @@
  * Database model using SQLite.
  * © Vteam 2023 Group 8.
  */
+"use strict";
+
 const db = require('better-sqlite3')('./db/bike-rentals.sqlite');
-// const Database = require("better-sqlite3");
-// const db = new Database("./db/bike-rentals.sqlite", { verbose: console.log });
+
 /**
  * Check if a position (lat, lon) is in a parking zone.
  * Return the park_id (0 if not in a zone).
  */
-function posInParkingZone(city_id, lat, lon) {
-    const park_zones = db.prepare(`SELECT * FROM park_zones WHERE city_id = ?`);
-    let park_id = 0;
+function posInParkingZone(cityId, lat, lon) {
+    const parkZones = db.prepare(`SELECT * FROM park_zones WHERE city_id = ?`);
+    let parkId = 0;
 
-    for (const zone of park_zones.iterate(city_id)) {
+    for (const zone of parkZones.iterate(cityId)) {
         if (lat >= zone.lat - zone.dlat && lat <= zone.lat + zone.dlat &&
             lon >= zone.lon - zone.dlon && lon <= zone.lon + zone.dlon) {
-            park_id = zone.id;
+            parkId = zone.id;
             break;
         }
     }
 
-    return park_id;
+    return parkId;
 }
 
 const dbModel = {
@@ -52,7 +53,7 @@ const dbModel = {
             result = {
                 changes: 0,
                 message: err.message
-            }
+            };
         }
 
         return result;
@@ -70,14 +71,16 @@ const dbModel = {
             result = {
                 changes: 0,
                 message: err.message
-            }
+            };
         }
 
         return result;
     },
 
     deleteCity: function (id) {
-        return result = db.prepare('DELETE FROM cities WHERE id = ?').run(id);
+        const result = db.prepare('DELETE FROM cities WHERE id = ?').run(id);
+
+        return result;
     },
 
     /**
@@ -103,7 +106,7 @@ const dbModel = {
             result = {
                 changes: 0,
                 message: err.message
-            }
+            };
         }
 
         return result;
@@ -121,7 +124,7 @@ const dbModel = {
             result = {
                 changes: 0,
                 message: err.message
-            }
+            };
         }
 
         return result;
@@ -137,44 +140,51 @@ const dbModel = {
             result = {
                 changes: 0,
                 message: err.message
-            }
+            };
         }
 
         return result;
     },
 
     deleteUser: function (id) {
-        return result = db.prepare('DELETE FROM users WHERE id = ?').run(id);
+        const result = db.prepare('DELETE FROM users WHERE id = ?').run(id);
+
+        return result;
     },
 
     /**
      * Bikes
      */
-    getBikesCity: function (city_id) {
-        return db.prepare('SELECT * FROM bikes WHERE city_id = ?').all(city_id);
+    getBikesPosCity: function (cityId) {
+        return db.prepare('SELECT id, status_id, lat, lon FROM bikes WHERE city_id = ?')
+            .all(cityId);
     },
 
-    getBikesCityStatus: function (city_id, status_id) {
+    getBikesCity: function (cityId) {
+        return db.prepare('SELECT * FROM bikes WHERE city_id = ?').all(cityId);
+    },
+
+    getBikesCityStatus: function (cityId, statusId) {
         return db.prepare('SELECT * FROM bikes WHERE city_id = ? AND status_id = ?')
-            .all(city_id, status_id);
+            .all(cityId, statusId);
     },
 
-    getBikesCityStation: function (city_id, station_id) {
+    getBikesCityStation: function (cityId, stationId) {
         return db.prepare('SELECT * FROM bikes WHERE city_id = ? AND station_id = ?')
-            .all(city_id, station_id);
+            .all(cityId, stationId);
     },
 
-    getBikesCityParkZone: function (city_id, park_id) {
+    getBikesCityParkZone: function (cityId, parkId) {
         return db.prepare('SELECT * FROM bikes WHERE city_id = ? AND park_id = ?')
-            .all(city_id, park_id);
+            .all(cityId, parkId);
     },
 
     getBike: function (id) {
         return db.prepare('SELECT * FROM bikes WHERE id = ?').get(id);
     },
 
-    getBikeUser: function (user_id) {
-        return db.prepare('SELECT * FROM bikes WHERE user_id = ?').get(user_id);
+    getBikeUser: function (userId) {
+        return db.prepare('SELECT * FROM bikes WHERE user_id = ?').get(userId);
     },
 
     addBike: function (body) {
@@ -202,35 +212,51 @@ const dbModel = {
             result = {
                 changes: 0,
                 message: err.message
-            }
+            };
         }
 
         return result;
     },
 
     updateBikeCheckParkZone: function (body) {
-        let result;
+        let result = {
+            changes: 1
+        };
 
         try {
-            const bike = db.prepare('SELECT city_id, lat, lon FROM bikes WHERE id = ?')
+            const bike = db.prepare('SELECT city_id, park_id, lat, lon FROM bikes WHERE id = ?')
                 .get(body.id);
 
             if (!bike) {
                 throw new Error('id not found');
             }
 
-            const park_id = posInParkingZone(bike.city_id, bike.lat, bike.lon);
+            const newParkId = posInParkingZone(bike.city_id, bike.lat, bike.lon);
 
-            result = db.prepare(`UPDATE bikes SET park_id = ${park_id} WHERE id = ?`)
-                .run(body.id);
+            if (bike.park_id !== newParkId) {
+                result = db.prepare(`UPDATE bikes SET park_id = ${newParkId} WHERE id = ?`)
+                    .run(body.id);
 
-            result.park_id = park_id;
+                // Remove bike from old park_zone
+                if (bike.park_id) {
+                    db.prepare(`UPDATE park_zones SET num_bikes = num_bikes - 1 WHERE id = ?`)
+                        .run(bike.park_id);
+                }
+
+                // Add bike to new park_zone
+                if (newParkId) {
+                    db.prepare(`UPDATE park_zones SET num_bikes = num_bikes + 1 WHERE id = ?`)
+                        .run(newParkId);
+                }
+            }
+
+            result.park_id = newParkId;
         } catch (err) {
             result = {
                 changes: 0,
                 park_id: 0,
                 message: err.message
-            }
+            };
         }
 
         return result;
@@ -260,12 +286,11 @@ const dbModel = {
 
             result = db.prepare(`UPDATE bikes SET (status_id, station_id) = (3, ?) WHERE id = ?`)
                 .run(body.station_id, body.bike_id);
-
         } catch (err) {
             result = {
                 changes: 0,
                 message: err.message
-            }
+            };
         }
 
         return result;
@@ -295,12 +320,11 @@ const dbModel = {
 
             result = db.prepare(`UPDATE bikes SET (status_id, station_id) = (0, 0) WHERE id = ?`)
                 .run(body.bike_id);
-
         } catch (err) {
             result = {
                 changes: 0,
                 message: err.message
-            }
+            };
         }
 
         return result;
@@ -318,7 +342,7 @@ const dbModel = {
             result = {
                 changes: 0,
                 message: err.message
-            }
+            };
         }
 
         return result;
@@ -336,21 +360,23 @@ const dbModel = {
             result = {
                 changes: 0,
                 message: err.message
-            }
+            };
         }
 
         return result;
     },
 
     deleteBike: function (id) {
-        return result = db.prepare('DELETE FROM bikes WHERE id = ?').run(id);
+        const result = db.prepare('DELETE FROM bikes WHERE id = ?').run(id);
+
+        return result;
     },
 
     /**
      * Charging stations
      */
-    getStationsCity: function (city_id) {
-        return db.prepare('SELECT * FROM stations WHERE city_id = ?').all(city_id);
+    getStationsCity: function (cityId) {
+        return db.prepare('SELECT * FROM stations WHERE city_id = ?').all(cityId);
     },
 
     getStation: function (id) {
@@ -380,12 +406,12 @@ const dbModel = {
             result = {
                 changes: 0,
                 message: err.message
-            }
+            };
         }
 
         return result;
     },
-/*
+    /*
     addNumFreeStation: function (body) {
         let result;
 
@@ -401,16 +427,18 @@ const dbModel = {
 
         return result;
     },
-*/
+    */
     deleteStation: function (id) {
-        return result = db.prepare('DELETE FROM park_zones WHERE id = ?').run(id);
+        const result = db.prepare('DELETE FROM stations WHERE id = ?').run(id);
+
+        return result;
     },
 
     /**
      * Parking zones
      */
-    getParkZonesCity: function (city_id) {
-        return db.prepare('SELECT * FROM park_zones WHERE city_id = ?').all(city_id);
+    getParkZonesCity: function (cityId) {
+        return db.prepare('SELECT * FROM park_zones WHERE city_id = ?').all(cityId);
     },
 
     getParkZone: function (id) {
@@ -433,28 +461,31 @@ const dbModel = {
 
         try {
             result = db.prepare(`
-                UPDATE park_zones SET (city_id, lat, lon, dlat, dlon) =
-                (?, ?, ?, ?, ?) WHERE id = ?
-            `).run(body.city_id, body.lat, body.lon, body.dlat, body.dlon, body.id);
+                UPDATE park_zones SET (city_id, lat, lon, dlat, dlon, num_bikes) =
+                (?, ?, ?, ?, ?, ?) WHERE id = ?
+            `).run(body.city_id, body.lat, body.lon, body.dlat, body.dlon, body.num_bikes,
+                body.id);
         } catch (err) {
             result = {
                 changes: 0,
                 message: err.message
-            }
+            };
         }
 
         return result;
     },
 
     deleteParkZone: function (id) {
-        return result = db.prepare('DELETE FROM park_zones WHERE id = ?').run(id);
+        const result = db.prepare('DELETE FROM park_zones WHERE id = ?').run(id);
+
+        return result;
     },
 
     /**
      * Pricing
      */
-    getPricingCity: function (city_id) {
-        return db.prepare('SELECT * FROM pricing WHERE city_id = ?').get(city_id);
+    getPricingCity: function (cityId) {
+        return db.prepare('SELECT * FROM pricing WHERE city_id = ?').get(cityId);
     },
 
     addPricing: function (body) {
@@ -469,7 +500,7 @@ const dbModel = {
             result = {
                 changes: 0,
                 message: err.message
-            }
+            };
         }
 
         return result;
@@ -487,25 +518,27 @@ const dbModel = {
             result = {
                 changes: 0,
                 message: err.message
-            }
+            };
         }
 
         return result;
     },
 
-    deletePricing: function (city_id) {
-        return result = db.prepare('DELETE FROM pricing WHERE city_id = ?').run(city_id);
+    deletePricing: function (cityId) {
+        const result = db.prepare('DELETE FROM pricing WHERE city_id = ?').run(cityId);
+
+        return result;
     },
 
     /**
      * Rides
      */
-    getRidesUser: function (user_id) {
-        return db.prepare('SELECT * FROM rides WHERE user_id = ?').all(user_id);
+    getRidesUser: function (userId) {
+        return db.prepare('SELECT * FROM rides WHERE user_id = ?').all(userId);
     },
 
-    getRidesBike: function (bike_id) {
-        return db.prepare('SELECT * FROM rides WHERE bike_id = ?').all(bike_id);
+    getRidesBike: function (bikeId) {
+        return db.prepare('SELECT * FROM rides WHERE bike_id = ?').all(bikeId);
     },
 
     getRide: function (id) {
@@ -516,7 +549,8 @@ const dbModel = {
         let result;
 
         try {
-            const bike = db.prepare('SELECT status_id, lat, lon FROM bikes WHERE id = ?')
+            // Get bike
+            const bike = db.prepare('SELECT status_id, park_id, lat, lon FROM bikes WHERE id = ?')
                 .get(body.bike_id);
 
             if (!bike) {
@@ -527,27 +561,38 @@ const dbModel = {
                 throw new Error('Bike is not available for lease');
             }
 
+            // Create a new ride
             result = db.prepare(`
-                INSERT INTO rides (start_time, start_lat, start_lon, user_id, bike_id)
-                VALUES (datetime('now', 'localtime'), ?, ?, ?, ?)
-            `).run(bike.lat, bike.lon, body.user_id, body.bike_id);
+                INSERT INTO rides (start_time, start_lat, start_lon, start_park_id,
+                    user_id, bike_id)
+                VALUES (datetime('now', 'localtime'), ?, ?, ?, ?, ?)
+            `).run(bike.lat, bike.lon, bike.park_id, body.user_id, body.bike_id);
 
+            // Update user
             const userResult = db.prepare(`UPDATE users SET ride_id =
                 ${result.lastInsertRowid} WHERE id = ?`).run(body.user_id);
 
             if (userResult.changes === 0) {
-                // TODO Delete inserted ride.
+                // Delete inserted ride
+                db.prepare(`DELETE FROM rides WHERE id = ${result.lastInsertRowid}`).run();
+
                 throw new Error('user_id not found');
             }
 
+            // Update bike
             db.prepare(`UPDATE bikes SET (user_id, status_id, park_id) =
                 (?, 1, 0) WHERE id = ?`).run(body.user_id, body.bike_id);
 
+            // Remove bike from park_zone
+            if (bike.park_id) {
+                db.prepare(`UPDATE park_zones SET num_bikes = num_bikes - 1 WHERE id = ?`)
+                    .run(bike.park_id);
+            }
         } catch (err) {
             result = {
                 changes: 0,
                 message: err.message
-            }
+            };
         }
 
         return result;
@@ -564,8 +609,9 @@ const dbModel = {
                 throw new Error('user_id not found');
             }
 
-            const ride = db.prepare(`SELECT start_time, start_lat, start_lon, bike_id
-                FROM rides WHERE id = ?`).get(user.ride_id);
+            // Get ride
+            const ride = db.prepare(`SELECT start_time, start_lat, start_lon, start_park_id,
+                bike_id FROM rides WHERE id = ?`).get(user.ride_id);
 
             if (!ride) {
                 throw new Error('No matching ride found for supplied user_id');
@@ -588,11 +634,11 @@ const dbModel = {
 
             let price = pricing.start_fee + pricing.minute_fee * duration.sec / 60;
 
-            const parkIdStart = posInParkingZone(bike.city_id, ride.start_lat, ride.start_lon);
+            // const parkIdStart = posInParkingZone(bike.city_id, ride.start_lat, ride.start_lon);
             const parkIdStop  = posInParkingZone(bike.city_id, bike.lat, bike.lon);
 
             // Reduced price if start outside p-zone and finish in p-zone
-            if (!parkIdStart && parkIdStop) {
+            if (!ride.start_park_id && parkIdStop) {
                 price -= pricing.discount;
             }
 
@@ -615,24 +661,30 @@ const dbModel = {
             db.prepare(`UPDATE bikes SET (user_id, status_id, park_id) =
                 (0, 0, ?) WHERE id = ?`).run(parkIdStop, ride.bike_id);
 
+            // Add bike to park_zone
+            if (parkIdStop) {
+                db.prepare(`UPDATE park_zones SET num_bikes = num_bikes + 1 WHERE id = ?`)
+                    .run(parkIdStop);
+            }
+
             result.price = price;
         } catch (err) {
             result = {
                 changes: 0,
                 price: 0,
                 message: err.message
-            }
+            };
         }
 
         return result;
     },
 
     deleteRide: function (id) {
-        return result = db.prepare('DELETE FROM rides WHERE id = ?').run(id);
+        const result = db.prepare('DELETE FROM rides WHERE id = ?').run(id);
+
+        return result;
     },
-
-
 
 };
 
-export default dbModel;
+module.exports = dbModel;
