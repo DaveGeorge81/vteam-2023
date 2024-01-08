@@ -9,8 +9,12 @@ on:
   pull_request:
     branches: [ backend ]
 
+defaults:
+  run:
+    working-directory: ./backend
+
 jobs:
-  build:
+  Lint-and-test:
 
     runs-on: ubuntu-latest
 
@@ -18,18 +22,19 @@ jobs:
     - uses: actions/checkout@v4
       with:
         ref: backend
+
     - name: Use Node.js v.20
       uses: actions/setup-node@v4
       with:
         node-version: 20
         cache: 'npm'
+
     - name: Install dependencies
       run: npm ci
-#      working-directory: ./backend
+
     - name: Run ESLint
       run: npm run lint
-#      working-directory: ./backend
+
     - name: Run unit tests and code coverage
       run: npm run test-ci
-#      working-directory: ./backend
 
