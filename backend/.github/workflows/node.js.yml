@@ -5,9 +5,9 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ backend ]
   pull_request:
-    branches: [ main ]
+    branches: [ backend ]
 
 jobs:
   build:
@@ -16,6 +16,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+      with:
+        ref: backend
     - name: Use Node.js v.20
       uses: actions/setup-node@v4
       with:
