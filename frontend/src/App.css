@@ -300,3 +300,158 @@ input[type=submit] {
   cursor: pointer;
   border-radius: 5px;
 }
+
+/* Admin */
+.admin {
+  width: 100%;
+}
+
+.bike-h1 {
+  margin-left: 2em;
+}
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  background-color: #1c1b1b;
+  color: teal;
+  padding: 1em;
+  margin-bottom: 1em;
+}
+
+.admin-header-links {
+  display: flex;
+  justify-content: end;
+  gap: 20px;
+}
+
+/* .admin-container {
+  display:flex;
+  flex-direction:row;
+  justify-content: center;
+} */
+
+.admin-map {
+  height: 90vh;
+  width: 50vw;
+}
+
+.admin-bikes {
+  display: flex;
+  /* justify-content: center; */
+  width: 100%;
+}
+
+.admin-bikes h1 {
+  margin-left: 2em;
+}
+
+.admin-bikes-map {
+  height: 50vh;
+  width: 30vw;
+  margin-left: 5em;
+}
+
+.admin-bikes-info {
+  margin-top: 1em;
+  margin-left: 3em;
+  padding: 1em;
+  /* border: 1px solid black; */
+  width: 65%;
+}
+
+.admin-bikes-info div {
+  margin-bottom: 1em;
+}
+
+.bikeInfo, .listInfo {
+  white-space: pre-line;
+}
+
+.admin-bikes-list {
+  margin-left: 3em;
+  border: 1px solid black;
+  width: 50%;
+  padding: 1em;
+}
+
+.admin-bikes-list ul {
+  margin-left: 1em;
+}
+
+.bike-select {
+  width: 20%;
+  margin-left: 4.5em;
+}
+
+.chargeBtn {
+  padding: 0.5em;
+  background: #282c34;
+  color: white;
+  font-size: medium;
+  border-radius: 5px;
+}
+
+.admin-container {
+  display: flex;
+}
+
+.adminList {
+  display: flex;
+  margin-left: 2em;
+  /* border: 1px solid black; */
+  width: 40%;
+  padding: 1em;
+}
+
+.adminList ul {
+  margin-left: 1em;
+}
+
+.adminList div {
+  border: 1px solid black;
+  margin-right: 0.5em;
+  width: 50%;
+  padding: 1em;
+}
+
+.admin-choices select {
+  width: 20%;
+}
+
+.admin-users {
+  display: flex;
+  width: 100%;
+}
+
+.admin-users-info {
+  margin-top: 1em;
+  margin-left: 3em;
+  margin-right: 3em;
+  padding: 1em;
+  border: 1px solid black;
+  width: 50%;
+}
+
+.admin-users-list {
+  margin-top: 1em;
+  margin-left: 3em;
+  padding: 1em;
+  border: 1px solid black;
+  width: 50%;
+}
+
+.admin-users-list ul {
+  margin-left: 1em;
+}
+
+.userBtns {
+  display: flex;
+  float: inline-end;
+  margin-top: 10em;
+}
+
+.userBtns .chargeBtn {
+  margin-right: 1em;
+}
