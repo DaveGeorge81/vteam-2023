@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
-import * as qs from 'qs';
+// import * as qs from 'qs';
 
 let userString;
 let btn1;
@@ -50,19 +50,19 @@ const AdminUsersInfo = ({ userId, setUserId, setLoading, loading }) => {
     }
 
     /// lägg till, bara för att kunna testa
-    function onClickAdd() {
-        fetch(`http://localhost:1337/api/v1/users`, {
-            method: 'POST',
-            headers: {
-                'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
-            },
-            body: qs.stringify({name: "Hej", balance: 0, bank_account: 8193183193, recurring_withdraw: 0})
-        })
-        .then(response => response.json())
-        .then(data => console.log(data))
+    // function onClickAdd() {
+    //     fetch(`http://localhost:1337/api/v1/users`, {
+    //         method: 'POST',
+    //         headers: {
+    //             'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+    //         },
+    //         body: qs.stringify({name: "Hej", balance: 0, bank_account: 8193183193, recurring_withdraw: 0})
+    //     })
+    //     .then(response => response.json())
+    //     .then(data => console.log(data))
 
-        setLoading(userId);
-    }
+    //     setLoading(userId);
+    // }
 
     function onClickRemove(userId) {
         confirmAlert({
@@ -82,7 +82,7 @@ const AdminUsersInfo = ({ userId, setUserId, setLoading, loading }) => {
 
     if (userId !== "") {
         userString = "Kund";
-        btn1 = <button className="chargeBtn" onClick={() => onClickAdd()}>Lägg till kund</button> // bara för att testa
+        // btn1 = <button className="chargeBtn" onClick={() => onClickAdd()}>Lägg till kund</button> // bara för att testa
         btn2 = <button className="chargeBtn" onClick={() => onClickRemove(userId)}>Ta bort kund</button>
     } else if (userId === "") {
         userString = "";
