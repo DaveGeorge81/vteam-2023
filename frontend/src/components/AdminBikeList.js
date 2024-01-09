@@ -63,14 +63,10 @@ const AdminBikeList = ({city, coords}) => {
         setZoomLevel(22);
 
         if (bikeVal.battery < 30 & bikeVal.status_id !== 3) {
-        // if (bikeVal.battery < 90) {
-            /* något ska också hända när man klickar på knappen */
             chargeBtn = <button onClick={() => onChargeClick(bikeVal)} className="chargeBtn">Begär laddning</button>
         } else {
             chargeBtn = "";
         }
-
-        // setBikeInfo([{name: bike.name, status: bike.status, rent: bike.rent, position: bike.position, speed: bike.speed}])
     }
 
     function onChargeClick(bike) {
