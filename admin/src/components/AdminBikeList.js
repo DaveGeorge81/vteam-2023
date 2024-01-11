@@ -31,7 +31,7 @@ const AdminBikeList = ({city, coords}) => {
     }, [city, loading])
 
     function onClick(bike) {
-        let bikeVal = bikes.find(b => b.id == bike);
+        let bikeVal = bikes.find(b => b.id === bike);
 
         setBikeName(bikeVal.name)
         let status;
