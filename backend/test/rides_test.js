@@ -41,48 +41,32 @@ const rides = [
     }
 ];
 
-const ride = {
-    "id": 3,
-    "start_time": "2023-12-17 19:36:24",
-    "duration": "",
-    "start_lat": 56.21,
-    "start_lon": 15.64,
-    "start_park_id": 0,
-    "stop_lat": 56.22,
-    "stop_lon": 15.66,
-    "user_id": 2,
-    "bike_id": 3,
-    "price": 0
-};
-
-// const user = {
-//     "id": 1,
-//     "name": "User1",
-//     "ride_id": 2,
-//     "balance": 10,
-//     "bank_account": "34.252.552",
-//     "recurring_withdraw": 120
+// const ride = {
+//     "id": 3,
+//     "start_time": "2023-12-17 19:36:24",
+//     "duration": "",
+//     "start_lat": 56.21,
+//     "start_lon": 15.64,
+//     "start_park_id": 0,
+//     "stop_lat": 56.22,
+//     "stop_lon": 15.66,
+//     "user_id": 2,
+//     "bike_id": 3,
+//     "price": 0
 // };
 
 function resetDB() {
-    // db.prepare('DELETE FROM users').run();
-    // db.prepare('DELETE FROM bikes').run();
     db.prepare('DELETE FROM rides').run();
 
     for (const ride of rides) {
         try {
-            // db.prepare(`
-            //     INSERT INTO users (name, ride_id, balance, bank_account, recurring_withdraw)
-            //     VALUES (?, ?, ?, ?, ?)
-            // `).run("User", 0, 100, "189.313.44", 100);
-            // db.prepare(`
-            //     INSERT INTO bikes (city_id, user_id, status_id, station_id, park_id, lat, lon, speed, battery)
-            //     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-            // `).run(1, 0, 0, 0, 0, 56.22, 15.66, 0, 100);
             db.prepare(`
-                INSERT INTO rides (start_time, duration, start_lat, start_lon, start_park_id, stop_lat, stop_lon, user_id, bike_id, price)
+                INSERT INTO rides (start_time, duration, start_lat, start_lon, start_park_id,
+                    stop_lat, stop_lon, user_id, bike_id, price)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            `).run(ride.start_time, ride.duration, ride.start_lat, ride.start_lon, ride.start_park_id, ride.stop_lat, ride.stop_lon, ride.user_id, ride.bike_id, ride.price);
+            `).run(ride.start_time, ride.duration, ride.start_lat, ride.start_lon,
+                ride.start_park_id, ride.stop_lat, ride.stop_lon, ride.user_id, ride.bike_id,
+                ride.price);
         } catch (err) {
             console.log(err.message);
             shutDown();
@@ -142,7 +126,8 @@ describe('/rides route', function() {
     //         request(server)
     //             .post('/api/v1/rides')
     //             .type('form')
-    //             .send({start_lat: ride.start_lat, start_lon: ride.start_lon, user_id: ride.user_id, bike_id: ride.bike_id})
+    //             .send({start_lat: ride.start_lat, start_lon: ride.start_lon,
+    //                  user_id: ride.user_id, bike_id: ride.bike_id})
     //             .expect(201)
     //             .expect('Content-Type', /json/)
     //             .expect({ count: 1, newId: 3, message: 'Ok' }, done);

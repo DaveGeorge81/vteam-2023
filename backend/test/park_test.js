@@ -12,7 +12,7 @@ const request = require('supertest');
 const server = require('../server.js');
 const db = require('../models/db_model.js').getDB();
 
-const park_zones = [
+const parkZones = [
     {
         "id": 1,
         "city_id": 2,
@@ -33,7 +33,7 @@ const park_zones = [
     }
 ];
 
-const park_zone = {
+const parkZone = {
     "id": 3,
     "city_id": 2,
     "lat": 56.123,
@@ -46,7 +46,7 @@ const park_zone = {
 function resetDB() {
     db.prepare('DELETE FROM park_zones').run();
 
-    for (const zone of park_zones) {
+    for (const zone of parkZones) {
         try {
             db.prepare(`
                 INSERT INTO park_zones (city_id, lat, lon, dlat, dlon, num_bikes)
@@ -82,7 +82,7 @@ describe('/park_zones route', function() {
                 .get('/api/v1/park_zones/city/2')
                 .expect(200)
                 .expect('Content-Type', /json/)
-                .expect(park_zones);
+                .expect(parkZones);
         });
     });
 
@@ -92,7 +92,7 @@ describe('/park_zones route', function() {
                 .get('/api/v1/park_zones/1')
                 .expect(200)
                 .expect('Content-Type', /json/)
-                .expect(park_zones[0], done);
+                .expect(parkZones[0], done);
         });
     });
 
@@ -101,7 +101,7 @@ describe('/park_zones route', function() {
             request(server)
                 .post('/api/v1/park_zones')
                 .type('form')
-                .send(park_zone)
+                .send(parkZone)
                 .expect(201)
                 .expect('Content-Type', /json/)
                 .expect({ count: 1, newId: 3, message: 'Ok' }, done);
@@ -112,7 +112,7 @@ describe('/park_zones route', function() {
                 .get('/api/v1/park_zones/3')
                 .expect(200)
                 .expect('Content-Type', /json/)
-                .expect(park_zone, done);
+                .expect(parkZone, done);
         });
     });
 
@@ -121,7 +121,7 @@ describe('/park_zones route', function() {
             request(server)
                 .put('/api/v1/park_zones')
                 .type('form')
-                .send({ ...park_zones[0], num_bikes: 15 })
+                .send({ ...parkZones[0], num_bikes: 15 })
                 .expect(200)
                 .expect('Content-Type', /json/)
                 .expect({ count: 1, message: 'Ok' }, done);

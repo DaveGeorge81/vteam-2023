@@ -51,7 +51,8 @@ function resetDB() {
             db.prepare(`
                 INSERT INTO users (name, ride_id, balance, bank_account, recurring_withdraw)
                 VALUES (?, ?, ?, ?, ?)
-            `).run(user.name, user.ride_id, user.balance, user.bank_account, user.recurring_withdraw);
+            `).run(user.name, user.ride_id, user.balance, user.bank_account,
+                user.recurring_withdraw);
         } catch (err) {
             console.log(err.message);
             shutDown();
@@ -158,10 +159,10 @@ describe('/users route', function() {
             request(server)
                 .get('/api/v1/users/1')
                 .end((err, res) => {
-                    assert.equal(res.body.balance, 400)
+                    assert.equal(res.body.balance, 400);
                     done();
-                })
-        })
+                });
+        });
 
         it('should give error if user id not found', function(done) {
             request(server)

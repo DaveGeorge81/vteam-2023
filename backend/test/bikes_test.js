@@ -64,9 +64,11 @@ function resetDB() {
     for (const bike of bikes) {
         try {
             db.prepare(`
-                INSERT INTO bikes (city_id, user_id, status_id, station_id, park_id, lat, lon, speed, battery)
+                INSERT INTO bikes (city_id, user_id, status_id, station_id,
+                    park_id, lat, lon, speed, battery)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-            `).run(bike.city_id, bike.user_id, bike.status_id, bike.station_id, bike.park_id, bike.lat, bike.lon, bike.speed, bike.battery);
+            `).run(bike.city_id, bike.user_id, bike.status_id, bike.station_id,
+                bike.park_id, bike.lat, bike.lon, bike.speed, bike.battery);
             db.prepare(`
                 INSERT INTO stations (city_id, num_free, num_total, lat, lon)
                 VALUES (?, ?, ?, ?, ?)
@@ -264,7 +266,7 @@ describe('/bikes route', function() {
                 .expect({ count: 0, message: 'station_id not found' }, done);
         });
     });
-    
+
     describe('PUT /bikes/stop_charge', function() {
         it('should stop charging bike', function(done) {
             request(server)
@@ -280,7 +282,7 @@ describe('/bikes route', function() {
             request(server)
                 .put('/api/v1/bikes/stop_charge')
                 .type('form')
-                .send({ bike_id: 1, bike_id: 3, station_id: 1})
+                .send({ bike_id: 1, station_id: 1})
                 .expect(400)
                 .expect('Content-Type', /json/)
                 .expect({ count: 0, message: 'Bike is not charging' }, done);

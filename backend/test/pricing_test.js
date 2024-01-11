@@ -46,7 +46,8 @@ function resetDB() {
             db.prepare(`
                 INSERT INTO pricing (city_id, start_fee, minute_fee, extra_fee, discount)
                 VALUES (?, ?, ?, ?, ?)
-            `).run(price.city_id, price.start_fee, price.minute_fee, price.extra_fee, price.discount);
+            `).run(price.city_id, price.start_fee, price.minute_fee,
+                price.extra_fee, price.discount);
         } catch (err) {
             console.log(err.message);
             shutDown();
@@ -99,7 +100,8 @@ describe('/pricing route', function() {
                 .send(pricing)
                 .expect(400)
                 .expect('Content-Type', /json/)
-                .expect({ count: 0, newId: -1, message: 'UNIQUE constraint failed: pricing.city_id' }, done);
+                .expect({ count: 0, newId: -1,
+                    message: 'UNIQUE constraint failed: pricing.city_id' }, done);
         });
     });
 
@@ -118,9 +120,9 @@ describe('/pricing route', function() {
             request(server)
                 .get('/api/v1/pricing/city/1')
                 .end((err, res) => {
-                    assert.equal(res.body.start_fee, 11)
+                    assert.equal(res.body.start_fee, 11);
                     done();
-                })
+                });
         });
     });
 
