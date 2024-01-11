@@ -1,7 +1,7 @@
 import AdminUsersList from '../components/AdminUsersList';
 import AdminUsersInfo from '../components/AdminUsersInfo';
 import { Link } from "react-router-dom";
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 export default function AdminUsers() {
     const [userId, setUserId] = useState("");
