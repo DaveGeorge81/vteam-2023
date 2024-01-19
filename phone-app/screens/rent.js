@@ -10,7 +10,7 @@ import { useIsFocused } from '@react-navigation/native';
 import SessionStorage from 'react-native-session-storage';
 
 
-export default function Rent( {navigation} ) {
+export default function Rent() {
     const [hasPermission, setHasPermission] = useState(null);
     const [scanned, setScanned] = useState(false);
     const [bikeId, setBikeId] = useState("");
@@ -18,6 +18,7 @@ export default function Rent( {navigation} ) {
     const [rides, setRides] = useState([]);
     const userID = SessionStorage.getItem('@id');
     const isFocused = useIsFocused();
+    const [isRenting, setIsRenting] = useState()
 
     // Get permission from user to access camera.
     useEffect(() => {
@@ -28,7 +29,7 @@ export default function Rent( {navigation} ) {
 
     getBarCodeScannerPermissions();
 
-        // Collect all rides for user from API.
+    // Collect all rides for user from API.
     const fetchRides = async () => {
         await axios({
             method: 'get',
@@ -76,14 +77,15 @@ export default function Rent( {navigation} ) {
         .then((response) => {
             if (response.status === 201) {
             alert(` Ride started with bike: ${bikeId}`);
-            // setIsLoading(false);
-            } else {
-            throw new Error("An error has occurred");
+            setIsRenting(true)
             }
+            return response.data})
+        // .then(data=> {console.log(data)})
+        .catch(error => {
+            alert(`Could not start ride with bike: ${bikeId}. Please try again!`)
+            console.log(`something went wrong ${error}`)
         })
         setBikeId("")
-        navigation.navigate("Account Info")
-
     };
 
     //Send a return bike request to API
@@ -103,12 +105,12 @@ export default function Rent( {navigation} ) {
         .then((response) => {
             if (response.status === 200) {
             alert(` Ride stopped`);
+            setIsRenting(false)
             // setIsLoading(false);
             } else {
             throw new Error("An error has occurred");
             }
         })
-        navigation.navigate("Account Info")
 
     };
 
@@ -118,7 +120,7 @@ export default function Rent( {navigation} ) {
         <TouchableWithoutFeedback onPress={() =>
             Keyboard.dismiss()}>
             <View>
-            {!data[0] ? <View style={globalStyles.container}>
+            {!isRenting ? <View style={globalStyles.container}>
                 <Text style={globalStyles.contentText}>Enter bike id to rent</Text>
                 <TextInput style={styles.box} placeholder='bike id:' onChangeText={text => setBikeId(text)} value={bikeId} />
                 <Button title="Rent bike" onPress={rentBike}/>

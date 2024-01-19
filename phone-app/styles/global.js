@@ -54,6 +54,7 @@ export const globalStyles = StyleSheet.create({
         textAlign: "center"
     },
     note: {
+        textAlign: "center",
         fontStyle: "italic",
         fontSize: 10,
         marginTop: 10

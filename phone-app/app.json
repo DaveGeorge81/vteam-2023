@@ -16,19 +16,35 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.glopal.phoneapp"
+      "bundleIdentifier": "com.glopal.phoneapp",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Allow $(PRODUCT_NAME) to access camera.",
+        "NSMicrophoneUsageDescription": "Allow $(PRODUCT_NAME) to access your microphone"
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.glopal.phoneapp"
+      "package": "com.glopal.phoneapp",
+      "permissions": [
+        "android.permission.CAMERA"
+      ],
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyDkgSCMMax6fnQ10mQ2Co5PmnbSY6XTBuU"
+        }
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
+    "scheme": "phone-app",
     "extra": {
+      "eas": {
+        "projectId": "5b609144-951c-4c37-8c40-0f75100811f0"
+      }
     },
     "plugins": [
       [
@@ -36,7 +52,8 @@
         {
           "cameraPermission": "Allow $(PRODUCT_NAME) to access camera."
         }
-      ]
+      ],
+      "@react-native-google-signin/google-signin"
     ]
   }
 }

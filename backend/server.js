@@ -7,6 +7,7 @@ const express = require('express');
 const routeAPI = require('./routes/api.js');
 const db = require("./models/db_model.js");
 const process = require('node:process');
+const google = require('./routes/google.js')
 
 const app = express();
 
@@ -41,6 +42,11 @@ process.on('SIGHUP', (code) => {
 app.use(express.static("public"))
 
 app.use("/api/v1", routeAPI);
+
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', 'http://127.0.0.1:3000');
+    next();
+});
 
 const server = app.listen(port, () => {
     console.log(`Bike server listening on port ${port}`);

@@ -13,6 +13,7 @@ export default function History() {
 
     const isFocused = useIsFocused();
     const userID = SessionStorage.getItem('@id');
+    const userName = SessionStorage.getItem('@name');
 
     useEffect(() => {
     // Collect user data from API
@@ -40,7 +41,7 @@ export default function History() {
 
     return (
         <View>
-            <Text style={globalStyles.topHeader}>Welcome {userData.name}!</Text>
+            <Text style={globalStyles.topHeader}>Welcome {userName}!</Text>
             <Text style={globalStyles.smallHeader}>Your current balance is:  </Text>
             <View>
                 <Text style={globalStyles.balance}>{userData.balance.toFixed(2)}kr</Text>
