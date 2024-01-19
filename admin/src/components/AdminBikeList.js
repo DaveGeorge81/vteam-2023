@@ -28,12 +28,14 @@ const AdminBikeList = ({city, coords}) => {
         // justera var kartan visar när ingen cykel är klickad
         setCoordinates(coords);
         setZoomLevel(9);
+        setBikeName("");
     }, [city, loading])
 
     function onClick(bike) {
         let bikeVal = bikes.find(b => b.id === bike);
 
-        setBikeName(bikeVal.name)
+        setBikeName("Cykel " + bikeVal.id);
+
         let status;
 
         if (bikeVal.status_id === 0) {
@@ -112,7 +114,7 @@ const AdminBikeList = ({city, coords}) => {
         }
     }
 
-    const listItems = Array.from(bikes).map(bike => <li onClick={() => onClick(bike.id)}>Cykel {bike.id}. Status: {bike.status_id}, {bike.rent} {bike.position} Batteri: {bike.battery}</li>);
+    const listItems = Array.from(bikes).map(bike => <li key={bike.id} onClick={() => onClick(bike.id)}>Cykel {bike.id}. Status: {bike.status_id}, {bike.rent} {bike.position} Batteri: {bike.battery}</li>);
 
     return (
         <>

@@ -24,9 +24,9 @@ const AdminMap = ({ className, mapPosition, zoomLevel, icons, cityId, clickedMar
         .then(data => setParkingList(data))
     }, [cityId, reload, icons])
 
-    console.log("markerList ", markerList)
-    console.log("chargeList ", chargeList)
-    console.log("parkingList ", parkingList)
+    // console.log("markerList ", markerList)
+    // console.log("chargeList ", chargeList)
+    // console.log("parkingList ", parkingList)
 
 
     if (mapPosition === "") {

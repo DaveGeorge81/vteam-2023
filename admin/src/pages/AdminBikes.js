@@ -14,10 +14,11 @@ export default function AdminBikes() {
         .then(data => setCities(data))
     }, [])
 
-    let optionItems = Array.from(cities).map(city => <option value={city.id}>{city.name}</option>);
+    let optionItems = Array.from(cities).map(city => <option key={city.id} value={city.id}>{city.name}</option>);
 
     function onChange(value) {
-        let city = cities.find(c => c.id === value);
+        let city = cities.find(c => c.id === Number(value));
+
         setCityId(value);
         setCity(city.name);
         setCoordinates([city.lat, city.lon]);
