@@ -5,13 +5,8 @@ import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import React from "react";
 import SessionStorage from 'react-native-session-storage';
 
-// npx expo install @react-native-google-signin/google-signin
-// npx expo install expo-dev-client
 
 export default function SignOut( { navigation } ) {
-    // const [users, setUsers] = useState([]);
-    // const [error, setError] = useState();
-    // const [userInfo, setUserInfo] = useState();
 
     const logout = () => {
         // setUserInfo(undefined);

@@ -2,23 +2,17 @@
 import { StatusBar } from "expo-status-bar";
 import { globalStyles } from '../styles/global';
 import { StyleSheet, Text, View, Image } from "react-native";
-import {
-    GoogleSignin,
-    GoogleSigninButton,
-} from "@react-native-google-signin/google-signin";
+import { GoogleSignin, GoogleSigninButton } from "@react-native-google-signin/google-signin";
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
 import { IP } from '@env'
 import qs from 'qs'
 import SessionStorage from 'react-native-session-storage';
 
-// npx expo install @react-native-google-signin/google-signin
-// npx expo install expo-dev-client
 
 export default function SignIn( { navigation } ) {
     const [users, setUsers] = useState([]);
     const [error, setError] = useState();
-    // const [userInfo, setUserInfo] = useState();
 
     const configureGoogleSignIn = () => {
         GoogleSignin.configure({
@@ -75,7 +69,6 @@ export default function SignIn( { navigation } ) {
     }, []);
 
     const signIn = async () => {
-    console.log("Pressed sign in");
 
     try {
         await GoogleSignin.hasPlayServices();
@@ -101,12 +94,6 @@ export default function SignIn( { navigation } ) {
     };
 
 
-    // const logout = () => {
-    //     setUserInfo(undefined);
-    //     GoogleSignin.revokeAccess();
-    //     GoogleSignin.signOut();
-    //     SessionStorage.setItem('@loggedIn', false);
-    // };
     return (
         <View style={styles.container}>
         <Text>{JSON.stringify(error)}</Text>
