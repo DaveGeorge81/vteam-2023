@@ -36,4 +36,11 @@ docker compose up
 
 7. The app should be built and run on your Android Emulator.
 
+If any errors occur, try running 
+```
+docker compose build phone
+```
+first.
+
+
 
