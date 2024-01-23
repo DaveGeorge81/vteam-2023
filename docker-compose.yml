@@ -15,7 +15,7 @@ services:
                 - '8083:8083'
             tty: true
             stdin_open: true
-            command: expo run:android
+            command: npx expo run:android
     # express:
     #         build:
     #             context: ./
