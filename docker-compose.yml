@@ -4,18 +4,18 @@ services:
         build:
             context: ./
             dockerfile: ./phone-app/Dockerfile
-            environment:
-                - EXPO_DEVTOOLS_LISTEN_ADDRESS=0.0.0.0
-                - REACT_NATIVE_PACKAGER_HOSTNAME=${IP}
-            volumes:
-                - ./phone-app/:/phone-app/
-            ports:
-                - '8081:8081'
-                - '8082:8082'
-                - '8083:8083'
-            tty: true
-            stdin_open: true
-            command: npx expo run:android
+        environment:
+            - EXPO_DEVTOOLS_LISTEN_ADDRESS=0.0.0.0
+            - REACT_NATIVE_PACKAGER_HOSTNAME=${IP}
+        volumes:
+            - ./phone-app/:/phone-app/
+        ports:
+            - '8081:8081'
+            - '8082:8082'
+            - '8083:8083'
+        tty: true
+        stdin_open: true
+        command: npx expo
     # express:
     #         build:
     #             context: ./
