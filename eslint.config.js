@@ -5,10 +5,13 @@ const stylisticJs = require("@stylistic/eslint-plugin-js");
 const globals = require("globals");
 
 module.exports = [
-    js.configs.recommended,
     {
-        ignores: ["coverage/"],
+        ignores: ["**/coverage/", "backend/public/src/", "bike-sim/data/"],
+    },
 
+    js.configs.recommended,
+
+    {
         languageOptions: {
             ecmaVersion: "latest",
             sourceType: "commonjs",

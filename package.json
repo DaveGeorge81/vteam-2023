@@ -1,0 +1,16 @@
+{
+  "name": "bike-sim-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint ."
+  },
+  "author": "Jonas",
+  "license": "ISC",
+  "devDependencies": {
+    "@stylistic/eslint-plugin-js": "^1.5.4",
+    "eslint": "^8.56.0"
+  }
+}
