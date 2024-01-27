@@ -1,2 +1,6 @@
-.env
-.expo
+node_modules/
+**/db/*.sqlite
+**/db/*.sqlite-shm
+**/db/*.sqlite-wal
+.nyc_output/
+coverage/
