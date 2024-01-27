@@ -1,17 +1,20 @@
 /**
  * The bike rental backend server app.
- * © Vteam 2023 Group 8.
+ * © Jonas B., Vteam 2023 Group 8.
  */
 "use strict";
 
 const port = 1337;
 const express = require('express');
+const cors = require('cors');
 const routeAPI = require('./routes/api.js');
 const db = require("./models/db_model.js");
 const process = require('node:process');
 
 const app = express();
 
+app.use(cors());
+app.options('*', cors());
 //app.set("json spaces", 2);
 
 function shutDown(code) {

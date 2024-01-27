@@ -1,6 +1,6 @@
 /**
  * API routes.
- * © Vteam 2023 Group 8.
+ * © Jonas B., Vteam 2023 Group 8.
  */
 "use strict";
 
@@ -11,9 +11,17 @@ const db = require("../models/db_model.js");
 const urlencodedParser = express.urlencoded({ extended: false });
 
 /**
+ * Middleware logging request to console.
+ */
+function logToConsole(req, res, next) {
+    console.log(`${new Date().toLocaleTimeString('sv-SE')} ${req.method} ${req.url}`);
+    next();
+}
+
+/**
  * Get all cities.
  */
-router.get('/cities', (req, res) => {
+router.get('/cities', logToConsole, (req, res) => {
     const result = db.getAllCities();
 
     return res.status(200).json(result);
@@ -653,6 +661,7 @@ router.get('/rides/:id', (req, res) => {
 /**
  * Start a new ride.
  */
+//router.post('/rides', logToConsole, urlencodedParser, (req, res) => {
 router.post('/rides', urlencodedParser, (req, res) => {
     const result = db.startRide(req.body);
 

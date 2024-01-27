@@ -1,6 +1,6 @@
 /**
  * Database model using SQLite.
- * © Vteam 2023 Group 8.
+ * © Jonas B., Vteam 2023 Group 8.
  */
 "use strict";
 
@@ -668,8 +668,8 @@ const dbModel = {
             db.prepare(`UPDATE users SET (balance, ride_id) = (balance - ${price}, 0)
                 WHERE id = ?`).run(body.user_id);
 
-            db.prepare(`UPDATE bikes SET (user_id, status_id, park_id) =
-                (0, 0, ?) WHERE id = ?`).run(parkIdStop, ride.bike_id);
+            db.prepare(`UPDATE bikes SET (user_id, status_id, park_id, speed) =
+                (0, 0, ?, 0) WHERE id = ?`).run(parkIdStop, ride.bike_id);
 
             // Add bike to park_zone
             if (parkIdStop) {

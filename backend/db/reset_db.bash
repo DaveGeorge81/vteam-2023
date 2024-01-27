@@ -6,6 +6,6 @@
 # Clear db file
 > bike-rentals.sqlite
 
-# Read commands from create-tables.sql
-sqlite3 bike-rentals.sqlite < create-tables.sql
+# Read commands from create-tables.sql (redirect any output to /dev/null)
+sqlite3 bike-rentals.sqlite < create-tables.sql > /dev/null
 
