@@ -24,11 +24,6 @@ const AdminMap = ({ className, mapPosition, zoomLevel, icons, cityId, clickedMar
         .then(data => setParkingList(data))
     }, [cityId, reload, icons])
 
-    // console.log("markerList ", markerList)
-    // console.log("chargeList ", chargeList)
-    // console.log("parkingList ", parkingList)
-
-
     if (mapPosition === "") {
         mapPosition = [62.173276, 14.942265];
         // setMapPos(mapPosition);
@@ -40,8 +35,8 @@ const AdminMap = ({ className, mapPosition, zoomLevel, icons, cityId, clickedMar
     // }
 
     const markers = L.markerClusterGroup({
-        // spiderfyOnMaxZoom: false,
-        // disableClusteringAtZoom: 14
+        spiderfyOnMaxZoom: false,
+        disableClusteringAtZoom: 15
     });
     const customMarker = require('../assets/scooter.png');
     const chargeMarker = require('../assets/charging.png');
@@ -81,12 +76,14 @@ const AdminMap = ({ className, mapPosition, zoomLevel, icons, cityId, clickedMar
             Array.from(chargeList).forEach((charge) => {
                 const marker = L.marker([charge.lat, charge.lon], { icon: customIconCharge })
                     .bindPopup(`Laddstation ${charge.id}`)
+                    .setZIndexOffset(5000)
 
                 markers.addLayer(marker);
             })
             Array.from(parkingList).forEach((parking) => {
                 const marker = L.marker([parking.lat, parking.lon], { icon: customIconParking })
                     .bindPopup(`Parkering ${parking.id}`)
+                    .setZIndexOffset(5000)
 
                 markers.addLayer(marker);
             })
@@ -112,13 +109,16 @@ const AdminMap = ({ className, mapPosition, zoomLevel, icons, cityId, clickedMar
                 markers.addLayer(marker);
             })
         }
-        map.addLayer(markers)
-        // marker popup on list click
-        // markers.forEach((marker) => {
-        //     if(marker._popup._content === clickedMarker) {
-        //         marker.openPopup();
-        //     }
-        // })
+
+        map.addLayer(markers);
+
+        markers.on("click", function (event) {
+            let listItem = document.getElementById(event.layer._popup._content);
+
+            if (listItem) {
+                listItem.click();
+            }
+        });
 
         markers.eachLayer((marker) => {
             if(marker._popup._content === clickedMarker) {
@@ -130,7 +130,7 @@ const AdminMap = ({ className, mapPosition, zoomLevel, icons, cityId, clickedMar
         })
 
         return () => {
-        map.off();
+        // map.off();
         map.remove();
         };
     }, [mapPosition, markerList, icons, clickedMarker]);

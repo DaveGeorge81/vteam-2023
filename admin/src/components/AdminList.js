@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-const AdminList = ({ city, cityId, setClickedMarker }) => {
+const AdminList = ({ city, cityId, setClickedMarker, setCityCoordinates }) => {
     const [listTitle, setListTitle] = useState("");
     const [listInfo, setListInfo] = useState("");
     const [stations, setStations] = useState("");
@@ -28,7 +28,7 @@ const AdminList = ({ city, cityId, setClickedMarker }) => {
         for (let i = 0; i < bikes.length; i++) {
             if (bikes[i].station_id === station.id) {
                 console.log(bikes[i])
-                stationBikes.push(`Cykel ${bikes[i].id}`);
+                stationBikes.push(` Cykel ${bikes[i].id}`);
             }
         }
         setListTitle(`Laddstation ${station.id}`);
@@ -38,6 +38,7 @@ const AdminList = ({ city, cityId, setClickedMarker }) => {
 
         Cyklar på station: ${stationBikes}`);
         setClickedMarker(`Laddstation ${station.id}`);
+        setCityCoordinates([station.lat, station.lon]);
     }
 
     function onClickPark(park) {
@@ -45,7 +46,7 @@ const AdminList = ({ city, cityId, setClickedMarker }) => {
 
         for (let i = 0; i < bikes.length; i++) {
             if (bikes[i].park_id === park.id) {
-                parkBikes.push(`Cykel ${bikes[i].id}`);
+                parkBikes.push(` Cykel ${bikes[i].id}`);
             }
         }
         setParkId(park.id);
@@ -57,14 +58,15 @@ const AdminList = ({ city, cityId, setClickedMarker }) => {
 
         Cyklar på parkering: ${parkBikes}`);
         setClickedMarker(`Parkering ${park.id}`);
+        setCityCoordinates([park.lat, park.lon]);
     }
 
     let listItemsStation;
     let listItemsParking;
 
     if (city !== "") {
-        listItemsStation = Array.from(stations).map(station => <li key={station.id} onClick={() => onClick(station)}>Laddstation {station.id}</li>);
-        listItemsParking = Array.from(parking).map(park => <li key={park.id} onClick={() => onClickPark(park)}>Parkering {park.id}</li>);
+        listItemsStation = Array.from(stations).map(station => <li key={station.id} id={`Laddstation ${station.id}`} onClick={() => onClick(station)}>Laddstation {station.id}</li>);
+        listItemsParking = Array.from(parking).map(park => <li key={park.id} id={`Parkering ${park.id}`} onClick={() => onClickPark(park)}>Parkering {park.id}</li>);
     }
 
     return (

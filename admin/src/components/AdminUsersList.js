@@ -9,7 +9,15 @@ const AdminUsersList = ({ setUserId, loading }) => {
         .then(data => setUsers(data))
     }, [loading, users])
 
-    const listItems = Array.from(users).map(user => <li key={user.id} onClick={() => setUserId(user.id)}>Kund {user.id}</li>);
+    function onClick(e, user) {
+        setUserId(user);
+        let toggled = document.getElementsByClassName("marked")[0];
+
+        if (toggled) {toggled.className = ""};
+        e.target.className = "marked";
+    }
+
+    const listItems = Array.from(users).map(user => <li key={user.id} onClick={(e) => onClick(e, user.id)}>Kund {user.id}</li>);
 
     return (
         <>

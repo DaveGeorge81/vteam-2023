@@ -4,10 +4,10 @@ import { Link } from "react-router-dom";
 import React, { useEffect, useState } from 'react';
 
 export default function Admin() {
-    const [cityCoordinates, setCityCoordinates] = useState([56.193, 15.628]); // hårdkodat karlskrona som första stad, annars "" om hela kartan...
-    const [cityName, setCityName] = useState("Karlskrona");  // "" om hela kartan
+    const [cityCoordinates, setCityCoordinates] = useState([56.193, 15.628]);
+    const [cityName, setCityName] = useState("Karlskrona");
     const [cityId, setCityId] = useState(1);
-    const [zoomLevel, setZoomLevel] = useState(13);
+    const [zoomLevel, setZoomLevel] = useState(15);
     const [icons, setIcons] = useState("");
     const [cities, setCities] = useState("");
     const [clickedMarker, setClickedMarker] = useState("");
@@ -19,23 +19,16 @@ export default function Admin() {
         .then(data => setCities(data))
     }, [])
 
-    let optionItems = Array.from(cities).map(city => <option value={city.name}>{city.name}</option>);
+    let optionItems = Array.from(cities).map(city => <option key={city.id} value={city.name}>{city.name}</option>);
 
     function onChange(value) {
-        // setZoomLevel(5);
-        // setCityCoordinates([62.173276, 14.942265]);
-        // setCityName("");
-        // setCityId(1);
-        // if (value !==  "") {
-            let city = cities.find(c => c.name === value);
-            console.log("city ", city)
-            setCityName(city.name);
-            setCityId(city.id);
-            console.log("cityName:", cityName)
-            setCityCoordinates([city.lat, city.lon]);
-            setZoomLevel(13);
-            setLoading(city)
-        // }
+        let city = cities.find(c => c.name === value);
+
+        setCityName(city.name);
+        setCityId(city.id);
+        setCityCoordinates([city.lat, city.lon]);
+        setZoomLevel(15);
+        setLoading(city)
     }
 
     function onIconChange(value) {
@@ -70,7 +63,7 @@ export default function Admin() {
             </div>
             <div className="admin-container">
                 <AdminMap className="admin-map" mapPosition={cityCoordinates} zoomLevel={zoomLevel} icons={icons} cityId={cityId} clickedMarker={clickedMarker} reload={loading}/>
-                <AdminList city={cityName} cityId={cityId} setClickedMarker={setClickedMarker}/>
+                <AdminList city={cityName} cityId={cityId} setClickedMarker={setClickedMarker} setCityCoordinates={setCityCoordinates}/>
             </div>
             </div>
         </>

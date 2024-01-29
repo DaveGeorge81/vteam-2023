@@ -4,9 +4,9 @@ import { Link } from "react-router-dom";
 
 export default function AdminBikes() {
     const [cities, setCities] = useState("");
-    const [cityId, setCityId] = useState(1); //ändra sen
+    const [cityId, setCityId] = useState(1);
     const [cityName, setCity] = useState("Karlskrona");
-    const [coordinates, setCoordinates] = useState([56.193, 15.628]); // hårdkodat att starta med karlskrona
+    const [coordinates, setCoordinates] = useState([56.193, 15.628]);
 
     useEffect(() => {
         fetch(`http://localhost:1337/api/v1/cities`, {method: 'GET'})
