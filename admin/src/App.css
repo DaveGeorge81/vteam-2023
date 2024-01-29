@@ -126,6 +126,9 @@ p {
 
 .admin-bikes-list ul {
   margin-left: 1em;
+  height: 700px;
+  overflow: hidden;
+  overflow-y: scroll;
 }
 
 .bike-select {
@@ -139,6 +142,16 @@ p {
   color: white;
   font-size: medium;
   border-radius: 5px;
+}
+
+.offBtn {
+  padding: 0.5em;
+  background: #c74d4d;
+  border-color: #8b2e2e;
+  color: white;
+  font-size: medium;
+  border-radius: 5px;
+  margin-right: 2em;
 }
 
 .admin-container {
@@ -192,12 +205,19 @@ p {
 
 .admin-users-list ul {
   margin-left: 1em;
+  height: 700px;
+  overflow: hidden;
+  overflow-y: scroll;
+}
+
+.marked {
+  background-color: cadetblue;
 }
 
 .userBtns {
   display: flex;
   float: inline-end;
-  margin-top: 10em;
+  margin-top: 5em;
 }
 
 .userBtns .chargeBtn {
