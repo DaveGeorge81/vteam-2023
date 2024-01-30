@@ -5,7 +5,6 @@ import 'leaflet.markercluster';
 
 const AdminMap = ({ className, mapPosition, zoomLevel, icons, cityId, clickedMarker, reload }) => {
     const mapContainer = useRef(null);
-    // const markers = useRef({});
     const [markerList, setMarkerList] = useState([]);
     const [parkingList, setParkingList] = useState([]);
     const [chargeList, setChargeList] = useState([]);
@@ -26,13 +25,7 @@ const AdminMap = ({ className, mapPosition, zoomLevel, icons, cityId, clickedMar
 
     if (mapPosition === "") {
         mapPosition = [62.173276, 14.942265];
-        // setMapPos(mapPosition);
-        // zoomLevel = 5;
     } 
-    // else {
-    //     zoomLevel = 9;
-    //     // setMapPos(mapPosition)
-    // }
 
     const markers = L.markerClusterGroup({
         spiderfyOnMaxZoom: false,
@@ -124,8 +117,6 @@ const AdminMap = ({ className, mapPosition, zoomLevel, icons, cityId, clickedMar
             if(marker._popup._content === clickedMarker) {
                 if (!marker._icon) marker.__parent.spiderfy();
                 marker.openPopup();
-                // setZoomLevel(15);
-                // setMapPosition(marker.getLatLng());
             }
         })
 
