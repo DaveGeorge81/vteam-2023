@@ -36,7 +36,7 @@ const AdminMap = ({ className, mapPosition, zoomLevel, icons, cityId, clickedMar
 
     const markers = L.markerClusterGroup({
         spiderfyOnMaxZoom: false,
-        disableClusteringAtZoom: 15
+        disableClusteringAtZoom: 13
     });
     const customMarker = require('../assets/scooter.png');
     const chargeMarker = require('../assets/charging.png');
