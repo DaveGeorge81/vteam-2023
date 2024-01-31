@@ -3,7 +3,7 @@ Phone App
 Known issues:
 --------------
 As of right now it's not possible to install the app on your Android emulator with WSL2 through Docker. The current solution to this is to install it
-locally with 
+locally with
 
 ```
 npm install
