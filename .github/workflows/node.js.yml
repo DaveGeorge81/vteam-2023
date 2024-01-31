@@ -1,0 +1,45 @@
+# This workflow is based on https://github.com/actions/starter-workflows/blob/main/ci/node.js.yml.
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+
+name: Node.js CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Use Node.js v.20
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+        cache: 'npm'
+        cache-dependency-path: |
+            package-lock.json
+            backend/package-lock.json
+
+    - name: Install dependencies in ./
+      run: npm ci
+
+    - name: Run ESLint
+      run: npm run lint
+
+    - name: Install dependencies in ./backend
+      run: npm ci
+      working-directory: ./backend
+
+    - name: Create test database
+      run: ./reset_test_db.bash
+      working-directory: ./backend/db
+
+    - name: Run unit tests and code coverage
+      run: npm run test-ci
+      working-directory: ./backend
+

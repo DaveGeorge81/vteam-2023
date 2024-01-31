@@ -1,0 +1,75 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.1rem;
+    line-height: 1.4;
+    margin: 0 auto;
+    color: #333;
+    width: 90%;
+}
+
+main {
+    margin-top: 10px;
+}
+
+#sel-city {
+    margin-bottom: 0.5rem;
+    padding: 2px;
+    font-size: 1rem;
+}
+
+#map {
+    height: 87vh;
+}
+
+/*
+.charge-class {
+    background-color: transparent;
+    font-size: 22px;
+}
+*/
+
+.blue-bike-icon {
+    background-color: #00d;
+    border-radius: 50%;
+}
+
+.green-bike-icon {
+    background-color: #0a5;
+    border-radius: 50%;
+}
+
+.orange-bike-icon {
+    background-color: #fa0;
+    border-radius: 50%;
+}
+
+.violet-bike-icon {
+    background-color: #90b;
+    border-radius: 50%;
+}
+
+.red-bike-icon {
+    background-color: #e00;
+    border-radius: 50%;
+}
+
+.tooltip-text {
+    font-size: 1.1667em;
+}
+
+footer {
+    margin-top: 20px;
+    padding-bottom: 10px;
+    text-align: center;
+}
+
+footer p {
+    margin: 0;
+}
+

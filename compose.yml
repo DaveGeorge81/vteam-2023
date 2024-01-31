@@ -1,0 +1,17 @@
+services:
+    server:
+        build: ./backend
+        volumes:
+            - ./backend/db:/backend/db
+            - ./bike-sim/data:/backend/public/data
+        ports:
+            - "1337:1337"
+
+    bike-sim:
+        build: ./bike-sim
+        volumes:
+            - ./backend/db:/backend/db
+            - ./bike-sim/data:/bike-sim/data
+        depends_on:
+            - server
+
