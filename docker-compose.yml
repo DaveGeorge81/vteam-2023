@@ -1,8 +1,0 @@
-services:
-    admin:
-        build: ./admin
-        volumes:
-            - ./admin/src:/admin/src
-            - ./admin/public:/admin/public
-        ports:
-            - "4000:4000"
