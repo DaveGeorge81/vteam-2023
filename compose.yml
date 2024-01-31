@@ -22,3 +22,35 @@ services:
             - ./admin/public:/admin/public
         ports:
             - "4000:4000"
+
+    phone:
+        build:
+            context: ./
+            dockerfile: ./phone-app/Dockerfile
+        environment:
+            - EXPO_DEVTOOLS_LISTEN_ADDRESS=0.0.0.0
+            - REACT_NATIVE_PACKAGER_HOSTNAME=${IP}
+        volumes:
+            - ./phone-app/:/phone-app/
+            - ${SDK}:/sdk/
+        ports:
+            - '8081:8081'
+            - '8082:8082'
+            - '8083:8083'
+        tty: true
+        stdin_open: true
+        command: npx expo
+
+    customer:
+        build:
+            context: ./
+            dockerfile: ./customer-webb/Dockerfile
+        volumes:
+            - ./customer-webb/:/customer-webb/
+        ports:
+            - '3000:3000'
+        depends_on:
+            - server
+        links:
+            - server
+        command: npx next dev
