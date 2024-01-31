@@ -51,7 +51,7 @@ const AdminUsersInfo = ({ userId, setUserId, setLoading, loading }) => {
             Resor:
             ${rides}`);
         }
-    }, [userId, singleUser, loading])
+    }, [userId, singleUser, loading, userRides])
 
     function remove(userId) {
         alert("Användare raderad");

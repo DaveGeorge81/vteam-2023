@@ -32,7 +32,7 @@ const AdminBikeList = ({city, coords}) => {
         setCoordinates(coords);
         setZoomLevel(13);
         setBikeName("");
-    }, [city, loading])
+    }, [city, loading, coords])
 
     function onClick(e, bike) {
         let bikeVal = bikes.find(b => b.id === bike);

@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
 
-
 const AdminMap = ({ className, mapPosition, zoomLevel, icons, cityId, clickedMarker, reload }) => {
     const mapContainer = useRef(null);
     const [markerList, setMarkerList] = useState([]);
@@ -124,7 +123,8 @@ const AdminMap = ({ className, mapPosition, zoomLevel, icons, cityId, clickedMar
         // map.off();
         map.remove();
         };
-    }, [mapPosition, markerList, icons, clickedMarker]);
+    }, [mapPosition, markerList, icons, clickedMarker, chargeList, parkingList, chargeMarker,
+        customMarker, markers, parkingMarker, zoomLevel]);
 
     return (<div id="map" className={`map ${className}`}></div>);
     
