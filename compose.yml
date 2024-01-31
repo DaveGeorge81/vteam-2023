@@ -32,7 +32,6 @@ services:
             - REACT_NATIVE_PACKAGER_HOSTNAME=${IP}
         volumes:
             - ./phone-app/:/phone-app/
-            - ${SDK}:/sdk/
         ports:
             - '8081:8081'
             - '8082:8082'
