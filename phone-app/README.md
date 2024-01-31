@@ -45,6 +45,14 @@ After that you can finally run:
 docker compose up
 ```
 
+7. Open the app (named phone-app) on your Android emulator and connect to your computers IP-address.
+
+If any errors occur, try running 
+```
+docker compose build phone
+```
+first.
+
 Known issues:
 --------------
 As of right now it's not possible to install the app on your Android emulator with WSL2 through Docker. The current solution to this is to install it
@@ -68,16 +76,7 @@ When the app is installed you can run:
 ```
 docker compose up
 ```
-
-
-
-7. Open the app (named phone-app) on your Android emulator and connect to your computers IP-address.
-
-If any errors occur, try running 
-```
-docker compose build phone
-```
-first.
+and then open the app on your Android emulator.
 
 
 
