@@ -6,9 +6,9 @@ const nextConfig = {
                 source: '/back/:path*',
                 destination: 'http://server:1337/:path*'
             }
-            ]
-        },
+        ];
+    },
         reactStrictMode: false,
-}
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;
