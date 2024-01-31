@@ -1,0 +1,11 @@
+version: '3'
+services:
+    customer:
+        build:
+            context: ./
+            dockerfile: ./customer-webb/Dockerfile
+        volumes:
+            - ./customer-webb/:/customer-webb/
+        ports:
+            - '3000:3000'
+        command: npx next dev
