@@ -5,4 +5,4 @@ services:
             - ./admin/src:/admin/src
             - ./admin/public:/admin/public
         ports:
-            - "3000:3000"
+            - "4000:4000"
