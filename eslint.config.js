@@ -6,7 +6,8 @@ const globals = require("globals");
 
 module.exports = [
     {
-        ignores: ["**/coverage/", "backend/public/src/", "bike-sim/data/", "admin/", "customer-webb", "phone-app"],
+        ignores: ["**/coverage/", "backend/public/src/", "bike-sim/data/", "admin/",
+            "customer-webb", "phone-app"],
     },
 
     js.configs.recommended,
