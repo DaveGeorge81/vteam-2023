@@ -10,6 +10,7 @@ const db = require('better-sqlite3')(`../backend/db/${dbName}.sqlite`);
 const baseURL = require("../data/config.js").baseURL;
 const maxRidesCity = require("../data/config.js").maxRidesCity;
 const minRideDuration = require("../data/config.js").minRideDuration;
+const logRides = require("../data/config.js").logRides;
 const Bike = require("./bike.js");
 
 const bikesInRide = [];
@@ -40,10 +41,14 @@ exports.updateCity = function(cityId) {
 
     // Move bikes and finish some rides
     for (const bike of bikesInRide[id]) {
-        bike.move();
+        try {
+            bike.move();
 
-        if (bike.duration > minRideDuration && Math.random() < 0.05) {
-            finish(bike);
+            if (bike.duration > minRideDuration && Math.random() < 0.05) {
+                finish(bike);
+            }
+        } catch (err) {
+            console.log(err.message);
         }
     }
 
@@ -54,13 +59,17 @@ exports.updateCity = function(cityId) {
         const num = Math.ceil(0.1 * diff); // Start 10% of diff
 
         for (let i = 0; i < num; i++) {
-            start(cityId);
+            try {
+                start(cityId);
+            } catch (err) {
+                console.log(err.message);
+            }
         }
     }
 
     const timeEnd = process.hrtime.bigint();
 
-    console.log(`Update city ${cityId} Time elapsed: ${(timeEnd - timeStart) / 1000000n} ms`);
+    console.log(`Update city ${cityId}: ${(timeEnd - timeStart) / 1000000n} ms`);
 };
 
 
@@ -92,7 +101,10 @@ async function start(cityId) {
 
     prevUserId = userId;
     prevBikeId[cityId - 1] = bike.id;
-    console.log(`*** Start ride, user: ${userId}, bike: ${bike.id} ***`);
+
+    if (logRides) {
+        console.log(`*** Start ride, user: ${userId}, bike: ${bike.id} ***`);
+    }
 
     // Create a Bike object and put in set
     bikesInRide[cityId - 1].add(new Bike(bike.id, cityId, bike.lat, bike.lon,
@@ -118,7 +130,9 @@ async function start(cityId) {
  * @param {Bike} bike The bike object.
  */
 async function finish(bike) {
-    console.log(`––– Finish ride, user: ${bike.userId}, bike: ${bike.id} –––`);
+    if (logRides) {
+        console.log(`––– Finish ride, user: ${bike.userId}, bike: ${bike.id} –––`);
+    }
 
     // Update database
     // const response =
