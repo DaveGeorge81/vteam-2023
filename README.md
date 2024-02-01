@@ -1,9 +1,13 @@
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/DaveGeorge81/vteam-2023/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/DaveGeorge81/vteam-2023/?branch=main)
+
 # vteam-2023
 This is our project in the course ["Projektutveckling i virtuella team"](https://dbwebb.se/kurser/vteam-v1) at BTH, Sweden.
 
 The backend implements an API described in [public/index.html](backend/public/index.html), which is reachable at localhost:1337 or localhost:1337/api/v1/ for the running app.
 
 An [SQLite3](https://www.sqlite.org/index.html) database is used for storage, with the library [better-sqlite3](https://github.com/WiseLibs/better-sqlite3) used for accessing data. Both the backend and the bike-sim apps are [Node.js](https://nodejs.org/en) applications.
+
+Admin functionality is under localhost:4000.
 
 ## The simulation engine
 The simulation app resides in [bike-sim/](bike-sim/). At startup, the database is cleared and filled with data described in [data/db_data.mjs](bike-sim/data/db_data.mjs). Some of the data is randomized, such as bike positions, battery level, and user names and account balance. Parts of the simulation are controlled by settings in [data/config.js](bike-sim/data/config.js), such as number of users and bikes in the simulation.
