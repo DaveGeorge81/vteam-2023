@@ -4,3 +4,4 @@ node_modules/
 **/db/*.sqlite-wal
 .nyc_output/
 coverage/
+.env

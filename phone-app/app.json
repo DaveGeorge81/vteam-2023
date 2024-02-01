@@ -33,7 +33,7 @@
       ],
       "config": {
         "googleMaps": {
-          "apiKey": ""
+          "apiKey": "YOUR API-KEY HERE"
         }
       }
     },
