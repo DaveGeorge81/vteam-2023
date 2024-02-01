@@ -226,9 +226,9 @@ export default function MapScreen() {
         <View style={styles.map}>
             <MapView style={styles.map}
             region={mapRegion}
-            showsUserLocation={true}
+            // showsUserLocation={true}
             provider={PROVIDER_GOOGLE}
-            customMapStyle={mapJson}
+            // customMapStyle={mapJson}
             initialRegion={{
                 latitude: 56.193,
                 longitude: 15.628,

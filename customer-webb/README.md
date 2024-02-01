@@ -16,6 +16,32 @@ pnpm dev
 bun dev
 ```
 
+You will need to put an .env-file in customer-webb root folder. In this file you need to add the following:
+```
+GOOGLE_ID="YOUR GOOGLE ID"
+GOOGLE_SECRET="YOUR GOOGLE SECRET"
+
+NEXTAUTH_SECRET="YOUR PERSONAL NEXTAUTH SECRET (can be anything)"
+NEXTAUTH_URL="http://localhost:3000"
+
+```
+You need to acquire your google ID and Secret yourself and set up the URIs to:
+
+Authorized JavaScript origins:
+```
+http://localhost:3000
+
+```
+and
+
+Authorized redirect URIs:
+```
+http://localhost:3000/api/auth/callback/google
+
+```
+
+to be able to log in with your Google-account through Oauth.
+
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 

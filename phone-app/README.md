@@ -18,6 +18,9 @@ npx expo run:android
 
 to install the expo-phone-app on your Android Emulator.
 
+Note:
+To be able to use the map you need to provide your own GoogleMaps api-key and place it in app.json where it says "YOUR API-KEY HERE".
+
 
 To get started
 --------------
