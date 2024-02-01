@@ -69,7 +69,7 @@ for (const [id, city] of cities.entries()) {
             iconSize: [40, 40]
         });
 
-        const marker = L.marker([lat, lon], {
+        L.marker([lat, lon], {
             icon: chargeIcon
         }).addTo(map);
     }
