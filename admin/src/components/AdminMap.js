@@ -123,8 +123,7 @@ const AdminMap = ({ className, mapPosition, zoomLevel, icons, cityId, clickedMar
         // map.off();
         map.remove();
         };
-    }, [mapPosition, markerList, icons, clickedMarker, chargeList, parkingList, chargeMarker,
-        customMarker, markers, parkingMarker, zoomLevel]);
+    }, [mapPosition, markerList, icons, clickedMarker]);
 
     return (<div id="map" className={`map ${className}`}></div>);
     
