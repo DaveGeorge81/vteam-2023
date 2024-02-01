@@ -35,17 +35,17 @@ let prevUserId = -1;
  *
  * @param {number} cityId City id.
  */
-exports.updateCity = function(cityId) {
+exports.updateCity = async function(cityId) {
     const timeStart = process.hrtime.bigint();
     const id = cityId - 1;
 
     // Move bikes and finish some rides
     for (const bike of bikesInRide[id]) {
         try {
-            bike.move();
+            await bike.move();
 
             if (bike.duration > minRideDuration && Math.random() < 0.05) {
-                finish(bike);
+                await finish(bike);
             }
         } catch (err) {
             console.log(err.message);
@@ -60,7 +60,7 @@ exports.updateCity = function(cityId) {
 
         for (let i = 0; i < num; i++) {
             try {
-                start(cityId);
+                await start(cityId);
             } catch (err) {
                 console.log(err.message);
             }
