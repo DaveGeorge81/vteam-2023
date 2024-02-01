@@ -228,37 +228,40 @@ const dbModel = {
         return result;
     },
 
-    updateBikeCheckParkZone: function (body) {
+    updateBikeCheckParkZone: function (reqBody) {
+        let newParkId = 0;
         let result = {
             changes: 1
         };
 
         try {
-            const bike = db.prepare('SELECT city_id, park_id, lat, lon FROM bikes WHERE id = ?')
-                .get(body.id);
+            db.transaction((body) => {
+                const bike = db.prepare('SELECT city_id, park_id, lat, lon FROM bikes WHERE id = ?')
+                    .get(body.id);
 
-            if (!bike) {
-                throw new Error('id not found');
-            }
-
-            const newParkId = posInParkingZone(bike.city_id, bike.lat, bike.lon);
-
-            if (bike.park_id !== newParkId) {
-                result = db.prepare(`UPDATE bikes SET park_id = ${newParkId} WHERE id = ?`)
-                    .run(body.id);
-
-                // Remove bike from old park_zone
-                if (bike.park_id) {
-                    db.prepare(`UPDATE park_zones SET num_bikes = num_bikes - 1 WHERE id = ?`)
-                        .run(bike.park_id);
+                if (!bike) {
+                    throw new Error('id not found');
                 }
 
-                // Add bike to new park_zone
-                if (newParkId) {
-                    db.prepare(`UPDATE park_zones SET num_bikes = num_bikes + 1 WHERE id = ?`)
-                        .run(newParkId);
+                newParkId = posInParkingZone(bike.city_id, bike.lat, bike.lon);
+
+                if (bike.park_id !== newParkId) {
+                    result = db.prepare(`UPDATE bikes SET park_id = ${newParkId} WHERE id = ?`)
+                        .run(body.id);
+
+                    // Remove bike from old park_zone
+                    if (bike.park_id) {
+                        db.prepare(`UPDATE park_zones SET num_bikes = num_bikes - 1 WHERE id = ?`)
+                            .run(bike.park_id);
+                    }
+
+                    // Add bike to new park_zone
+                    if (newParkId) {
+                        db.prepare(`UPDATE park_zones SET num_bikes = num_bikes + 1 WHERE id = ?`)
+                            .run(newParkId);
+                    }
                 }
-            }
+            })(reqBody);
 
             result.park_id = newParkId;
         } catch (err) {
@@ -272,30 +275,32 @@ const dbModel = {
         return result;
     },
 
-    updateBikeStartCharge: function (body) {
+    updateBikeStartCharge: function (reqBody) {
         let result;
 
         try {
-            const bike = db.prepare('SELECT status_id FROM bikes WHERE id = ?')
-                .get(body.bike_id);
+            db.transaction((body) => {
+                const bike = db.prepare('SELECT status_id FROM bikes WHERE id = ?')
+                    .get(body.bike_id);
 
-            if (!bike) {
-                throw new Error('bike_id not found');
-            }
+                if (!bike) {
+                    throw new Error('bike_id not found');
+                }
 
-            if (bike.status_id === 3) {
-                throw new Error('Bike is already charging');
-            }
+                if (bike.status_id === 3) {
+                    throw new Error('Bike is already charging');
+                }
 
-            const stationResult = db.prepare(`UPDATE stations SET num_free = num_free - 1
-                WHERE id = ?`).run(body.station_id);
+                const stationResult = db.prepare(`UPDATE stations SET num_free = num_free - 1
+                    WHERE id = ?`).run(body.station_id);
 
-            if (stationResult.changes === 0) {
-                throw new Error('station_id not found');
-            }
+                if (stationResult.changes === 0) {
+                    throw new Error('station_id not found');
+                }
 
-            result = db.prepare(`UPDATE bikes SET (status_id, station_id) = (3, ?) WHERE id = ?`)
-                .run(body.station_id, body.bike_id);
+                result = db.prepare(`UPDATE bikes SET (status_id, station_id) =
+                    (3, ?) WHERE id = ?`).run(body.station_id, body.bike_id);
+            })(reqBody);
         } catch (err) {
             result = {
                 changes: 0,
@@ -306,30 +311,32 @@ const dbModel = {
         return result;
     },
 
-    updateBikeStopCharge: function (body) {
+    updateBikeStopCharge: function (reqBody) {
         let result;
 
         try {
-            const bike = db.prepare('SELECT status_id, station_id FROM bikes WHERE id = ?')
-                .get(body.bike_id);
+            db.transaction((body) => {
+                const bike = db.prepare('SELECT status_id, station_id FROM bikes WHERE id = ?')
+                    .get(body.bike_id);
 
-            if (!bike) {
-                throw new Error('bike_id not found');
-            }
+                if (!bike) {
+                    throw new Error('bike_id not found');
+                }
 
-            if (bike.status_id !== 3) {
-                throw new Error('Bike is not charging');
-            }
+                if (bike.status_id !== 3) {
+                    throw new Error('Bike is not charging');
+                }
 
-            const stationResult = db.prepare(`UPDATE stations SET num_free = num_free + 1
-                WHERE id = ?`).run(bike.station_id);
+                const stationResult = db.prepare(`UPDATE stations SET num_free = num_free + 1
+                    WHERE id = ?`).run(bike.station_id);
 
-            if (stationResult.changes === 0) {
-                throw new Error('station_id not found');
-            }
+                if (stationResult.changes === 0) {
+                    throw new Error('station_id not found');
+                }
 
-            result = db.prepare(`UPDATE bikes SET (status_id, station_id) = (0, 0) WHERE id = ?`)
-                .run(body.bike_id);
+                result = db.prepare(`UPDATE bikes SET (status_id, station_id) =
+                    (0, 0) WHERE id = ?`).run(body.bike_id);
+            })(reqBody);
         } catch (err) {
             result = {
                 changes: 0,
@@ -555,49 +562,51 @@ const dbModel = {
         return db.prepare('SELECT * FROM rides WHERE id = ?').get(id);
     },
 
-    startRide: function (body) {
+    startRide: function (reqBody) {
         let result;
 
         try {
-            // Get bike
-            const bike = db.prepare('SELECT status_id, park_id, lat, lon FROM bikes WHERE id = ?')
-                .get(body.bike_id);
+            db.transaction((body) => {
+                // Get bike
+                const bike = db.prepare(`SELECT status_id, park_id, lat, lon FROM bikes
+                    WHERE id = ?`).get(body.bike_id);
 
-            if (!bike) {
-                throw new Error('bike_id not found');
-            }
+                if (!bike) {
+                    throw new Error('bike_id not found');
+                }
 
-            if (bike.status_id) {
-                throw new Error('Bike is not available for lease');
-            }
+                if (bike.status_id) {
+                    throw new Error('Bike is not available for lease');
+                }
 
-            // Create a new ride
-            result = db.prepare(`
-                INSERT INTO rides (start_time, start_lat, start_lon, start_park_id,
-                    user_id, bike_id)
-                VALUES (datetime('now', 'localtime'), ?, ?, ?, ?, ?)
-            `).run(bike.lat, bike.lon, bike.park_id, body.user_id, body.bike_id);
+                // Create a new ride
+                result = db.prepare(`
+                    INSERT INTO rides (start_time, start_lat, start_lon, start_park_id,
+                        user_id, bike_id)
+                    VALUES (datetime('now', 'localtime'), ?, ?, ?, ?, ?)
+                `).run(bike.lat, bike.lon, bike.park_id, body.user_id, body.bike_id);
 
-            // Update user
-            const userResult = db.prepare(`UPDATE users SET ride_id =
-                ${result.lastInsertRowid} WHERE id = ?`).run(body.user_id);
+                // Update user
+                const userResult = db.prepare(`UPDATE users SET ride_id =
+                    ${result.lastInsertRowid} WHERE id = ?`).run(body.user_id);
 
-            if (userResult.changes === 0) {
-                // Delete inserted ride
-                db.prepare(`DELETE FROM rides WHERE id = ${result.lastInsertRowid}`).run();
+                if (userResult.changes === 0) {
+                    // Delete inserted ride
+                    db.prepare(`DELETE FROM rides WHERE id = ${result.lastInsertRowid}`).run();
 
-                throw new Error('user_id not found');
-            }
+                    throw new Error('user_id not found');
+                }
 
-            // Update bike
-            db.prepare(`UPDATE bikes SET (user_id, status_id, park_id) =
-                (?, 1, 0) WHERE id = ?`).run(body.user_id, body.bike_id);
+                // Update bike
+                db.prepare(`UPDATE bikes SET (user_id, status_id, park_id) =
+                    (?, 1, 0) WHERE id = ?`).run(body.user_id, body.bike_id);
 
-            // Remove bike from park_zone
-            if (bike.park_id) {
-                db.prepare(`UPDATE park_zones SET num_bikes = num_bikes - 1 WHERE id = ?`)
-                    .run(bike.park_id);
-            }
+                // Remove bike from park_zone
+                if (bike.park_id) {
+                    db.prepare(`UPDATE park_zones SET num_bikes = num_bikes - 1 WHERE id = ?`)
+                        .run(bike.park_id);
+                }
+            })(reqBody);
         } catch (err) {
             result = {
                 changes: 0,
@@ -608,12 +617,12 @@ const dbModel = {
         return result;
     },
 
-    finishRide: function (body) {
+    finishRide: function (reqBody) {
         let result;
 
         try {
             // Get ride_id
-            const user = db.prepare('SELECT ride_id FROM users WHERE id = ?').get(body.user_id);
+            const user = db.prepare('SELECT ride_id FROM users WHERE id = ?').get(reqBody.user_id);
 
             if (!user) {
                 throw new Error('user_id not found');
@@ -659,23 +668,25 @@ const dbModel = {
 
             price = Number(price.toFixed(2));
 
-            // Update tables
-            result = db.prepare(`
-                UPDATE rides SET (duration, stop_lat, stop_lon, price) =
-                (?, ?, ?, ?) WHERE id = ?
-            `).run((duration.sec / 60).toFixed(2), bike.lat, bike.lon, price, user.ride_id);
+            db.transaction((body) => {
+                // Update tables
+                result = db.prepare(`
+                    UPDATE rides SET (duration, stop_lat, stop_lon, price) =
+                    (?, ?, ?, ?) WHERE id = ?
+                `).run((duration.sec / 60).toFixed(2), bike.lat, bike.lon, price, user.ride_id);
 
-            db.prepare(`UPDATE users SET (balance, ride_id) = (balance - ${price}, 0)
-                WHERE id = ?`).run(body.user_id);
+                db.prepare(`UPDATE users SET (balance, ride_id) = (balance - ${price}, 0)
+                    WHERE id = ?`).run(body.user_id);
 
-            db.prepare(`UPDATE bikes SET (user_id, status_id, park_id, speed) =
-                (0, 0, ?, 0) WHERE id = ?`).run(parkIdStop, ride.bike_id);
+                db.prepare(`UPDATE bikes SET (user_id, status_id, park_id, speed) =
+                    (0, 0, ?, 0) WHERE id = ?`).run(parkIdStop, ride.bike_id);
 
-            // Add bike to park_zone
-            if (parkIdStop) {
-                db.prepare(`UPDATE park_zones SET num_bikes = num_bikes + 1 WHERE id = ?`)
-                    .run(parkIdStop);
-            }
+                // Add bike to park_zone
+                if (parkIdStop) {
+                    db.prepare(`UPDATE park_zones SET num_bikes = num_bikes + 1 WHERE id = ?`)
+                        .run(parkIdStop);
+                }
+            })(reqBody);
 
             result.price = price;
         } catch (err) {
@@ -698,7 +709,4 @@ const dbModel = {
 };
 
 module.exports = dbModel;
-
-
-
 
