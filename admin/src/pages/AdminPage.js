@@ -7,7 +7,7 @@ export default function Admin() {
     const [cityCoordinates, setCityCoordinates] = useState([56.193, 15.628]);
     const [cityName, setCityName] = useState("Karlskrona");
     const [cityId, setCityId] = useState(1);
-    const [zoomLevel, setZoomLevel] = useState(15);
+    const [zoomLevel, setZoomLevel] = useState(14);
     const [icons, setIcons] = useState("");
     const [cities, setCities] = useState("");
     const [clickedMarker, setClickedMarker] = useState("");
@@ -27,7 +27,7 @@ export default function Admin() {
         setCityName(city.name);
         setCityId(city.id);
         setCityCoordinates([city.lat, city.lon]);
-        setZoomLevel(15);
+        setZoomLevel(14);
         setLoading(city)
     }
 
